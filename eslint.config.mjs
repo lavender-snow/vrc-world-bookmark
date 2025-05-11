@@ -1,7 +1,6 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig } from "@eslint/config-helpers";
 import { fixupConfigRules } from "@eslint/compat";
 import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
@@ -30,7 +29,7 @@ export default defineConfig([{
             ...globals.browser,
             ...globals.node,
         },
-
-        parser: tsParser,
     },
+
+    ignores: ["node_modules/**", "out/**", ".webpack/**"],
 }]);
