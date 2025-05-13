@@ -1,9 +1,10 @@
-function App(): React.ReactNode {
+import { WorldDataEntry } from "./world-data-entry";
+
+export function App(): React.ReactNode {
   return (
     <>
-      <p>HelloWorld</p>
+      <h1>VRC World Bookmark</h1>
+      <WorldDataEntry></WorldDataEntry>
     </>
   );
 }
-
-export default App;
