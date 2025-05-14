@@ -14,8 +14,11 @@
   },
   "keywords": [],
   "author": {
-    "name": "lavender-snow",
-    "email": "lavender32192@gmail.com"
+    "name": "lavender-snow"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/lavender-snow/vrc-world-bookmark.git"
   },
   "license": "MIT",
   "devDependencies": {
