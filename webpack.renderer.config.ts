@@ -29,11 +29,12 @@ plugins.push(
     filename: 'assets/styles/index-[name].css',
   }
 ));
-    
+
 export const rendererConfig: Configuration = {
   module: {
     rules,
   },
+  devtool: process.env.NODE_ENV === "development" ? 'source-map' : false,
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
