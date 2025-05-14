@@ -15,7 +15,7 @@ export function InputText({
       type="text"
       onChange={onChange}
       placeholder={placeholder}
-      className={classNames([styles.button , className])}
+      className={classNames([styles.inputText , className])}
     />
   );
 }
