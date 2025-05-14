@@ -19,6 +19,24 @@ const createWindow = (): void => {
     },
   });
 
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        "Content-Security-Policy": [
+          "default-src 'self';",
+          "script-src 'self';",
+          "style-src 'self' 'unsafe-inline';",
+          "img-src 'self' data:;",
+          "connect-src 'self';",
+          "font-src 'self';",
+          "object-src 'none';",
+          "frame-src 'none';",
+        ].join(" "),
+      },
+    });
+  });
+
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
