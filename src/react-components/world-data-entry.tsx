@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { Button } from './common/button';
+import { InputText } from './common/input-text';
+import classNames from 'classnames';
+import styles from './world-data-entry.scss';
+import { getWorldId } from '../utils/util';
 
 export function WorldDataEntry() {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
@@ -8,18 +12,29 @@ export function WorldDataEntry() {
     setWorldIdOrUrl(e.target.value);
   }
 
-  function onClickGetWorldInfo() {
-    console.log(worldIdOrUrl);
+  async function onClickGetWorldInfo() {
+    const worldId = getWorldId(worldIdOrUrl);
+
+    if (worldId) {
+      const response = await window.vrchatAPI.fetchWorldInfo(worldId);
+      console.log(response);
+    }
   }
 
   return (
     <>
       <p>追加したいワールドのIDまたはURLを入力してください</p>
 
-      <input onChange={onChangeWorldIdOrUrl} type="text" placeholder="World ID or World URL" />
-      <Button onClick={onClickGetWorldInfo}>
-        ワールド情報取得
-      </Button>
+      <div className={classNames(styles.searchArea)}>
+        <InputText 
+          onChange={onChangeWorldIdOrUrl} 
+          placeholder='World ID or World URL'
+          className={classNames(styles.searchInputText)}
+        />
+        <Button onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
+          ワールド情報取得
+        </Button>
+      </div>
     </>
   );
 }

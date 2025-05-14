@@ -1,0 +1,17 @@
+@use "../../assets/styles/theme.scss";
+
+:local(.search-area) {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+:local(.search-input-text) {
+  flex: 1;
+}
+
+:local(.search-button) {
+  flex-shrink: 0;
+  padding: 10px;
+  border: transparent 1px solid;
+}
