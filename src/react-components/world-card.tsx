@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { useState } from "react";
 import type { VRChatWorld } from "../types/vrchat";
 import style from "./world-card.scss";
-import { ReactComponent as StarIcon } from "../../assets/images/MaterialSymbolsKidStar.svg";
 import { ReactComponent as StarOutlineIcon } from "../../assets/images/MaterialSymbolsKidStarOutline.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { Button } from "./common/button";
