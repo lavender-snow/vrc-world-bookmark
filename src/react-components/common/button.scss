@@ -1,7 +1,7 @@
 @use "../../../assets/styles/theme.scss";
 
 :local(.button) {
-  background: theme.$lightblue;
+  background: theme.$light-blue;
   justify-content: center;
   align-items: center;
   display: inline-flex;

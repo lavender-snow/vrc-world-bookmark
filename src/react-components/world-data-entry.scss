@@ -1,5 +1,11 @@
 @use "../../assets/styles/theme.scss";
 
+:local(.world-data-entry) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 :local(.search-area) {
   display: flex;
   width: 100%;

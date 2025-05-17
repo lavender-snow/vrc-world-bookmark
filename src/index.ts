@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 import "./main/vrchat-api";
 
@@ -28,7 +28,7 @@ const createWindow = (): void => {
           "default-src 'self';",
           "script-src 'self';",
           "style-src 'self' 'unsafe-inline';",
-          "img-src 'self' data:;",
+          "img-src 'self' data: *.vrchat.cloud;",
           "connect-src 'self';",
           "font-src 'self';",
           "object-src 'none';",
@@ -40,6 +40,15 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith('http')) {
+      shell.openExternal(url);
+      return { action: 'deny' };
+    }
+
+    return { action: 'allow' };
+  });
 };
 
 // This method will be called when Electron has finished

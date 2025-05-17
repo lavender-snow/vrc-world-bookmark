@@ -4,25 +4,55 @@ import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
-rules.push({
-  test: /\.(scss|css)$/,
-  use: [
+rules.push(
+  {
+    test: /\.(scss|css)$/,
+    use: [
+      {
+          loader: MiniCssExtractPlugin.loader
+      },
     {
-        loader: MiniCssExtractPlugin.loader
-    },
-   {
-      loader: 'css-loader',
-      options: {
-        modules: {
-          localIdentName: '[name]__[local]__[hash:base64:5]',
-          exportLocalsConvention: "camelCase",
-          mode: 'global'
+        loader: 'css-loader',
+        options: {
+          modules: {
+            localIdentName: '[name]__[local]__[hash:base64:5]',
+            exportLocalsConvention: "camelCase",
+            mode: 'global'
+          }
+        }
+      },
+      'sass-loader'
+    ],
+  },{
+    test: /\.svg$/,
+    use: [
+      {
+        loader: "@svgr/webpack",
+        options: {
+          titleProp: true,
+          replaceAttrValues: { "#000": "currentColor" },
+          exportType: "named",
+          svgo: true,
+          svgoConfig: {
+            plugins: [
+              {
+                name: "preset-default",
+                params: {
+                  overrides: {
+                    removeViewBox: false,
+                    mergePaths: false,
+                    convertShapeToPath: false,
+                    removeHiddenElems: false
+                  }
+                }
+              }
+            ]
+          }
         }
       }
-    },
-    'sass-loader'
-  ],
-});
+    ]
+  }
+);
 
 plugins.push(
   new MiniCssExtractPlugin({

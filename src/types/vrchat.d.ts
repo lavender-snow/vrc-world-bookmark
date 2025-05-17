@@ -1,4 +1,4 @@
-export interface World {
+export interface VRChatWorld {
     authorId: string;
     authorName: string;
     capacity: number;
