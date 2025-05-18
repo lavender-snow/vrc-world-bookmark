@@ -1,8 +1,10 @@
 import classNames from "classnames";
 import { useState } from "react";
 import type { VRChatWorld } from "../types/vrchat";
+import type { Genre } from '../types/table';
 import style from "./world-card.scss";
-import { ReactComponent as StarOutlineIcon } from "../../assets/images/MaterialSymbolsKidStarOutline.svg";
+import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
+import { ReactComponent as BookmarkOutlineIcon } from "../../assets/images/MaterialSymbolsBookmarkAddOutline.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { Button } from "./common/button";
 
@@ -31,15 +33,9 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-export function WorldCard({ world }: { world: VRChatWorld }) {
-  const genres = [
-    { value: "other", label: "その他" },
-    { value: "high-quality", label: "高品質" },
-    { value: "game", label: "ゲーム" },
-    { value: "horror", label: "ホラー" }
-  ]
-
-  const [selectedGenre, setSelectedGenre] = useState<string>("other");
+export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre[] }) {
+  const [selectedGenreId, setSelectedGenreId] = useState<number>(genres[0].id);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false); // TODO: 初期値をDBから取得するようにする
 
   return (
     <div className={classNames(style.worldCard)}>
@@ -67,18 +63,32 @@ export function WorldCard({ world }: { world: VRChatWorld }) {
       </div>
       <div className={style.bookmarkArea}>
         {genres.map((genre) => (
-          <label key={genre.value} >
+          <label key={genre.id} >
             <input
               type="radio"
               name="genre"
-              value={genre.value}
-              checked={selectedGenre === genre.value}
-              onChange={() => setSelectedGenre(genre.value)}
+              value={genre.id}
+              checked={selectedGenreId === genre.id}
+              onChange={() => setSelectedGenreId(genre.id)}
             />
-            {genre.label}
+            {genre.name_jp}
           </label>
         ))}
-        <Button className={style.bookmarkButton} onClick={() => { }}><StarOutlineIcon width={16} height={16} />ブックマークに追加</Button>
+        {isBookmarked ? (
+          <Button className={style.bookmarkButton} onClick={() => {
+            // TODO: window.dbAPI.updateWorldBookmark(world, selectedGenreId);
+          }}>
+            <DatabaseSyncIcon width={16} height={16} />登録データ更新
+          </Button>
+
+        ) : (
+          <Button className={style.bookmarkButton} onClick={() => {
+            window.dbAPI.addWorldBookmark(world, selectedGenreId);
+            setIsBookmarked(true);
+          }}>
+            <BookmarkOutlineIcon width={16} height={16} />ブックマークに追加
+          </Button>
+        )}
         <Button className={style.inviteButton} onClick={() => { }}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
     </div >

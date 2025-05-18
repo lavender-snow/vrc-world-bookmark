@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './common/button';
 import { InputText } from './common/input-text';
 import classNames from 'classnames';
@@ -6,10 +6,24 @@ import styles from './world-data-entry.scss';
 import { getWorldId } from '../utils/util';
 import { WorldCard } from './world-card';
 import type { VRChatWorld } from '../types/vrchat';
+import type { Genre } from '../types/table';
+import { mockWorld } from '../mocks/mock-world';
 
 export function WorldDataEntry() {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
-  const [vrchatWorld, setVRChatWorld] = useState<VRChatWorld | null>(null);
+  const [vrchatWorld, setVRChatWorld] = useState<VRChatWorld | null>(mockWorld);
+  const [genres, setGenres] = useState<Genre[]>();
+
+  useEffect(() => {
+    async function fetchGenres() {
+      const response = await window.dbAPI.getGenres();
+
+      setGenres(response);
+    }
+
+    fetchGenres();
+  }, []);
+
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
     setWorldIdOrUrl(e.target.value);
@@ -38,8 +52,8 @@ export function WorldDataEntry() {
       </div>
 
       <div className={classNames(styles.searchResult)}>
-        {vrchatWorld && (
-          <WorldCard world={vrchatWorld} />
+        {genres && vrchatWorld && (
+          <WorldCard world={vrchatWorld} genres={genres} />
         )}
       </div>
     </div>
