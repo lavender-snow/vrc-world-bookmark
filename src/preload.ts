@@ -7,5 +7,5 @@ contextBridge.exposeInMainWorld('vrchatAPI', {
 
 contextBridge.exposeInMainWorld('dbAPI', {
   getGenres: () => ipcRenderer.invoke("get_genres"),
-  addWorldBookmark: (world: VRChatWorld, genre_id: number) => ipcRenderer.invoke("add_world_bookmark", world, genre_id),
+  addWorldBookmark: (world: VRChatWorld, genreId: number, worldNote: string) => ipcRenderer.invoke("add_world_bookmark", world, genreId, worldNote),
 })

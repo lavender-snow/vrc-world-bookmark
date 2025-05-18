@@ -46,7 +46,7 @@ function getGenres(): Genre[] {
   return result;
 }
 
-function addWorldBookmark(world: VRChatWorld, genre_id: number) {
+function addWorldBookmark(world: VRChatWorld, genreId: number, worldNote: string) {
   if (db === undefined) return;
   console.log("sqlParameter",world.id,
     world.authorId,
@@ -169,7 +169,7 @@ function addWorldBookmark(world: VRChatWorld, genre_id: number) {
   );
 
   if (result.changes > 0) {
-    db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, created_at, updated_at) VALUES (?, ?, 0, datetime('now'), datetime('now'));`).run(world.id, genre_id);
+    db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (?, ?, 0, ?, datetime('now'), datetime('now'));`).run(world.id, genreId, worldNote);
   }
 }
 
@@ -183,7 +183,7 @@ app.whenReady().then(() => {
     return genres;
   });
 
-  ipcMain.handle("add_world_bookmark", async (event, world: VRChatWorld, genre_id: number) => {
-    addWorldBookmark(world, genre_id);
+  ipcMain.handle("add_world_bookmark", async (event, world: VRChatWorld, genreId: number, worldNote: string) => {
+    addWorldBookmark(world, genreId, worldNote);
   });
 });

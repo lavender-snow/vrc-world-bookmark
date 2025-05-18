@@ -36,6 +36,7 @@ function WorldTags({ tags }: { tags: string[] }) {
 export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre[] }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(genres[0].id);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false); // TODO: 初期値をDBから取得するようにする
+  const [worldNote, setWorldNote] = useState<string>(""); // TODO: 初期値をDBから取得するようにす
 
   return (
     <div className={classNames(style.worldCard)}>
@@ -62,18 +63,24 @@ export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre
         </div>
       </div>
       <div className={style.bookmarkArea}>
-        {genres.map((genre) => (
-          <label key={genre.id} >
-            <input
-              type="radio"
-              name="genre"
-              value={genre.id}
-              checked={selectedGenreId === genre.id}
-              onChange={() => setSelectedGenreId(genre.id)}
-            />
-            {genre.name_jp}
-          </label>
-        ))}
+        <div className={style.memoArea}>
+          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }}></textarea>
+        </div>
+        <div className={style.genreArea}>
+          ジャンル
+          {genres.map((genre) => (
+            <label key={genre.id} >
+              <input
+                type="radio"
+                name="genre"
+                value={genre.id}
+                checked={selectedGenreId === genre.id}
+                onChange={() => setSelectedGenreId(genre.id)}
+              />
+              {genre.name_jp}
+            </label>
+          ))}
+        </div>
         {isBookmarked ? (
           <Button className={style.bookmarkButton} onClick={() => {
             // TODO: window.dbAPI.updateWorldBookmark(world, selectedGenreId);
@@ -83,7 +90,7 @@ export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre
 
         ) : (
           <Button className={style.bookmarkButton} onClick={() => {
-            window.dbAPI.addWorldBookmark(world, selectedGenreId);
+            window.dbAPI.addWorldBookmark(world, selectedGenreId, worldNote);
             setIsBookmarked(true);
           }}>
             <BookmarkOutlineIcon width={16} height={16} />ブックマークに追加

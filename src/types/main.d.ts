@@ -7,7 +7,7 @@ declare global {
     },
     dbAPI: {
       getGenres: () => Promise<Genre[]>;
-      addWorldBookmark: (world: World, genre_id: number) => Promise<void>;
+      addWorldBookmark: (world: World, genre_id: number, worldNote: string) => Promise<void>;
     };
   }
 }
