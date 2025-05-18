@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 import "./vrchat-api";
+import "./database";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;

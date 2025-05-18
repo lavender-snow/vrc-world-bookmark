@@ -4,7 +4,11 @@ declare global {
   interface Window {
     vrchatAPI: {
       fetchWorldInfo: (worldId: string) => Promise<World>;
-    }
+    },
+    dbAPI: {
+      getGenres: () => Promise<Genre[]>;
+      addWorldBookmark: (world: World, genre_id: number) => Promise<void>;
+    };
   }
 }
 
