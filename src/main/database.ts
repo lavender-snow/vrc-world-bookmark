@@ -10,6 +10,12 @@ const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: 
 
 let db: Database.Database;
 
+function initDB() {
+  db = new Database(DB_PATH, { verbose: console.log });
+  db.pragma('journal_mode = WAL');
+  db.pragma('foreign_keys = ON');
+}
+
 function runMigrations() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS migrations (
@@ -168,9 +174,7 @@ function addWorldBookmark(world: VRChatWorld, genre_id: number) {
 }
 
 app.whenReady().then(() => {
-  db = new Database(DB_PATH, { verbose: console.log });
-  db.pragma('journal_mode = WAL');
-
+  initDB();
   runMigrations();
 
   ipcMain.handle("get_genres", async () => {
