@@ -1,10 +1,9 @@
 import classNames from "classnames";
 import { useState } from "react";
-import type { VRChatWorld } from "../types/vrchat";
+import type { VRChatWorldInfo } from "../types/renderer";
 import type { Genre } from '../types/table';
 import style from "./world-card.scss";
 import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
-import { ReactComponent as BookmarkOutlineIcon } from "../../assets/images/MaterialSymbolsBookmarkAddOutline.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { Button } from "./common/button";
 
@@ -33,38 +32,37 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre[] }) {
+export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(genres[0].id);
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false); // TODO: 初期値をDBから取得するようにする
-  const [worldNote, setWorldNote] = useState<string>(""); // TODO: 初期値をDBから取得するようにす
+  const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
 
   return (
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${world.id}`} target="_blank" rel="noopener noreferrer">{world.name}</a> <small>by {world.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a> <small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
         <div className={classNames(style.thumbnailArea)}>
-          <img src={world.thumbnailImageUrl} alt={world.name} />
+          <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
         </div>
 
         <div className={classNames(style.infoArea)}>
           <div className={classNames(style.worldProperties)}>
-            <WorldProperty name="お気に入り" value={world.favorites} />
-            <WorldProperty name="訪問" value={world.visits} />
-            <WorldProperty name="定員" value={world.capacity} />
-            <WorldProperty name="作成日" value={new Date(world.created_at).toLocaleDateString()} />
-            <WorldProperty name="更新日" value={new Date(world.updated_at).toLocaleDateString()} />
-            <WorldProperty name="説明" value={world.description} />
+            <WorldProperty name="お気に入り" value={worldInfo.favorites} />
+            <WorldProperty name="訪問" value={worldInfo.visits} />
+            <WorldProperty name="定員" value={worldInfo.capacity} />
+            <WorldProperty name="作成日" value={new Date(worldInfo.createdAt).toLocaleDateString()} />
+            <WorldProperty name="更新日" value={new Date(worldInfo.updatedAt).toLocaleDateString()} />
+            <WorldProperty name="説明" value={worldInfo.description} />
           </div>
-          <WorldTags tags={world.tags} />
+          <WorldTags tags={worldInfo.tags} />
         </div>
       </div>
       <div className={style.bookmarkArea}>
         <div className={style.memoArea}>
-          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }}></textarea>
+          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} value={worldNote}></textarea>
         </div>
         <div className={style.genreArea}>
           ジャンル
@@ -81,21 +79,12 @@ export function WorldCard({ world, genres }: { world: VRChatWorld, genres: Genre
             </label>
           ))}
         </div>
-        {isBookmarked ? (
-          <Button className={style.bookmarkButton} onClick={() => {
-            // TODO: window.dbAPI.updateWorldBookmark(world, selectedGenreId);
-          }}>
-            <DatabaseSyncIcon width={16} height={16} />登録データ更新
-          </Button>
+        <Button className={style.bookmarkButton} onClick={() => {
+          window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+        }}>
+          <DatabaseSyncIcon width={16} height={16} />登録データ更新
+        </Button>
 
-        ) : (
-          <Button className={style.bookmarkButton} onClick={() => {
-            window.dbAPI.addWorldBookmark(world, selectedGenreId, worldNote);
-            setIsBookmarked(true);
-          }}>
-            <BookmarkOutlineIcon width={16} height={16} />ブックマークに追加
-          </Button>
-        )}
         <Button className={style.inviteButton} onClick={() => { }}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
     </div >

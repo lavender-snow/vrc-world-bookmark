@@ -1,10 +1,13 @@
 import { ipcMain } from "electron";
+import type { VRChatWorld } from "../types/vrchat";
+
+export class WorldNotFoundError extends Error {}
 
 function userAgent() {
     return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`
 }
 
-ipcMain.handle("fetch_world_info", async (event, worldId: string) => {
+export async function fetchWorldInfo(worldId: string) {
   const response = await fetch(`https://api.vrchat.cloud/api/1/worlds/${worldId}`, {
     method: "GET",
     headers: {
@@ -14,10 +17,18 @@ ipcMain.handle("fetch_world_info", async (event, worldId: string) => {
     },
   });
 
+  const data = await response.json();
+
   if (!response.ok) {
+    if (response.status === 404 && data.error?.status_code === 404) {
+      throw new WorldNotFoundError(`World not found or deleted: ${worldId}`);
+    }
     throw new Error(`Error fetching world info: ${response.statusText}`);
   }
 
-  const data = await response.json();
-  return data;
+  return data as VRChatWorld;
+}
+
+ipcMain.handle("fetch_world_info", async (event, worldId: string) => {
+  return await fetchWorldInfo(worldId);
 });

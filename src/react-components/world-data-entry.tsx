@@ -5,13 +5,12 @@ import classNames from 'classnames';
 import styles from './world-data-entry.scss';
 import { getWorldId } from '../utils/util';
 import { WorldCard } from './world-card';
-import type { VRChatWorld } from '../types/vrchat';
+import type { VRChatWorldInfo } from '../types/renderer';
 import type { Genre } from '../types/table';
-import { mockWorld } from '../mocks/mock-world';
 
 export function WorldDataEntry() {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
-  const [vrchatWorld, setVRChatWorld] = useState<VRChatWorld | null>(mockWorld);
+  const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
   const [genres, setGenres] = useState<Genre[]>();
 
   useEffect(() => {
@@ -33,8 +32,10 @@ export function WorldDataEntry() {
     const worldId = getWorldId(worldIdOrUrl);
 
     if (worldId) {
-      const response = await window.vrchatAPI.fetchWorldInfo(worldId);
-      setVRChatWorld(response);
+      await window.dbAPI.addOrUpdateWorldInfo(worldId);
+      const response = await window.dbAPI.getWorldInfo(worldId);
+
+      setVRChatWorldInfo(response);
     }
   }
 
@@ -47,13 +48,13 @@ export function WorldDataEntry() {
           className={classNames(styles.searchInputText)}
         />
         <Button onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
-          ワールド情報取得
+          ワールド情報登録
         </Button>
       </div>
 
       <div className={classNames(styles.searchResult)}>
-        {genres && vrchatWorld && (
-          <WorldCard world={vrchatWorld} genres={genres} />
+        {genres && vrchatWorldInfo && (
+          <WorldCard worldInfo={vrchatWorldInfo} genres={genres} />
         )}
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { VRChatWorld } from "./types/vrchat";
 
 contextBridge.exposeInMainWorld('vrchatAPI', {
   fetchWorldInfo: (worldId: string) => ipcRenderer.invoke("fetch_world_info", worldId),
@@ -7,5 +6,7 @@ contextBridge.exposeInMainWorld('vrchatAPI', {
 
 contextBridge.exposeInMainWorld('dbAPI', {
   getGenres: () => ipcRenderer.invoke("get_genres"),
-  addWorldBookmark: (world: VRChatWorld, genreId: number, worldNote: string) => ipcRenderer.invoke("add_world_bookmark", world, genreId, worldNote),
+  addOrUpdateWorldInfo: (worldId: string) => ipcRenderer.invoke("add_or_update_world_info", worldId),
+  getWorldInfo: (worldId: string) => ipcRenderer.invoke("get_world_info", worldId),
+  updateWorldBookmark: (worldId: string, genreId: number, worldNote: string) => ipcRenderer.invoke("update_world_bookmark", worldId, genreId, worldNote)
 })
