@@ -50,8 +50,8 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
 
         <div className={classNames(style.infoArea)}>
           <div className={classNames(style.worldProperties)}>
-            <WorldProperty name="お気に入り" value={worldInfo.favorites} />
-            <WorldProperty name="訪問" value={worldInfo.visits} />
+            <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
+            <WorldProperty name="訪問" value={worldInfo.visits.toLocaleString()} />
             <WorldProperty name="定員" value={worldInfo.capacity} />
             <WorldProperty name="作成日" value={new Date(worldInfo.createdAt).toLocaleDateString()} />
             <WorldProperty name="更新日" value={new Date(worldInfo.updatedAt).toLocaleDateString()} />
