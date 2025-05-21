@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { VRChatWorldInfo } from "../types/renderer";
 import type { Genre } from '../types/table';
 import style from "./world-card.scss";
@@ -33,8 +33,13 @@ function WorldTags({ tags }: { tags: string[] }) {
 }
 
 export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
-  const [selectedGenreId, setSelectedGenreId] = useState<number>(genres[0].id);
+  const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
+
+  useEffect(() => {
+    setWorldNote(worldInfo.note);
+    setSelectedGenreId(worldInfo.genreId);
+  }, [worldInfo.genreId, worldInfo.note]);
 
   return (
     <div className={classNames(style.worldCard)}>
