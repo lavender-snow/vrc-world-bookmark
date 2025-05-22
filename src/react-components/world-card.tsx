@@ -5,7 +5,9 @@ import type { Genre } from '../types/table';
 import style from "./world-card.scss";
 import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
+import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
+import { writeClipboard } from "../utils/util";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -45,7 +47,7 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a> <small>by {worldInfo.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><ClipboardIcon onClick={() => { writeClipboard(worldInfo.name) }} /><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>

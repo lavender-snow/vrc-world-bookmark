@@ -10,6 +10,21 @@
   gap: 8px;
 }
 
+:local(.world-title) {
+  svg {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    fill: theme.$icon-gray;
+    margin: 0 4px;
+
+    &:hover {
+      fill: theme.$icon-hover-blue;
+    }
+  }
+}
+
 :local(.world-info-area) {
   display: flex;
   flex-direction: row;
