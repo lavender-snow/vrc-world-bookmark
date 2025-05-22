@@ -8,6 +8,7 @@ import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendM
 import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
 import { writeClipboard } from "../utils/util";
+import { Toast } from "../utils/toast";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -34,9 +35,17 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
+
+
 export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
+  const [toast, setToast] = useState<string>("");
+
+  function onClipboardClick() {
+    writeClipboard(worldInfo.name);
+    setToast("ワールド名をコピーしました");
+  }
 
   useEffect(() => {
     setWorldNote(worldInfo.note);
@@ -47,7 +56,7 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><ClipboardIcon onClick={() => { writeClipboard(worldInfo.name) }} /><small>by {worldInfo.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><ClipboardIcon onClick={() => { onClipboardClick() }} /><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
@@ -94,6 +103,7 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
 
         <Button className={style.inviteButton} onClick={() => { }}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
+      <Toast message={toast} onClose={() => { setToast("") }} />
     </div >
   );
 }
