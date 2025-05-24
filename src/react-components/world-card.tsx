@@ -101,7 +101,7 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
           <DatabaseSyncIcon width={16} height={16} />登録データ更新
         </Button>
 
-        <Button className={style.inviteButton} onClick={() => { }}><MailSendIcon width={20} height={20} />Invite</Button>
+        <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
       <Toast message={toast} onClose={() => { setToast("") }} />
     </div >
