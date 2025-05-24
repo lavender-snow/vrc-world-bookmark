@@ -9,6 +9,7 @@ import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboar
 import { Button } from "./common/button";
 import { writeClipboard } from "../utils/util";
 import { Toast } from "../utils/toast";
+import { NoticeType } from "../consts/const";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -35,16 +36,22 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-
-
 export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
   const [toast, setToast] = useState<string>("");
+  const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
-    setToast("ワールド名をコピーしました");
+    setToastNoticeType(NoticeType.success);
+    setToast("✔️ワールド名をコピーしました");
+  }
+
+  function onUpdateWorldBookmarkClick() {
+    window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+    setToastNoticeType(NoticeType.success);
+    setToast("✔️情報を更新しました");
   }
 
   useEffect(() => {
@@ -95,15 +102,13 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
             </label>
           ))}
         </div>
-        <Button className={style.bookmarkButton} onClick={() => {
-          window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
-        }}>
+        <Button className={style.bookmarkButton} onClick={() => { onUpdateWorldBookmarkClick() }}>
           <DatabaseSyncIcon width={16} height={16} />登録データ更新
         </Button>
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
-      <Toast message={toast} onClose={() => { setToast("") }} />
+      <Toast message={toast} onClose={() => { setToast("") }} noticeType={toastNoticeType} />
     </div >
   );
 }
