@@ -27,7 +27,7 @@ export function runMigrations() {
 
   const files = fs.readdirSync(MIGRATIONS_DIR).filter(f => f.endsWith(".sql")).sort();
 
-  files.map(file => {
+  files.forEach(file => {
     const already = db.prepare("SELECT 1 FROM migrations WHERE filename = ?;").get(file);
     if (!already) {
       const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), "utf-8");
