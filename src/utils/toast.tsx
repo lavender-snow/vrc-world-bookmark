@@ -21,7 +21,7 @@ function Icon({ noticeType }: { noticeType: NoticeType }) {
 
 export function Toast({ message, onClose, noticeType = NoticeType.info }: { message: string, onClose: () => void, noticeType?: NoticeType }) {
   // Sassで定義した時間を基にトーストの表示時間を計算
-  const displayTime = parseSassTime(styles.FADEIN) + parseSassTime(styles.FADEIN) + parseSassTime(styles.VISIBLE);
+  const displayTime = parseSassTime(styles.FADEIN) + parseSassTime(styles.FADEOUT) + parseSassTime(styles.VISIBLE);
   useEffect(() => {
 
     const timer = setTimeout(onClose, displayTime);
