@@ -48,9 +48,9 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     setToast("ワールド名をコピーしました");
   }
 
-  function onUpdateWorldBookmarkClick() {
+  async function onUpdateWorldBookmarkClick() {
     try {
-      window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+      await window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
       setToastNoticeType(NoticeType.success);
       setToast("情報を更新しました");
     } catch (error) {
