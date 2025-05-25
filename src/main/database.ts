@@ -189,7 +189,11 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
   if (result.changes > 0) {
     console.log(`World info upsert: ${world.id}`);
 
-    addBookmark(world.id);
+    const exists = db.prepare("SELECT 1 FROM bookmarks WHERE world_id = ?;").get(world.id);
+
+    if (!exists) {
+      addBookmark(world.id);
+    }
   } else {
     console.error(`World info upsert failed: ${world.id}`);
   }
