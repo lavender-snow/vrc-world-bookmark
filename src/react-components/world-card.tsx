@@ -49,9 +49,15 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
   }
 
   function onUpdateWorldBookmarkClick() {
-    window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
-    setToastNoticeType(NoticeType.success);
-    setToast("情報を更新しました");
+    try {
+      window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+      setToastNoticeType(NoticeType.success);
+      setToast("情報を更新しました");
+    } catch (error) {
+      console.error("Failed to update world bookmark:", error);
+      setToastNoticeType(NoticeType.error);
+      setToast("情報の更新に失敗しました");
+    }
   }
 
   useEffect(() => {
