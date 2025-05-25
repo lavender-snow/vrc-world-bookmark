@@ -32,9 +32,7 @@ export function WorldDataEntry() {
     const worldId = getWorldId(worldIdOrUrl);
 
     if (worldId) {
-      await window.dbAPI.addOrUpdateWorldInfo(worldId);
-      const response = await window.dbAPI.getWorldInfo(worldId);
-
+      const response = await window.dbAPI.addOrUpdateWorldInfo(worldId);
       setVRChatWorldInfo(response);
     }
   }
