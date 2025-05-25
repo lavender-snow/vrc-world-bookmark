@@ -69,7 +69,7 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><ClipboardIcon onClick={() => { onClipboardClick() }} /><small>by {worldInfo.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick() }} aria-label={"ワールド名をコピー"}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
