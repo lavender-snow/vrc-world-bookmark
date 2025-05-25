@@ -10,6 +10,8 @@ export async function upsertWorldBookmark(worldId: string) {
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
       deleteWorldInfo(worldId);
+    } else {
+      console.error(`Error fetching world info for ${worldId}:`, error);
     }
   }
 
