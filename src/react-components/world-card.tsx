@@ -1,11 +1,15 @@
 import classNames from "classnames";
-import { useState } from "react";
-import type { VRChatWorld } from "../types/vrchat";
+import { useState, useEffect } from "react";
+import type { VRChatWorldInfo } from "../types/renderer";
+import type { Genre } from '../types/table';
 import style from "./world-card.scss";
-import { ReactComponent as StarIcon } from "../../assets/images/MaterialSymbolsKidStar.svg";
-import { ReactComponent as StarOutlineIcon } from "../../assets/images/MaterialSymbolsKidStarOutline.svg";
+import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
+import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
+import { writeClipboard } from "../utils/util";
+import { Toast } from "../utils/toast";
+import { NoticeType } from "../consts/const";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -32,56 +36,85 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-export function WorldCard({ world }: { world: VRChatWorld }) {
-  const genres = [
-    { value: "other", label: "その他" },
-    { value: "high-quality", label: "高品質" },
-    { value: "game", label: "ゲーム" },
-    { value: "horror", label: "ホラー" }
-  ]
+export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
+  const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
+  const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
+  const [toast, setToast] = useState<string>("");
+  const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
 
-  const [selectedGenre, setSelectedGenre] = useState<string>("other");
+  function onClipboardClick() {
+    writeClipboard(worldInfo.name);
+    setToastNoticeType(NoticeType.success);
+    setToast("ワールド名をコピーしました");
+  }
+
+  async function onUpdateWorldBookmarkClick() {
+    try {
+      await window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+      setToastNoticeType(NoticeType.success);
+      setToast("情報を更新しました");
+    } catch (error) {
+      console.error("Failed to update world bookmark:", error);
+      setToastNoticeType(NoticeType.error);
+      setToast("情報の更新に失敗しました");
+    }
+  }
+
+  useEffect(() => {
+    setWorldNote(worldInfo.note);
+    setSelectedGenreId(worldInfo.genreId);
+  }, [worldInfo.genreId, worldInfo.note]);
 
   return (
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${world.id}`} target="_blank" rel="noopener noreferrer">{world.name}</a> <small>by {world.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick() }} aria-label={"ワールド名をコピー"}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
         <div className={classNames(style.thumbnailArea)}>
-          <img src={world.thumbnailImageUrl} alt={world.name} />
+          <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
         </div>
 
         <div className={classNames(style.infoArea)}>
           <div className={classNames(style.worldProperties)}>
-            <WorldProperty name="お気に入り" value={world.favorites} />
-            <WorldProperty name="訪問" value={world.visits} />
-            <WorldProperty name="定員" value={world.capacity} />
-            <WorldProperty name="作成日" value={new Date(world.created_at).toLocaleDateString()} />
-            <WorldProperty name="更新日" value={new Date(world.updated_at).toLocaleDateString()} />
-            <WorldProperty name="説明" value={world.description} />
+            <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
+            <WorldProperty name="訪問" value={worldInfo.visits.toLocaleString()} />
+            <WorldProperty name="定員" value={worldInfo.capacity} />
+            <WorldProperty name="作成日" value={new Date(worldInfo.createdAt).toLocaleDateString()} />
+            <WorldProperty name="更新日" value={new Date(worldInfo.updatedAt).toLocaleDateString()} />
+            <WorldProperty name="説明" value={worldInfo.description} />
           </div>
-          <WorldTags tags={world.tags} />
+          <WorldTags tags={worldInfo.tags} />
         </div>
       </div>
       <div className={style.bookmarkArea}>
-        {genres.map((genre) => (
-          <label key={genre.value} >
-            <input
-              type="radio"
-              name="genre"
-              value={genre.value}
-              checked={selectedGenre === genre.value}
-              onChange={() => setSelectedGenre(genre.value)}
-            />
-            {genre.label}
-          </label>
-        ))}
-        <Button className={style.bookmarkButton} onClick={() => { }}><StarOutlineIcon width={16} height={16} />ブックマークに追加</Button>
-        <Button className={style.inviteButton} onClick={() => { }}><MailSendIcon width={20} height={20} />Invite</Button>
+        <div className={style.memoArea}>
+          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} value={worldNote}></textarea>
+        </div>
+        <div className={style.genreArea}>
+          ジャンル
+          {genres.map((genre) => (
+            <label key={genre.id} >
+              <input
+                type="radio"
+                name="genre"
+                value={genre.id}
+                checked={selectedGenreId === genre.id}
+                onChange={() => setSelectedGenreId(genre.id)}
+              />
+              {genre.name_jp}
+            </label>
+          ))}
+        </div>
+        <Button className={style.bookmarkButton} onClick={() => { onUpdateWorldBookmarkClick() }}>
+          <DatabaseSyncIcon width={16} height={16} />登録データ更新
+        </Button>
+
+        <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
+      <Toast message={toast} onClose={() => { setToast("") }} noticeType={toastNoticeType} />
     </div >
   );
 }
