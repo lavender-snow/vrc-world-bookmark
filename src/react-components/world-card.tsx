@@ -45,13 +45,13 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
     setToastNoticeType(NoticeType.success);
-    setToast("✔️ワールド名をコピーしました");
+    setToast("ワールド名をコピーしました");
   }
 
   function onUpdateWorldBookmarkClick() {
     window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
     setToastNoticeType(NoticeType.success);
-    setToast("✔️情報を更新しました");
+    setToast("情報を更新しました");
   }
 
   useEffect(() => {
