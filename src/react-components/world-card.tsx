@@ -96,10 +96,10 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
         <div className={style.genreArea}>
           ジャンル
           {genres.map((genre) => (
-            <label key={genre.id} >
+            <label key={`${worldInfo.id}_${genre.id}`} >
               <input
                 type="radio"
-                name="genre"
+                name={`${worldInfo.id}_genre`}
                 value={genre.id}
                 checked={selectedGenreId === genre.id}
                 onChange={() => setSelectedGenreId(genre.id)}
