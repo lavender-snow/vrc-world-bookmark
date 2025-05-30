@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { useState, useEffect } from "react";
 import type { VRChatWorldInfo } from "../types/renderer";
-import type { Genre } from '../types/table';
 import style from "./world-card.scss";
 import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
@@ -10,6 +9,8 @@ import { Button } from "./common/button";
 import { writeClipboard } from "../utils/util";
 import { Toast } from "../utils/toast";
 import { NoticeType } from "../consts/const";
+import { useAppData } from '../contexts/AppDataProvider';
+import { DropDownList, SelectOption } from "./common/drop-down-list";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -36,11 +37,13 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
+export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
   const [toast, setToast] = useState<string>("");
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
+  const genres = useAppData().genres;
+  const visitStatuses = useAppData().visitStatuses;
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
@@ -64,6 +67,11 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     setWorldNote(worldInfo.note);
     setSelectedGenreId(worldInfo.genreId);
   }, [worldInfo.genreId, worldInfo.note]);
+
+  const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
+    return { id: status.id.toString(), name: status.name_jp }
+  });
+  const currentVisitStatus = visitStatuses.find((visitStatus) => visitStatus.id === worldInfo.visitStatusId);
 
   return (
     <div className={classNames(style.worldCard)}>
@@ -107,6 +115,10 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
               {genre.name_jp}
             </label>
           ))}
+        </div>
+        <div className={style.visitInfo}>
+          訪問状況
+          <DropDownList options={visitStatusesNames} currentValue={currentVisitStatus?.id.toString()} />
         </div>
         <Button className={style.bookmarkButton} onClick={() => { onUpdateWorldBookmarkClick() }}>
           <DatabaseSyncIcon width={16} height={16} />登録データ更新

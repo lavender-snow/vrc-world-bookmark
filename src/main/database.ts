@@ -2,7 +2,7 @@ import Database from "better-sqlite3";
 import * as path from "path";
 import * as fs from "fs";
 import type { VRChatWorld } from "../types/vrchat";
-import type { Genre } from '../types/table';
+import type { Genre, VisitStatus } from '../types/table';
 import type { VRChatWorldInfo } from "../types/renderer";
 
 const DB_PATH = "app.db";
@@ -40,6 +40,12 @@ export function runMigrations() {
 
 export function getGenres(): Genre[] {
   const result = db.prepare("SELECT * FROM genres ORDER BY id;").all() as Genre[];
+  
+  return result;
+}
+
+export function getVisitStatuses(): VisitStatus[] {
+  const result = db.prepare("SELECT * FROM visit_statuses ORDER BY id;").all() as VisitStatus[];
   
   return result;
 }
@@ -207,7 +213,8 @@ export function getWorldInfo(worldId: string) {
       world.visits_cached AS visits,
       world.deleted_at AS deletedAt,
       bookmark.genre_id AS genreId,
-      bookmark.note
+      bookmark.note,
+      bookmark.visit_status_id AS visitStatusId
     FROM
       vrchat_worlds world
       INNER JOIN bookmarks bookmark

@@ -6,12 +6,10 @@ import styles from './world-data-entry.scss';
 import { getWorldId } from '../utils/util';
 import { WorldCard } from './world-card';
 import type { VRChatWorldInfo } from '../types/renderer';
-import { useAppData } from '../contexts/AppDataProvider';
 
 export function WorldDataEntry() {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
   const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
-  const genres = useAppData().genres;
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
     setWorldIdOrUrl(e.target.value);
@@ -40,8 +38,8 @@ export function WorldDataEntry() {
       </div>
 
       <div className={classNames(styles.searchResult)}>
-        {genres && vrchatWorldInfo && (
-          <WorldCard worldInfo={vrchatWorldInfo} genres={genres} />
+        {vrchatWorldInfo && (
+          <WorldCard worldInfo={vrchatWorldInfo} />
         )}
       </div>
     </div>

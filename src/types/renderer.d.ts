@@ -15,4 +15,5 @@ export interface VRChatWorldInfo {
   deletedAt: string | null;
   genreId: number;
   note: string;
+  visitStatusId: number;
 }
