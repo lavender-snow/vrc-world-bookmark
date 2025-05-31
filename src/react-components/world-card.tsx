@@ -1,8 +1,7 @@
 import classNames from "classnames";
 import { useState, useEffect } from "react";
-import type { VRChatWorldInfo } from "../types/renderer";
+import type { UpdateWorldBookmarkOptions, VRChatWorldInfo } from "../types/renderer";
 import style from "./world-card.scss";
-import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
@@ -40,6 +39,7 @@ function WorldTags({ tags }: { tags: string[] }) {
 export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
+  const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const [toast, setToast] = useState<string>("");
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
   const genres = useAppData().genres;
@@ -51,9 +51,9 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
     setToast("ワールド名をコピーしました");
   }
 
-  async function onUpdateWorldBookmarkClick() {
+  async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
     try {
-      await window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+      await window.dbAPI.updateWorldBookmark(options);
       setToastNoticeType(NoticeType.success);
       setToast("情報を更新しました");
     } catch (error) {
@@ -63,15 +63,30 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
     }
   }
 
+  function onGenreChange(genreId: number) {
+    setSelectedGenreId(genreId);
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, genreId: genreId });
+  }
+
+  function onVisitStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const visitStatusId = parseInt(e.target.value, 10);
+    setVisitStatusId(visitStatusId);
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, visitStatusId: visitStatusId });
+  }
+
+  function onNoteBlur() {
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, note: worldNote });
+  }
+
   useEffect(() => {
     setWorldNote(worldInfo.note);
     setSelectedGenreId(worldInfo.genreId);
-  }, [worldInfo.genreId, worldInfo.note]);
+    setVisitStatusId(worldInfo.visitStatusId);
+  }, [worldInfo]);
 
   const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
     return { id: status.id.toString(), name: status.name_jp }
   });
-  const currentVisitStatus = visitStatuses.find((visitStatus) => visitStatus.id === worldInfo.visitStatusId);
 
   return (
     <div className={classNames(style.worldCard)}>
@@ -99,10 +114,10 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
       </div>
       <div className={style.bookmarkArea}>
         <div className={style.memoArea}>
-          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} value={worldNote}></textarea>
+          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} onBlur={() => { onNoteBlur() }} value={worldNote}></textarea>
         </div>
         <div className={style.genreArea}>
-          ジャンル
+          <strong>ジャンル</strong>
           {genres.map((genre) => (
             <label key={`${worldInfo.id}_${genre.id}`} >
               <input
@@ -110,19 +125,16 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
                 name={`${worldInfo.id}_genre`}
                 value={genre.id}
                 checked={selectedGenreId === genre.id}
-                onChange={() => setSelectedGenreId(genre.id)}
+                onChange={() => onGenreChange(genre.id)}
               />
               {genre.name_jp}
             </label>
           ))}
         </div>
         <div className={style.visitInfo}>
-          訪問状況
-          <DropDownList options={visitStatusesNames} currentValue={currentVisitStatus?.id.toString()} />
+          <strong>訪問状況</strong>
+          <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
         </div>
-        <Button className={style.bookmarkButton} onClick={() => { onUpdateWorldBookmarkClick() }}>
-          <DatabaseSyncIcon width={16} height={16} />登録データ更新
-        </Button>
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>

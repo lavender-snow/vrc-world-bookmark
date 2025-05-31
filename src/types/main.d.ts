@@ -1,5 +1,5 @@
 import { World } from "./vrchat.d.ts";
-import type { VRChatWorldInfo } from "./renderer.d.ts";
+import type { UpdateWorldBookmarkOptions, VRChatWorldInfo } from "./renderer.d.ts";
 
 declare global {
   interface Window {
@@ -11,7 +11,7 @@ declare global {
       getVisitStatuses: () => Promise<VisitStatus[]>;
       addOrUpdateWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
       getWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
-      updateWorldBookmark: (world: World, genre_id: number, worldNote: string) => Promise<void>;
+      updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
     };
   }
 }

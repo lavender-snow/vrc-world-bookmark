@@ -17,3 +17,10 @@ export interface VRChatWorldInfo {
   note: string;
   visitStatusId: number;
 }
+
+export interface UpdateWorldBookmarkOptions {
+  worldId: string,
+  genreId?: number,
+  note?: string,
+  visitStatusId?: number
+}

@@ -3,7 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 import type { VRChatWorld } from "../types/vrchat";
 import type { Genre, VisitStatus } from '../types/table';
-import type { VRChatWorldInfo } from "../types/renderer";
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions } from "../types/renderer";
 
 const DB_PATH = "app.db";
 const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
@@ -54,14 +54,32 @@ function addBookmark(worldId: string) {
   db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (?, 0, 0, '', datetime('now'), datetime('now'));`).run(worldId);
 }
 
-export function updateWorldBookmark(worldId: string, genreId: number, worldNote: string) {
-  const params = {
-    genreId: genreId,
-    note: worldNote,
-    worldId: worldId,
+export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
+  const keys = Object.keys(options).filter(key => key !== "worldId");
+  const params: Partial<UpdateWorldBookmarkOptions> = {
+    worldId: options.worldId,
+  }
+  
+  if (keys.some(key => options[key as keyof typeof options] !== undefined)) {
+    const setClauses: string[] = [];
+
+    if (options.genreId !== undefined) {
+      setClauses.push("genre_id = @genreId");
+      params.genreId = options.genreId;
+    }
+    if (options.note !== undefined) {
+      setClauses.push("note = @note");
+      params.note = options.note;
+    }
+    if (options.visitStatusId !== undefined) {
+      setClauses.push("visit_status_id = @visitStatusId");
+      params.visitStatusId = options.visitStatusId;
   }
 
-  db.prepare(`UPDATE bookmarks SET genre_id = @genreId, note = @note, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+    db.prepare(`UPDATE bookmarks SET ${setClauses.join(", ")}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+  } else {
+    console.warn("No fields to update in bookmark for world:", options.worldId);
+  }
 }
 
 export function addOrUpdateWorldInfo(world: VRChatWorld) {
