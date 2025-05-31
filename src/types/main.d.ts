@@ -12,6 +12,7 @@ declare global {
       addOrUpdateWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
       getWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
       updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
+      getBookmarkList: (options?: BookmarkListOptions) => Promise<VRChatWorldInfo[]>;
     };
   }
 }

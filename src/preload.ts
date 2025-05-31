@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { UpdateWorldBookmarkOptions } from "./types/renderer";
+import type { BookmarkListOptions, UpdateWorldBookmarkOptions } from "./types/renderer";
 
 contextBridge.exposeInMainWorld('vrchatAPI', {
   fetchWorldInfo: (worldId: string) => ipcRenderer.invoke("fetch_world_info", worldId),
@@ -11,4 +11,5 @@ contextBridge.exposeInMainWorld('dbAPI', {
   addOrUpdateWorldInfo: (worldId: string) => ipcRenderer.invoke("add_or_update_world_info", worldId),
   getWorldInfo: (worldId: string) => ipcRenderer.invoke("get_world_info", worldId),
   updateWorldBookmark: (options: UpdateWorldBookmarkOptions) => ipcRenderer.invoke("update_world_bookmark", options),
+  getBookmarkList: (options: BookmarkListOptions = {}) => ipcRenderer.invoke("get_bookmark_list", options),
 })
