@@ -42,6 +42,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const [toast, setToast] = useState<string>("");
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
+  const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
   const genres = useAppData().genres;
   const visitStatuses = useAppData().visitStatuses;
 
@@ -75,13 +76,17 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   }
 
   function onNoteBlur() {
+    if (worldNote === lastSaveNote) return;
+
     handleUpdateWorldBookmark({ worldId: worldInfo.id, note: worldNote });
+    setLastSavedNote(worldNote);
   }
 
   useEffect(() => {
     setWorldNote(worldInfo.note);
     setSelectedGenreId(worldInfo.genreId);
     setVisitStatusId(worldInfo.visitStatusId);
+    setLastSavedNote(worldInfo.note);
   }, [worldInfo]);
 
   const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
