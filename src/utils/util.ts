@@ -41,3 +41,20 @@ export function parseSassTime(value: string): number {
     return 0;
   }
 }
+
+export function debounce<T extends unknown[], R>(
+  func: (...args: T) => R,
+  wait: number
+): (...args: T) => void {
+  let timeoutId: NodeJS.Timeout | undefined;
+
+  return (...args: T) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+}

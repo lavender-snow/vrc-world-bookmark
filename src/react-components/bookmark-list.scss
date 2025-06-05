@@ -1,5 +1,40 @@
+@use "../../assets/styles/theme.scss";
+
+:local(.filter-area-wrapper) {
+  margin-bottom: 16px;
+}
+
+:local(.filter-area) {
+  border: 2px solid theme.$light-gray;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:local(.filter-items) {
+  display: flex;
+  gap: 4px 16px;
+  flex-wrap: wrap;
+}
+
+:local(.filter-item) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 :local(.world-card-list) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+:local(.keyword-search) {
+  font-size: 13px;
+  padding: 5px;
+  border-radius: 4px;
+  width: 20rem;
 }

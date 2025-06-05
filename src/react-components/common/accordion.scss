@@ -1,0 +1,14 @@
+:local(.accordion-button) {}
+
+:local(.accordion-title) {
+  display: flex;
+
+  cursor: pointer;
+  font-weight: bold;
+
+  svg {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+  }
+}
