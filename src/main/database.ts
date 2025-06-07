@@ -39,6 +39,28 @@ export function runMigrations() {
   })
 }
 
+function buildSelectQuery({
+  select,
+  from,
+  where = [],
+  orderBy = [],
+  pagination = []
+}: {
+  select: string;
+  from: string;
+  where?: string[];
+  orderBy?: string[];
+  pagination?: string[];
+}) {
+  return [
+    `SELECT ${select}`,
+    `FROM ${from}`,
+    where.length ? `WHERE ${where.join(" AND ")}` : "",
+    orderBy.length ? orderBy.join(" ") : "",
+    pagination.length ? pagination.join(" ") : ""
+  ].filter(Boolean).join("\n");
+}
+
 export function getGenres(): Genre[] {
   const result = db.prepare("SELECT * FROM genres ORDER BY id;").all() as Genre[];
   
@@ -215,32 +237,39 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
 };
 
 export function getWorldInfo(worldId: string) {
-  const result = db.prepare(`
-    SELECT 
-      world.id,
-      world.author_name_cached AS authorName,
-      world.capacity_cached AS capacity,
-      world.world_created_at AS createdAt,
-      world.description_cached AS description,
-      world.favorites_cached AS favorites,
-      world.image_url_cached AS imageUrl,
-      world.name_cached AS name,
-      world.release_status_cached AS releaseStatus,
-      world.tags_cached AS tags,
-      world.thumbnail_image_url_cached AS thumbnailImageUrl,
-      world.world_updated_at_cached AS updatedAt,
-      world.visits_cached AS visits,
-      world.deleted_at AS deletedAt,
-      bookmark.genre_id AS genreId,
-      bookmark.note,
-      bookmark.visit_status_id AS visitStatusId
-    FROM
-      vrchat_worlds world
-      INNER JOIN bookmarks bookmark
-      ON world.id = bookmark.world_id
-    WHERE
-      world.id = ?;
-  `).get(worldId) as (VRChatWorldInfo & { tags: string}) | undefined;
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    bookmark.genre_id AS genreId,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId
+  `
+  
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark
+    ON world.id = bookmark.world_id
+  `;
+
+  const sql = buildSelectQuery({
+    select: selectSql,
+    from: fromSql,
+    where: [`world.id = ?`],
+  })
+
+  const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string}) | undefined;
 
   if (result) {
     return { 
@@ -302,36 +331,42 @@ export function getBookmarkList(options: BookmarkListOptions) {
     }
   }
 
-  const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    bookmark.genre_id AS genreId,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId,
+    COUNT(*) OVER() as total_count
+  `;
 
-  const results = db.prepare(`
-    SELECT 
-      world.id,
-      world.author_name_cached AS authorName,
-      world.capacity_cached AS capacity,
-      world.world_created_at AS createdAt,
-      world.description_cached AS description,
-      world.favorites_cached AS favorites,
-      world.image_url_cached AS imageUrl,
-      world.name_cached AS name,
-      world.release_status_cached AS releaseStatus,
-      world.tags_cached AS tags,
-      world.thumbnail_image_url_cached AS thumbnailImageUrl,
-      world.world_updated_at_cached AS updatedAt,
-      world.visits_cached AS visits,
-      world.deleted_at AS deletedAt,
-      bookmark.genre_id AS genreId,
-      bookmark.note,
-      bookmark.visit_status_id AS visitStatusId,
-      COUNT(*) OVER() as total_count
-    FROM
-      vrchat_worlds world
-      INNER JOIN bookmarks bookmark
-      ON world.id = bookmark.world_id
-    ${whereSql}
-    ${orderByClauses}
-    ${paginationClauses.join(" ")};
-  `).all(params) as (VRChatWorldInfo & { tags: string} & { total_count: number })[];
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark
+    ON world.id = bookmark.world_id
+  `;
+
+  const sql = buildSelectQuery({ 
+    select: selectSql,
+    from: fromSql,
+    where: whereClauses,
+    orderBy: orderByClauses,
+    pagination: paginationClauses
+  });
+
+  const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string} & { total_count: number })[];
 
   const totalCount = results.length > 0 ? results[0].total_count : 0;
   
