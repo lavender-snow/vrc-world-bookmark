@@ -11,11 +11,18 @@ const AppDataContext = createContext<AppData>({});
 export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [visitStatuses, setVisitStatuses] = useState<VisitStatus[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.dbAPI.getGenres().then(setGenres);
-    window.dbAPI.getVisitStatuses().then(setVisitStatuses);
+    Promise.all([
+      window.dbAPI.getGenres().then(setGenres),
+      window.dbAPI.getVisitStatuses().then(setVisitStatuses)
+    ]).finally(() => setLoading(false));
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <AppDataContext.Provider value={{ genres, visitStatuses }}>
