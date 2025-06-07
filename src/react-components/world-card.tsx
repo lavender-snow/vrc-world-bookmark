@@ -90,7 +90,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
       handleUpdateWorldGenres({ worldId: worldInfo.id, genreIds: currentGenreIds });
       prevGenreIdsRef.current = [...currentGenreIds];
     }
-  }, debouncedSelectedGenreIds);
+  }, [debouncedSelectedGenreIds]);
 
   const debouncedSelectedGenres = useCallback(
     debounce((genreIds: number[]) => {
