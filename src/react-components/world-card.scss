@@ -96,6 +96,14 @@
   background-color: theme.$light-red;
 }
 
+:local(.game-world-tag) {
+  background-color: theme.$orange;
+}
+
+:local(.admin-world-tag) {
+  background-color: theme.$purple;
+}
+
 :local(.bookmark-button) {
   height: 24px;
   background-color: theme.$light-blue;

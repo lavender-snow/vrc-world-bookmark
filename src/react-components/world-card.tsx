@@ -26,8 +26,10 @@ function WorldTags({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <div key={tag} className={classNames(
           style.worldTag,
-          tag.toLowerCase() === "chill" && style.chillWorldTag,
-          tag.toLowerCase() === "horror" && style.horrorWorldTag,
+          tag.toLowerCase() === "author_tag_chill" && style.chillWorldTag,
+          tag.toLowerCase() === "author_tag_horror" && style.horrorWorldTag,
+          tag.toLowerCase() === "author_tag_game" && style.gameWorldTag,
+          tag.startsWith("admin_") && style.adminWorldTag,
         )}>
           {tag}
         </div>
