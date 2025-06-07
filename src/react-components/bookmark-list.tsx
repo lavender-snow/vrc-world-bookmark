@@ -23,7 +23,8 @@ export function BookmarkList() {
     searchTerm, setSearchTerm,
     debouncedTerm, setDebouncedTerm,
     orderBy, setOrderBy,
-    sortOrder, setSortOrder
+    sortOrder, setSortOrder,
+    filterVisible, setFilterVisible
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
@@ -64,7 +65,7 @@ export function BookmarkList() {
   return (
     <>
       <div className={style.filterAreaWrapper}>
-        <Accordion icon={FilterIcon} title={"フィルター"} defaultOpen={true}>
+        <Accordion icon={FilterIcon} title={"フィルター"} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
           <div className={style.filterArea}>
             <div className={style.filterItems}>
               <div className={style.filterItem}>

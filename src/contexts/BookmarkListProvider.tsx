@@ -18,6 +18,8 @@ type BookmarkListContextValue = {
   setOrderBy?: React.Dispatch<React.SetStateAction<OrderableColumnKey | undefined>>;
   sortOrder?: "asc" | "desc";
   setSortOrder?: React.Dispatch<React.SetStateAction<SortOrder>>;
+  filterVisible?: boolean;
+  setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const BookmarkListContext = createContext<BookmarkListContextValue>(null);
@@ -31,6 +33,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [orderBy, setOrderBy] = useState<OrderableColumnKey | undefined>(undefined);
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [filterVisible, setFilterVisible] = useState(true);
 
   return (
     <BookmarkListContext.Provider value={{
@@ -41,7 +44,8 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
       searchTerm, setSearchTerm,
       debouncedTerm, setDebouncedTerm,
       orderBy, setOrderBy,
-      sortOrder, setSortOrder
+      sortOrder, setSortOrder,
+      filterVisible, setFilterVisible
     }}>
       {children}
     </BookmarkListContext.Provider>
