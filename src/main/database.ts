@@ -4,7 +4,7 @@ import * as fs from "fs";
 import type { VRChatWorld } from "../types/vrchat";
 import type { Genre, VisitStatus } from '../types/table';
 import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions } from "../types/renderer";
-import { ORDERABLE_COLUMNS } from "../consts/const";
+import { GENRE, ORDERABLE_COLUMNS } from "../consts/const";
 
 const DB_PATH = "app.db";
 const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
@@ -73,8 +73,18 @@ export function getVisitStatuses(): VisitStatus[] {
   return result;
 }
 
-function addBookmark(worldId: string) {
-  db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (?, 0, 0, '', datetime('now'), datetime('now'));`).run(worldId);
+function addBookmark(worldId: string, worldTags: string[]) {
+  let genreId = GENRE.UNCATEGORIZED;
+
+  if (worldTags.includes("author_tag_horror")) {
+    genreId = GENRE.HORROR;
+  } else if (worldTags.includes("author_tag_game")) {
+    genreId = GENRE.GAME;
+  } else if (worldTags.findIndex(tag => tag.startsWith("admin_")) >= 0) {
+    genreId = GENRE.HIGH_QUALITY;
+  }
+
+  db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (@worldId, @genreId, 0, '', datetime('now'), datetime('now'));`).run({ worldId, genreId });
 }
 
 export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
@@ -229,7 +239,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     const exists = db.prepare("SELECT 1 FROM bookmarks WHERE world_id = ?;").get(world.id);
 
     if (!exists) {
-      addBookmark(world.id);
+      addBookmark(world.id, world.tags);
     }
   } else {
     console.error(`World info upsert failed: ${world.id}`);

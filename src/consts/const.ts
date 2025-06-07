@@ -26,3 +26,11 @@ export const SORT_ORDERS = [
 ] as const;
 
 export type SortOrder = typeof SORT_ORDERS[number]["id"];
+
+export const GENRE = {
+  UNCATEGORIZED: 0,
+  HIGH_QUALITY: 1,
+  GAME: 2,
+  HORROR: 3,
+  PHOTO_SPOT: 4,
+};
