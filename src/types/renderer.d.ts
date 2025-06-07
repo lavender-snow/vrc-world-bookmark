@@ -15,4 +15,22 @@ export interface VRChatWorldInfo {
   deletedAt: string | null;
   genreId: number;
   note: string;
+  visitStatusId: number;
+}
+
+export interface UpdateWorldBookmarkOptions {
+  worldId: string,
+  genreId?: number,
+  note?: string,
+  visitStatusId?: number
+}
+
+export interface BookmarkListOptions {
+  page?: number;
+  limit?: number;
+  selectedGenres: number[];
+  selectedVisitStatuses: number[];
+  searchTerm?: string;
+  orderBy?: string;
+  sortOrder?: "asc" | "desc";
 }

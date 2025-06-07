@@ -2,8 +2,9 @@ import Database from "better-sqlite3";
 import * as path from "path";
 import * as fs from "fs";
 import type { VRChatWorld } from "../types/vrchat";
-import type { Genre } from '../types/table';
-import type { VRChatWorldInfo } from "../types/renderer";
+import type { Genre, VisitStatus } from '../types/table';
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions } from "../types/renderer";
+import { ORDERABLE_COLUMNS } from "../consts/const";
 
 const DB_PATH = "app.db";
 const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
@@ -38,9 +39,37 @@ export function runMigrations() {
   })
 }
 
+function buildSelectQuery({
+  select,
+  from,
+  where = [],
+  orderBy = [],
+  pagination = []
+}: {
+  select: string;
+  from: string;
+  where?: string[];
+  orderBy?: string[];
+  pagination?: string[];
+}) {
+  return [
+    `SELECT ${select}`,
+    `FROM ${from}`,
+    where.length ? `WHERE ${where.join(" AND ")}` : "",
+    orderBy.length ? orderBy.join(" ") : "",
+    pagination.length ? pagination.join(" ") : ""
+  ].filter(Boolean).join("\n");
+}
+
 export function getGenres(): Genre[] {
   const result = db.prepare("SELECT * FROM genres ORDER BY id;").all() as Genre[];
   
+  return result;
+}
+
+export function getVisitStatuses(): VisitStatus[] {
+  const result = db.prepare("SELECT * FROM visit_statuses ORDER BY id;").all() as VisitStatus[];
+
   return result;
 }
 
@@ -48,14 +77,32 @@ function addBookmark(worldId: string) {
   db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (?, 0, 0, '', datetime('now'), datetime('now'));`).run(worldId);
 }
 
-export function updateWorldBookmark(worldId: string, genreId: number, worldNote: string) {
-  const params = {
-    genreId: genreId,
-    note: worldNote,
-    worldId: worldId,
+export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
+  const keys = Object.keys(options).filter(key => key !== "worldId");
+  const params: Partial<UpdateWorldBookmarkOptions> = {
+    worldId: options.worldId,
   }
+  
+  if (keys.some(key => options[key as keyof typeof options] !== undefined)) {
+    const setClauses: string[] = [];
 
-  db.prepare(`UPDATE bookmarks SET genre_id = @genreId, note = @note, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+    if (options.genreId !== undefined) {
+      setClauses.push("genre_id = @genreId");
+      params.genreId = options.genreId;
+    }
+    if (options.note !== undefined) {
+      setClauses.push("note = @note");
+      params.note = options.note;
+    }
+    if (options.visitStatusId !== undefined) {
+      setClauses.push("visit_status_id = @visitStatusId");
+      params.visitStatusId = options.visitStatusId;
+    }
+
+    db.prepare(`UPDATE bookmarks SET ${setClauses.join(", ")}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+  } else {
+    console.warn("No fields to update in bookmark for world:", options.worldId);
+  }
 }
 
 export function addOrUpdateWorldInfo(world: VRChatWorld) {
@@ -190,31 +237,39 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
 };
 
 export function getWorldInfo(worldId: string) {
-  const result = db.prepare(`
-    SELECT 
-      world.id,
-      world.author_name_cached AS authorName,
-      world.capacity_cached AS capacity,
-      world.world_created_at AS createdAt,
-      world.description_cached AS description,
-      world.favorites_cached AS favorites,
-      world.image_url_cached AS imageUrl,
-      world.name_cached AS name,
-      world.release_status_cached AS releaseStatus,
-      world.tags_cached AS tags,
-      world.thumbnail_image_url_cached AS thumbnailImageUrl,
-      world.world_updated_at_cached AS updatedAt,
-      world.visits_cached AS visits,
-      world.deleted_at AS deletedAt,
-      bookmark.genre_id AS genreId,
-      bookmark.note
-    FROM
-      vrchat_worlds world
-      INNER JOIN bookmarks bookmark
-      ON world.id = bookmark.world_id
-    WHERE
-      world.id = ?;
-  `).get(worldId) as (VRChatWorldInfo & { tags: string}) | undefined;
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    bookmark.genre_id AS genreId,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId
+  `
+  
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark
+    ON world.id = bookmark.world_id
+  `;
+
+  const sql = buildSelectQuery({
+    select: selectSql,
+    from: fromSql,
+    where: [`world.id = ?`],
+  })
+
+  const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string}) | undefined;
 
   if (result) {
     return { 
@@ -235,4 +290,97 @@ export function deleteWorldInfo(worldId: string) {
   } else {
     console.error(`World info delete failed: ${worldId}`);
   }
+}
+
+export function getBookmarkList(options: BookmarkListOptions) { 
+  const params: Record<string, string | number> = {}
+  const whereClauses: string[] = [];
+  const orderByClauses: string[] = [];
+  const paginationClauses: string[] = [];
+
+  if (options.selectedGenres.length > 0) {
+    whereClauses.push(`bookmark.genre_id IN (${options.selectedGenres.map((_, i) => `@genreId${i}`).join(",")})`);
+    options.selectedGenres.forEach((id, i) => {
+      params[`genreId${i}`] = id;
+    });
+  }
+
+  if (options.selectedVisitStatuses.length > 0) {
+    whereClauses.push(`bookmark.visit_status_id IN (${options.selectedVisitStatuses.map((_, i) => `@visitStatusId${i}`).join(",")})`);
+    options.selectedVisitStatuses.forEach((id, i) => {
+      params[`visitStatusId${i}`] = id;
+    });
+  }
+
+  if (options.searchTerm) {
+    whereClauses.push("(world.name_cached LIKE @searchTerm OR world.description_cached LIKE @searchTerm OR bookmark.note LIKE @searchTerm)");
+    params.searchTerm = `%${options.searchTerm}%`;
+  }
+
+  if (options.orderBy && ORDERABLE_COLUMNS.find(column => column.id === options.orderBy)) {
+    orderByClauses.push(`ORDER BY ${options.orderBy} ${options.sortOrder}`);
+  }
+
+  if (options.limit) {
+    paginationClauses.push("LIMIT @limit");
+    params.limit = options.limit;
+
+    if (options.page) {
+      paginationClauses.push("OFFSET @offset");
+      params.offset = (options.page - 1) * (options.limit);
+    }
+  }
+
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    bookmark.genre_id AS genreId,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId,
+    COUNT(*) OVER() as total_count
+  `;
+
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark
+    ON world.id = bookmark.world_id
+  `;
+
+  const sql = buildSelectQuery({ 
+    select: selectSql,
+    from: fromSql,
+    where: whereClauses,
+    orderBy: orderByClauses,
+    pagination: paginationClauses
+  });
+
+  const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string} & { total_count: number })[];
+
+  const totalCount = results.length > 0 ? results[0].total_count : 0;
+  
+  const bookmarkList = results.map((worldInfo) => {
+    delete worldInfo.total_count;
+    
+    return {
+      ...worldInfo,
+      tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
+    }
+  });
+
+  return {
+    bookmarkList,
+    totalCount
+  };
 }

@@ -1,13 +1,12 @@
 @use "../../../assets/styles/theme.scss";
 
-:local(.input-text) {
-  border-radius: 6px;
-  font-size: 16px;
-  padding: 10px;
+:local(.drop-down-list) {
+  padding: 5px;
+  cursor: pointer;
   border: 2px solid theme.$light-gray;
+  border-radius: 4px;
 
   &:focus {
     border: 2px solid theme.$light-blue;
-    outline: none;
   }
 }

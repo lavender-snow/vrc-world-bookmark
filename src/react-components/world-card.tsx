@@ -1,15 +1,15 @@
 import classNames from "classnames";
 import { useState, useEffect } from "react";
-import type { VRChatWorldInfo } from "../types/renderer";
-import type { Genre } from '../types/table';
+import type { UpdateWorldBookmarkOptions, VRChatWorldInfo } from "../types/renderer";
 import style from "./world-card.scss";
-import { ReactComponent as DatabaseSyncIcon } from "../../assets/images/MdiDatabaseSync.svg";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
 import { writeClipboard } from "../utils/util";
 import { Toast } from "../utils/toast";
 import { NoticeType } from "../consts/const";
+import { useAppData } from '../contexts/AppDataProvider';
+import { DropDownList, SelectOption } from "./common/drop-down-list";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -36,11 +36,15 @@ function WorldTags({ tags }: { tags: string[] }) {
   )
 }
 
-export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, genres: Genre[] }) {
+export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
+  const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const [toast, setToast] = useState<string>("");
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
+  const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
+  const genres = useAppData().genres;
+  const visitStatuses = useAppData().visitStatuses;
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
@@ -48,9 +52,9 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     setToast("ワールド名をコピーしました");
   }
 
-  async function onUpdateWorldBookmarkClick() {
+  async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
     try {
-      await window.dbAPI.updateWorldBookmark(worldInfo.id, selectedGenreId, worldNote);
+      await window.dbAPI.updateWorldBookmark(options);
       setToastNoticeType(NoticeType.success);
       setToast("情報を更新しました");
     } catch (error) {
@@ -60,10 +64,34 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
     }
   }
 
+  function onGenreChange(genreId: number) {
+    setSelectedGenreId(genreId);
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, genreId: genreId });
+  }
+
+  function onVisitStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const visitStatusId = parseInt(e.target.value, 10);
+    setVisitStatusId(visitStatusId);
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, visitStatusId: visitStatusId });
+  }
+
+  function onNoteBlur() {
+    if (worldNote === lastSaveNote) return;
+
+    handleUpdateWorldBookmark({ worldId: worldInfo.id, note: worldNote });
+    setLastSavedNote(worldNote);
+  }
+
   useEffect(() => {
     setWorldNote(worldInfo.note);
     setSelectedGenreId(worldInfo.genreId);
-  }, [worldInfo.genreId, worldInfo.note]);
+    setVisitStatusId(worldInfo.visitStatusId);
+    setLastSavedNote(worldInfo.note);
+  }, [worldInfo]);
+
+  const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
+    return { id: status.id.toString(), name: status.name_jp }
+  });
 
   return (
     <div className={classNames(style.worldCard)}>
@@ -91,26 +119,27 @@ export function WorldCard({ worldInfo, genres }: { worldInfo: VRChatWorldInfo, g
       </div>
       <div className={style.bookmarkArea}>
         <div className={style.memoArea}>
-          メモ <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} value={worldNote}></textarea>
+          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} onBlur={() => { onNoteBlur() }} value={worldNote}></textarea>
         </div>
         <div className={style.genreArea}>
-          ジャンル
+          <strong>ジャンル</strong>
           {genres.map((genre) => (
-            <label key={genre.id} >
+            <label key={`${worldInfo.id}_${genre.id}`} >
               <input
                 type="radio"
-                name="genre"
+                name={`${worldInfo.id}_genre`}
                 value={genre.id}
                 checked={selectedGenreId === genre.id}
-                onChange={() => setSelectedGenreId(genre.id)}
+                onChange={() => onGenreChange(genre.id)}
               />
               {genre.name_jp}
             </label>
           ))}
         </div>
-        <Button className={style.bookmarkButton} onClick={() => { onUpdateWorldBookmarkClick() }}>
-          <DatabaseSyncIcon width={16} height={16} />登録データ更新
-        </Button>
+        <div className={style.visitInfo}>
+          <strong>訪問状況</strong>
+          <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
+        </div>
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>

@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
-import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo } from "./database";
+import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo, getVisitStatuses, getBookmarkList } from "./database";
 import { fetchWorldInfo, WorldNotFoundError } from "./vrchat-api";
+import type { BookmarkListOptions, UpdateWorldBookmarkOptions } from "../types/renderer";
 
 export async function upsertWorldBookmark(worldId: string) {
   try {
@@ -28,6 +29,12 @@ export function initializeApp() {
     return genres;
   });
 
+  ipcMain.handle("get_visit_statuses", async () => {
+    const visitStatuses = getVisitStatuses();
+    
+    return visitStatuses;
+  });
+
   ipcMain.handle("add_or_update_world_info", async (event, worldId: string) => {
     return upsertWorldBookmark(worldId);
   });
@@ -36,8 +43,12 @@ export function initializeApp() {
     return getWorldInfo(worldId);
   });
 
-  ipcMain.handle("update_world_bookmark", async (event, worldId: string, genreId: number, worldNote: string) => {
-    updateWorldBookmark(worldId, genreId, worldNote);
+  ipcMain.handle("update_world_bookmark", async (event, options: UpdateWorldBookmarkOptions) => {
+    updateWorldBookmark(options);
+  });
+
+  ipcMain.handle("get_bookmark_list", async (event, options: BookmarkListOptions) => {
+    return getBookmarkList(options);
   });
 }
 

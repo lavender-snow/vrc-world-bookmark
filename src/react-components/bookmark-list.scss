@@ -1,0 +1,93 @@
+@use "../../assets/styles/theme.scss";
+
+:local(.filter-area-wrapper) {
+  margin-bottom: 16px;
+}
+
+:local(.filter-area) {
+  border: 2px solid theme.$light-gray;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:local(.filter-items) {
+  display: flex;
+  gap: 4px 16px;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+:local(.filter-item-row) {
+  display: flex;
+  gap: 16px;
+}
+
+:local(.filter-item) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+:local(.world-card-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:local(.keyword-search) {
+  font-size: 13px;
+  padding: 5px;
+  border-radius: 4px;
+  width: 20rem;
+}
+
+:local(.pagination-area) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 16px;
+}
+
+:local(.pagination-buttons) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+:local(.page-info) {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+:local(.page-button) {
+  padding: 4px 10px;
+  border: 1px solid theme.$light-gray;
+  background: theme.$white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 15px;
+
+  &:hover:not(:disabled) {
+    background: theme.$page-button-hover;
+  }
+
+  &:disabled {
+    color: theme.$page-button-disabled-color;
+    cursor: default;
+    background: theme.$page-button-disabled;
+  }
+}
+
+:local(.active-page) {
+  @extend :local(.page-button);
+  color: theme.$white;
+  border-color: theme.$page-button-active-border;
+  font-weight: bold;
+  cursor: default;
+}
