@@ -28,8 +28,8 @@ export interface UpdateWorldBookmarkOptions {
 export interface BookmarkListOptions {
   page?: number;
   limit?: number;
-  genreId?: number;
-  visitStatusId?: number;
+  selectedGenres: number[];
+  selectedVisitStatuses: number[];
   searchTerm?: string;
   orderBy?: string;
   sortOrder?: "asc" | "desc";

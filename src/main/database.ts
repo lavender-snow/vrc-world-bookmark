@@ -263,22 +263,24 @@ export function deleteWorldInfo(worldId: string) {
   }
 }
 
-type BookmarkListSqlParams = Omit<BookmarkListOptions, "page"> & { offset?: number };
-
 export function getBookmarkList(options: BookmarkListOptions) { 
-  const params: Partial<BookmarkListSqlParams> = {}
+  const params: Record<string, string | number> = {}
   const whereClauses: string[] = [];
   const orderByClauses: string[] = [];
   const paginationClauses: string[] = [];
 
-  if (options.genreId !== undefined) {
-    whereClauses.push("bookmark.genre_id = @genreId");
-    params.genreId = options.genreId;
+  if (options.selectedGenres.length > 0) {
+    whereClauses.push(`bookmark.genre_id IN (${options.selectedGenres.map((_, i) => `@genreId${i}`).join(",")})`);
+    options.selectedGenres.forEach((id, i) => {
+      params[`genreId${i}`] = id;
+    });
   }
 
-  if (options.visitStatusId !== undefined) {
-    whereClauses.push("bookmark.visit_status_id = @visitStatusId");
-    params.visitStatusId = options.visitStatusId;
+  if (options.selectedVisitStatuses.length > 0) {
+    whereClauses.push(`bookmark.visit_status_id IN (${options.selectedVisitStatuses.map((_, i) => `@visitStatusId${i}`).join(",")})`);
+    options.selectedVisitStatuses.forEach((id, i) => {
+      params[`visitStatusId${i}`] = id;
+    });
   }
 
   if (options.searchTerm) {

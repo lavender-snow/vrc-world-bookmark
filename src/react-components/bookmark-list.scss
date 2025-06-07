@@ -18,6 +18,12 @@
   display: flex;
   gap: 4px 16px;
   flex-wrap: wrap;
+  flex-direction: column;
+}
+
+:local(.filter-item-row) {
+  display: flex;
+  gap: 16px;
 }
 
 :local(.filter-item) {

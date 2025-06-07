@@ -10,6 +10,7 @@ import { Accordion } from "./common/accordion";
 import { ReactComponent as FilterIcon } from "../../assets/images/MaterialSymbolsFilterAltOutline.svg";
 import { debounce } from "../utils/util";
 import { useBookmarkListState } from "../contexts/BookmarkListProvider";
+import { CheckboxGroup } from "./common/checkbox-group";
 
 export function BookmarkList() {
   const [bookmarkList, setBookmarkList] = useState<VRChatWorldInfo[]>([]);
@@ -18,8 +19,8 @@ export function BookmarkList() {
   const {
     page, setPage,
     limit, setLimit,
-    genreId, setGenreId,
-    visitStatusId, setVisitStatusId,
+    selectedGenres, setSelectedGenres,
+    selectedVisitStatuses, setSelectedVisitStatuses,
     searchTerm, setSearchTerm,
     debouncedTerm, setDebouncedTerm,
     orderBy, setOrderBy,
@@ -32,8 +33,8 @@ export function BookmarkList() {
     const options: BookmarkListOptions = {
       page,
       limit,
-      genreId,
-      visitStatusId,
+      selectedGenres,
+      selectedVisitStatuses,
       searchTerm: debouncedTerm,
       orderBy,
       sortOrder,
@@ -46,7 +47,7 @@ export function BookmarkList() {
 
   useEffect(() => {
     getBookmarkList();
-  }, [page, limit, genreId, visitStatusId, debouncedTerm, orderBy, sortOrder]);
+  }, [page, limit, selectedGenres, selectedVisitStatuses, debouncedTerm, orderBy, sortOrder]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -97,83 +98,82 @@ export function BookmarkList() {
         <Accordion icon={FilterIcon} title={"フィルター"} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
           <div className={style.filterArea}>
             <div className={style.filterItems}>
-              <div className={style.filterItem}>
-                <strong>ジャンル</strong>
-                <DropDownList
-                  options={[
-                    { id: "", name: "すべて" },
-                    ...genres.map(
-                      (genre) => ({ id: genre.id.toString(), name: genre.name_jp })
-                    )
-                  ]}
-                  currentValue={genreId?.toString() ?? ""}
-                  onChange={(e) => {
-                    setGenreId(e.target.value === "" ? undefined : parseInt(e.target.value, 10));
-                  }}
-                />
+              <div className={style.filterItemRow}>
+                <div className={style.filterItem}>
+                  <strong>ジャンル</strong>
+                  <CheckboxGroup
+                    options={genres}
+                    selected={selectedGenres}
+                    onChange={values => {
+                      setSelectedGenres(values.map(Number));
+                      setPage(1);
+                    }}
+                  />
+                </div>
               </div>
-              <div className={style.filterItem}>
-                <strong>訪問状況</strong>
-                <DropDownList
-                  options={[
-                    { id: "", name: "すべて" },
-                    ...visitStatuses.map(
-                      (visitStatus) => ({ id: visitStatus.id.toString(), name: visitStatus.name_jp })
-                    )
-                  ]}
-                  currentValue={visitStatusId?.toString() ?? ""}
-                  onChange={(e) => {
-                    setVisitStatusId(e.target.value === "" ? undefined : parseInt(e.target.value, 10));
-                    setPage(1);
-                  }}
-                />
+              <div className={style.filterItemRow}>
+                <div className={style.filterItem}>
+                  <strong>訪問状況</strong>
+                  <CheckboxGroup
+                    options={visitStatuses}
+                    selected={selectedVisitStatuses}
+                    onChange={values => {
+                      setSelectedVisitStatuses(values.map(Number));
+                      setPage(1);
+                    }}
+                  />
+                </div>
               </div>
-              <div className={style.filterItem}>
-                <strong>ソート項目</strong>
-                <DropDownList
-                  options={
-                    ORDERABLE_COLUMNS.map(
-                      (column) => ({ id: column.id, name: column.value })
-                    )
-                  }
-                  currentValue={orderBy}
-                  onChange={(e) => {
-                    setOrderBy(e.target.value as OrderableColumnKey);
-                    setPage(1);
-                  }}
-                />
+              <div className={style.filterItemRow}>
+                <div className={style.filterItem}>
+                  <strong>ソート項目</strong>
+                  <DropDownList
+                    options={
+                      ORDERABLE_COLUMNS.map(
+                        (column) => ({ id: column.id, name: column.value })
+                      )
+                    }
+                    currentValue={orderBy}
+                    onChange={(e) => {
+                      setOrderBy(e.target.value as OrderableColumnKey);
+                      setPage(1);
+                    }}
+                  />
+                </div>
+                <div className={style.filterItem}>
+                  <strong>並び順</strong>
+                  <DropDownList
+                    options={
+                      SORT_ORDERS.map(
+                        (order) => ({ id: order.id, name: order.value })
+                      )
+                    }
+                    currentValue={sortOrder}
+                    onChange={(e) => {
+                      setSortOrder(e.target.value as SortOrder);
+                      setPage(1);
+                    }}
+                  ></DropDownList>
+                </div>
+                <div className={style.filterItem}>
+                  <strong>表示件数</strong>
+                  <DropDownList
+                    options={RESULT_PER_PAGE_OPTIONS.map(
+                      (num) => ({ id: num.toString(), name: `${num}件` })
+                    )}
+                    currentValue={limit.toString()}
+                    onChange={(e) => {
+                      setLimit(parseInt(e.target.value, 10));
+                      setPage(1);
+                    }}
+                  />
+                </div>
               </div>
-              <div className={style.filterItem}>
-                <strong>並び順</strong>
-                <DropDownList
-                  options={
-                    SORT_ORDERS.map(
-                      (order) => ({ id: order.id, name: order.value })
-                    )
-                  }
-                  currentValue={sortOrder}
-                  onChange={(e) => {
-                    setSortOrder(e.target.value as SortOrder);
-                    setPage(1);
-                  }}
-                ></DropDownList>
-              </div>
-              <div className={style.filterItem}>
-                <strong>表示件数</strong>
-                <DropDownList
-                  options={RESULT_PER_PAGE_OPTIONS.map(
-                    (num) => ({ id: num.toString(), name: `${num}件` })
-                  )}
-                  currentValue={limit.toString()}
-                  onChange={(e) => {
-                    setLimit(parseInt(e.target.value, 10));
-                    setPage(1);
-                  }}
-                />
-              </div>
-              <div className={style.filterItem}>
-                <strong>キーワード</strong>
-                <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={style.keywordSearch} />
+              <div className={style.filterItemRow}>
+                <div className={style.filterItem}>
+                  <strong>キーワード</strong>
+                  <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={style.keywordSearch} />
+                </div>
               </div>
             </div>
           </div>
