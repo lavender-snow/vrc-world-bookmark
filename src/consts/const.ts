@@ -28,7 +28,7 @@ export const SORT_ORDERS = [
 export type SortOrder = typeof SORT_ORDERS[number]["id"];
 
 export const GENRE = {
-  UNCATEGORIZED: 0,
+  CHILL: 0,
   HIGH_QUALITY: 1,
   GAME: 2,
   HORROR: 3,

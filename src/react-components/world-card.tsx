@@ -1,15 +1,16 @@
 import classNames from "classnames";
-import { useState, useEffect } from "react";
-import type { UpdateWorldBookmarkOptions, VRChatWorldInfo } from "../types/renderer";
+import { useState, useEffect, useCallback, useRef } from "react";
+import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from "../types/renderer";
 import style from "./world-card.scss";
 import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
 import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
 import { Button } from "./common/button";
-import { writeClipboard } from "../utils/util";
+import { debounce, writeClipboard } from "../utils/util";
 import { Toast } from "../utils/toast";
 import { NoticeType } from "../consts/const";
 import { useAppData } from '../contexts/AppDataProvider';
 import { DropDownList, SelectOption } from "./common/drop-down-list";
+import { CheckboxGroup } from "./common/checkbox-group";
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -39,7 +40,8 @@ function WorldTags({ tags }: { tags: string[] }) {
 }
 
 export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
-  const [selectedGenreId, setSelectedGenreId] = useState<number>(worldInfo.genreId);
+  const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
+  const [debouncedSelectedGenreIds, setDebouncedSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const [toast, setToast] = useState<string>("");
@@ -58,17 +60,48 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
     try {
       await window.dbAPI.updateWorldBookmark(options);
       setToastNoticeType(NoticeType.success);
-      setToast("情報を更新しました");
+      setToast("ブックマークを更新しました");
     } catch (error) {
       console.error("Failed to update world bookmark:", error);
       setToastNoticeType(NoticeType.error);
-      setToast("情報の更新に失敗しました");
+      setToast("ブックマークの更新に失敗しました");
     }
   }
 
-  function onGenreChange(genreId: number) {
-    setSelectedGenreId(genreId);
-    handleUpdateWorldBookmark({ worldId: worldInfo.id, genreId: genreId });
+  async function handleUpdateWorldGenres(options: UpdateWorldGenresOptions) {
+    try {
+      await window.dbAPI.updateWorldGenres(options);
+      setToastNoticeType(NoticeType.success);
+      setToast("ジャンル設定を更新しました");
+    } catch (error) {
+      console.error("Failed to update world genres:", error);
+      setToastNoticeType(NoticeType.error);
+      setToast("ジャンル設定の更新に失敗しました");
+    }
+  }
+
+  const prevGenreIdsRef = useRef<number[]>(worldInfo.genreIds);
+
+  useEffect(() => {
+    const prev = prevGenreIdsRef.current;
+    const currentGenreIds = debouncedSelectedGenreIds;
+    const isSame = prev.length === currentGenreIds.length && prev.every((v, i) => v === currentGenreIds[i]);
+    if (!isSame) {
+      handleUpdateWorldGenres({ worldId: worldInfo.id, genreIds: currentGenreIds });
+      prevGenreIdsRef.current = [...currentGenreIds];
+    }
+  }, debouncedSelectedGenreIds);
+
+  const debouncedSelectedGenres = useCallback(
+    debounce((genreIds: number[]) => {
+      setDebouncedSelectedGenreIds(genreIds);
+    }, 500),
+    []
+  );
+
+  function onGenresChange(genreIds: number[]) {
+    setSelectedGenreIds(genreIds);
+    debouncedSelectedGenres(genreIds);
   }
 
   function onVisitStatusChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -86,7 +119,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
 
   useEffect(() => {
     setWorldNote(worldInfo.note);
-    setSelectedGenreId(worldInfo.genreId);
+    setSelectedGenreIds(worldInfo.genreIds);
     setVisitStatusId(worldInfo.visitStatusId);
     setLastSavedNote(worldInfo.note);
   }, [worldInfo]);
@@ -125,18 +158,12 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
         </div>
         <div className={style.genreArea}>
           <strong>ジャンル</strong>
-          {genres.map((genre) => (
-            <label key={`${worldInfo.id}_${genre.id}`} >
-              <input
-                type="radio"
-                name={`${worldInfo.id}_genre`}
-                value={genre.id}
-                checked={selectedGenreId === genre.id}
-                onChange={() => onGenreChange(genre.id)}
-              />
-              {genre.name_jp}
-            </label>
-          ))}
+          <CheckboxGroup
+            options={genres}
+            selected={selectedGenreIds}
+            onChange={(genreIds) => onGenresChange(genreIds.map(Number))}
+            allOption={false}
+          />
         </div>
         <div className={style.visitInfo}>
           <strong>訪問状況</strong>

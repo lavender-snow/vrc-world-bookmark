@@ -108,6 +108,7 @@ export function BookmarkList() {
                       setSelectedGenres(values.map(Number));
                       setPage(1);
                     }}
+                    allOption={true}
                   />
                 </div>
               </div>
@@ -121,6 +122,7 @@ export function BookmarkList() {
                       setSelectedVisitStatuses(values.map(Number));
                       setPage(1);
                     }}
+                    allOption={true}
                   />
                 </div>
               </div>

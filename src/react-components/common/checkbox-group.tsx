@@ -1,9 +1,10 @@
 import type { MasterTable } from "../../types/table";
 
-export function CheckboxGroup({ options, selected, onChange, allLabel = "すべて" }: {
+export function CheckboxGroup({ options, selected, onChange, allOption, allLabel = "すべて" }: {
   options: MasterTable[],
   selected: (string | number)[],
   onChange: (selected: (string | number)[]) => void,
+  allOption: boolean,
   allLabel?: string
 }) {
   const handleToggle = (id: string | number) => {
@@ -16,14 +17,16 @@ export function CheckboxGroup({ options, selected, onChange, allLabel = "すべ�
 
   return (
     <div>
-      <label>
-        <input
-          type="checkbox"
-          checked={selected.length === 0}
-          onChange={() => onChange([])}
-        />
-        {allLabel}
-      </label>
+      {allOption && (
+        <label>
+          <input
+            type="checkbox"
+            checked={selected.length === 0}
+            onChange={() => onChange([])}
+          />
+          {allLabel}
+        </label>
+      )}
       {options.map(option => (
         <label key={option.id}>
           <input
