@@ -48,6 +48,10 @@ export function BookmarkList() {
     getBookmarkList();
   }, [page, limit, genreId, visitStatusId, debouncedTerm, orderBy, sortOrder]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [page])
+
   const debouncedSearch = useCallback(
     debounce((term: string) => {
       setDebouncedTerm(term);
@@ -60,6 +64,31 @@ export function BookmarkList() {
     const term = e.target.value.trim();
     setSearchTerm(term);
     debouncedSearch(term);
+  }
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+  function PageNumbers() {
+    const pages = [];
+    const maxDisplay = 5;
+    let start = Math.max(1, page - Math.floor(maxDisplay / 2));
+    const end = Math.min(totalPages, start + maxDisplay - 1);
+    if (end - start < maxDisplay - 1) {
+      start = Math.max(1, end - maxDisplay + 1);
+    }
+    for (let i = start; i <= end; i++) {
+      pages.push(
+        <button
+          key={i}
+          className={i === page ? style.activePage : style.pageButton}
+          onClick={() => setPage(i)}
+          disabled={i === page}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
   }
 
   return (
@@ -156,9 +185,26 @@ export function BookmarkList() {
         ))}
       </div>
       <div className={style.paginationArea}>
-        <button disabled={page <= 1} onClick={() => setPage(page - 1)}>前へ</button>
-        <span>ページ {page}</span>
-        <button disabled={(page) * limit > totalCount} onClick={() => setPage(page + 1)}>次へ</button>
+        <div className={style.paginationButtons}>
+          <button
+            className={style.pageButton}
+            disabled={page <= 1}
+            onClick={() => setPage(page - 1)}
+          >
+            前へ
+          </button>
+          {PageNumbers()}
+          <button
+            className={style.pageButton}
+            disabled={page >= totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            次へ
+          </button>
+        </div>
+        <div className={style.pageInfo}>
+          ページ {page} / {totalPages}（全{totalCount}件）
+        </div>
       </div>
     </>
   );
