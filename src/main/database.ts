@@ -3,8 +3,8 @@ import * as path from "path";
 import * as fs from "fs";
 import type { VRChatWorld } from "../types/vrchat";
 import type { Genre, VisitStatus } from '../types/table';
-import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions } from "../types/renderer";
-import { ORDERABLE_COLUMNS } from "../consts/const";
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from "../types/renderer";
+import { GENRE, ORDERABLE_COLUMNS } from "../consts/const";
 
 const DB_PATH = "app.db";
 const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
@@ -43,12 +43,14 @@ function buildSelectQuery({
   select,
   from,
   where = [],
+  groupBy = [],
   orderBy = [],
   pagination = []
 }: {
   select: string;
   from: string;
   where?: string[];
+  groupBy?: string[];
   orderBy?: string[];
   pagination?: string[];
 }) {
@@ -56,6 +58,7 @@ function buildSelectQuery({
     `SELECT ${select}`,
     `FROM ${from}`,
     where.length ? `WHERE ${where.join(" AND ")}` : "",
+    groupBy.length ? `GROUP BY ${groupBy.join(", ")}` : "",
     orderBy.length ? orderBy.join(" ") : "",
     pagination.length ? pagination.join(" ") : ""
   ].filter(Boolean).join("\n");
@@ -63,7 +66,7 @@ function buildSelectQuery({
 
 export function getGenres(): Genre[] {
   const result = db.prepare("SELECT * FROM genres ORDER BY id;").all() as Genre[];
-  
+
   return result;
 }
 
@@ -73,8 +76,58 @@ export function getVisitStatuses(): VisitStatus[] {
   return result;
 }
 
-function addBookmark(worldId: string) {
-  db.prepare(`INSERT INTO bookmarks (world_id, genre_id, visited, note, created_at, updated_at) VALUES (?, 0, 0, '', datetime('now'), datetime('now'));`).run(worldId);
+function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
+  const genreIds = [];
+  const lowerTags = worldTags.map(tag => tag.toLowerCase());
+
+  if (lowerTags.includes("author_tag_horror")) {
+    genreIds.push(GENRE.HORROR);
+  }
+
+  if (lowerTags.includes("author_tag_game")) {
+    genreIds.push(GENRE.GAME);
+  }
+
+  if (lowerTags.findIndex(tag => tag.startsWith("admin_")) >= 0) {
+    genreIds.push(GENRE.HIGH_QUALITY);
+  }
+
+  if (lowerTags.includes("author_tag_chill")) {
+    genreIds.push(GENRE.CHILL)
+  }
+
+  return genreIds;
+}
+
+function addWorldGenres(worldId: string, genreIds: number[]) {
+  const values: string[] = [];
+  const params: Record<string, string | number> = { worldId };
+
+  genreIds.forEach((id, i) => {
+    values.push(`(@worldId, @genreId${i})`);
+    params[`genreId${i}`] = id;
+  });
+
+  db.prepare(`INSERT INTO world_genres (world_id, genre_id) VALUES ${values.join(", ")};`).run(params);
+}
+
+function addBookmark(worldId: string, worldTags: string[]) {
+  db.prepare(`
+    INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', datetime('now'), datetime('now'));
+  `).run({ worldId });
+
+  const genreIds = parseWorldTagsToGenreIds(worldTags);
+
+  addWorldGenres(worldId, genreIds);
+}
+
+export function updateWorldGenres(options: UpdateWorldGenresOptions) {
+  const { worldId, genreIds } = options;
+
+  db.prepare("DELETE FROM world_genres WHERE world_id = @worldId;").run({ worldId });
+
+  if (genreIds.length === 0) return;
+  addWorldGenres(worldId, genreIds);
 }
 
 export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
@@ -82,14 +135,10 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
   const params: Partial<UpdateWorldBookmarkOptions> = {
     worldId: options.worldId,
   }
-  
+
   if (keys.some(key => options[key as keyof typeof options] !== undefined)) {
     const setClauses: string[] = [];
 
-    if (options.genreId !== undefined) {
-      setClauses.push("genre_id = @genreId");
-      params.genreId = options.genreId;
-    }
     if (options.note !== undefined) {
       setClauses.push("note = @note");
       params.note = options.note;
@@ -229,7 +278,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     const exists = db.prepare("SELECT 1 FROM bookmarks WHERE world_id = ?;").get(world.id);
 
     if (!exists) {
-      addBookmark(world.id);
+      addBookmark(world.id, world.tags);
     }
   } else {
     console.error(`World info upsert failed: ${world.id}`);
@@ -252,15 +301,15 @@ export function getWorldInfo(worldId: string) {
     world.world_updated_at_cached AS updatedAt,
     world.visits_cached AS visits,
     world.deleted_at AS deletedAt,
-    bookmark.genre_id AS genreId,
+    GROUP_CONCAT(wg.genre_id) AS genreIds,
     bookmark.note,
     bookmark.visit_status_id AS visitStatusId
   `
-  
+
   const fromSql = `
     vrchat_worlds world
-    INNER JOIN bookmarks bookmark
-    ON world.id = bookmark.world_id
+    INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
+    LEFT JOIN world_genres wg ON world.id = wg.world_id
   `;
 
   const sql = buildSelectQuery({
@@ -269,12 +318,13 @@ export function getWorldInfo(worldId: string) {
     where: [`world.id = ?`],
   })
 
-  const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string}) | undefined;
+  const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
 
   if (result) {
-    return { 
+    return {
       ...result,
       tags: result.tags ? JSON.parse(result.tags) as string[] : [],
+      genreIds: result.genreIds ? result.genreIds.split(",").map(id => parseInt(id, 10)) : []
     };
   } else {
     console.error(`World info not found: ${worldId}`);
@@ -292,14 +342,51 @@ export function deleteWorldInfo(worldId: string) {
   }
 }
 
-export function getBookmarkList(options: BookmarkListOptions) { 
+export function getBookmarkList(options: BookmarkListOptions) {
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    GROUP_CONCAT(wg.genre_id) AS genreIds,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId,
+    COUNT(*) OVER() as total_count
+  `;
+
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
+    LEFT JOIN world_genres wg ON world.id = wg.world_id
+  `;
+
+  const groupByClauses = ["world.id"];
+
   const params: Record<string, string | number> = {}
   const whereClauses: string[] = [];
   const orderByClauses: string[] = [];
   const paginationClauses: string[] = [];
 
   if (options.selectedGenres.length > 0) {
-    whereClauses.push(`bookmark.genre_id IN (${options.selectedGenres.map((_, i) => `@genreId${i}`).join(",")})`);
+    whereClauses.push(`
+      world.id IN (
+          SELECT world_id
+          FROM world_genres
+          WHERE genre_id IN (
+            ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(",")}
+          )
+      )
+    `);
     options.selectedGenres.forEach((id, i) => {
       params[`genreId${i}`] = id;
     });
@@ -331,51 +418,26 @@ export function getBookmarkList(options: BookmarkListOptions) {
     }
   }
 
-  const selectSql = `
-    world.id,
-    world.author_name_cached AS authorName,
-    world.capacity_cached AS capacity,
-    world.world_created_at AS createdAt,
-    world.description_cached AS description,
-    world.favorites_cached AS favorites,
-    world.image_url_cached AS imageUrl,
-    world.name_cached AS name,
-    world.release_status_cached AS releaseStatus,
-    world.tags_cached AS tags,
-    world.thumbnail_image_url_cached AS thumbnailImageUrl,
-    world.world_updated_at_cached AS updatedAt,
-    world.visits_cached AS visits,
-    world.deleted_at AS deletedAt,
-    bookmark.genre_id AS genreId,
-    bookmark.note,
-    bookmark.visit_status_id AS visitStatusId,
-    COUNT(*) OVER() as total_count
-  `;
-
-  const fromSql = `
-    vrchat_worlds world
-    INNER JOIN bookmarks bookmark
-    ON world.id = bookmark.world_id
-  `;
-
-  const sql = buildSelectQuery({ 
+  const sql = buildSelectQuery({
     select: selectSql,
     from: fromSql,
     where: whereClauses,
+    groupBy: groupByClauses,
     orderBy: orderByClauses,
     pagination: paginationClauses
   });
 
-  const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string} & { total_count: number })[];
+  const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string, genreIds: string} & { total_count: number })[];
 
   const totalCount = results.length > 0 ? results[0].total_count : 0;
-  
+
   const bookmarkList = results.map((worldInfo) => {
     delete worldInfo.total_count;
-    
+
     return {
       ...worldInfo,
       tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
+      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(",").map(id => parseInt(id, 10)) : []
     }
   });
 

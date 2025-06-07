@@ -40,11 +40,17 @@ CREATE TABLE genres (
 INSERT INTO
   genres (id, name, name_jp)
 VALUES
-  (0, 'Uncategorized', '未分類'),
+  (0, 'Chill', 'チル'),
   (1, 'HighQuality', '高品質'),
   (2, 'Game', 'ゲーム'),
   (3, 'Horror', 'ホラー'),
   (4, 'PhotoSpot', '撮影');
+
+CREATE TABLE world_genres (
+  world_id TEXT NOT NULL REFERENCES vrchat_worlds(id) ON DELETE CASCADE,
+  genre_id INTEGER NOT NULL REFERENCES genres(id) ON DELETE CASCADE,
+  PRIMARY KEY (world_id, genre_id)
+);
 
 CREATE TABLE visit_statuses (
   id INTEGER PRIMARY KEY,
@@ -62,7 +68,6 @@ VALUES
 
 CREATE TABLE bookmarks (
   world_id TEXT PRIMARY KEY REFERENCES vrchat_worlds(id) ON DELETE CASCADE,
-  genre_id INTEGER NOT NULL REFERENCES genres(id) ON DELETE CASCADE,
   visited INTEGER NOT NULL DEFAULT 0,
   note TEXT,
   visit_status_id INTEGER NOT NULL DEFAULT 0 REFERENCES visit_statuses(id) ON DELETE CASCADE,

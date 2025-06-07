@@ -13,16 +13,20 @@ export interface VRChatWorldInfo {
   updatedAt: string;
   visits: number;
   deletedAt: string | null;
-  genreId: number;
+  genreIds: number[];
   note: string;
   visitStatusId: number;
 }
 
 export interface UpdateWorldBookmarkOptions {
   worldId: string,
-  genreId?: number,
   note?: string,
   visitStatusId?: number
+}
+
+export interface UpdateWorldGenresOptions {
+  worldId: string;
+  genreIds: number[];
 }
 
 export interface BookmarkListOptions {
