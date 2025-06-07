@@ -16,7 +16,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     Promise.all([
       window.dbAPI.getGenres().then(setGenres),
-      window.dbAPI.getVisitStatuses().then(setVisitStatuses)
+      window.dbAPI.getVisitStatuses().then(setVisitStatuses),
     ]).finally(() => setLoading(false));
   }, []);
 

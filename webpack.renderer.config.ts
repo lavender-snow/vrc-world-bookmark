@@ -9,7 +9,7 @@ rules.push(
     test: /\.(scss|css)$/,
     use: [
       {
-        loader: MiniCssExtractPlugin.loader
+        loader: MiniCssExtractPlugin.loader,
       },
       {
         loader: 'css-loader',
@@ -17,11 +17,11 @@ rules.push(
           modules: {
             localIdentName: '[name]__[local]__[hash:base64:5]',
             exportLocalsConvention: "camelCase",
-            mode: 'global'
-          }
-        }
+            mode: 'global',
+          },
+        },
       },
-      'sass-loader'
+      'sass-loader',
     ],
   },{
     test: /\.svg$/,
@@ -42,22 +42,22 @@ rules.push(
                     removeViewBox: false,
                     mergePaths: false,
                     convertShapeToPath: false,
-                    removeHiddenElems: false
-                  }
-                }
-              }
-            ]
-          }
-        }
-      }
-    ]
-  }
+                    removeHiddenElems: false,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  },
 );
 
 plugins.push(
   new MiniCssExtractPlugin({
     filename: 'assets/styles/index-[name].css',
-  })
+  }),
 );
 
 export const rendererConfig: Configuration = {

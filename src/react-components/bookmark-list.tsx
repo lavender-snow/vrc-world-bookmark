@@ -25,7 +25,7 @@ export function BookmarkList() {
     debouncedTerm, setDebouncedTerm,
     orderBy, setOrderBy,
     sortOrder, setSortOrder,
-    filterVisible, setFilterVisible
+    filterVisible, setFilterVisible,
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
@@ -58,7 +58,7 @@ export function BookmarkList() {
       setDebouncedTerm(term);
       setPage(1);
     }, 500),
-    []
+    [],
   );
 
   function onKeywordSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -86,7 +86,7 @@ export function BookmarkList() {
           disabled={i === page}
         >
           {i}
-        </button>
+        </button>,
       );
     }
     return pages;
@@ -132,7 +132,7 @@ export function BookmarkList() {
                   <DropDownList
                     options={
                       ORDERABLE_COLUMNS.map(
-                        (column) => ({ id: column.id, name: column.value })
+                        (column) => ({ id: column.id, name: column.value }),
                       )
                     }
                     currentValue={orderBy}
@@ -147,7 +147,7 @@ export function BookmarkList() {
                   <DropDownList
                     options={
                       SORT_ORDERS.map(
-                        (order) => ({ id: order.id, name: order.value })
+                        (order) => ({ id: order.id, name: order.value }),
                       )
                     }
                     currentValue={sortOrder}
@@ -161,7 +161,7 @@ export function BookmarkList() {
                   <strong>表示件数</strong>
                   <DropDownList
                     options={RESULT_PER_PAGE_OPTIONS.map(
-                      (num) => ({ id: num.toString(), name: `${num}件` })
+                      (num) => ({ id: num.toString(), name: `${num}件` }),
                     )}
                     currentValue={limit.toString()}
                     onChange={(e) => {

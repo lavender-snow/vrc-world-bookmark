@@ -5,7 +5,7 @@ export function Button({
   onClick,
   children,
   className = '',
-  disabled = false
+  disabled = false,
 }: {
   onClick: () => void;
   children: React.ReactNode;

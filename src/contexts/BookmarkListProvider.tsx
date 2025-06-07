@@ -33,7 +33,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
   const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>(visitStatuses
     .filter(v => v.name === "Unvisited" || v.name === "InProgress")
-    .map(v => v.id)
+    .map(v => v.id),
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
@@ -51,7 +51,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
       debouncedTerm, setDebouncedTerm,
       orderBy, setOrderBy,
       sortOrder, setSortOrder,
-      filterVisible, setFilterVisible
+      filterVisible, setFilterVisible,
     }}>
       {children}
     </BookmarkListContext.Provider>

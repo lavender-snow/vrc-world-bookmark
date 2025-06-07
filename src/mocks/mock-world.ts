@@ -27,7 +27,7 @@ export const mockWorld: VRChatWorld = {
   "tags": [
     "system_approved",
     "chill",
-    "horror"
+    "horror",
   ],
   "thumbnailImageUrl": "https://api.vrchat.cloud/api/1/image/file_c68c3996-25d5-4d81-afd3-6c30645391d2/5/256",
   "udonProducts": [],
@@ -35,5 +35,5 @@ export const mockWorld: VRChatWorld = {
   "updated_at": "2021-05-26T05:37:15.578Z",
   "urlList": [],
   "version": 19,
-  "visits": 6590
+  "visits": 6590,
 };

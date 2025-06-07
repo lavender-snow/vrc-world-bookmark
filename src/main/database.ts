@@ -23,7 +23,7 @@ export function runMigrations() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       filename TEXT NOT NULL UNIQUE,
       applied_at TEXT NOT NULL
-    );`
+    );`,
   );
 
   const files = fs.readdirSync(MIGRATIONS_DIR).filter(f => f.endsWith(".sql")).sort();
@@ -45,7 +45,7 @@ function buildSelectQuery({
   where = [],
   groupBy = [],
   orderBy = [],
-  pagination = []
+  pagination = [],
 }: {
   select: string;
   from: string;
@@ -60,7 +60,7 @@ function buildSelectQuery({
     where.length ? `WHERE ${where.join(" AND ")}` : "",
     groupBy.length ? `GROUP BY ${groupBy.join(", ")}` : "",
     orderBy.length ? orderBy.join(" ") : "",
-    pagination.length ? pagination.join(" ") : ""
+    pagination.length ? pagination.join(" ") : "",
   ].filter(Boolean).join("\n");
 }
 
@@ -324,7 +324,7 @@ export function getWorldInfo(worldId: string) {
     return {
       ...result,
       tags: result.tags ? JSON.parse(result.tags) as string[] : [],
-      genreIds: result.genreIds ? result.genreIds.split(",").map(id => parseInt(id, 10)) : []
+      genreIds: result.genreIds ? result.genreIds.split(",").map(id => parseInt(id, 10)) : [],
     };
   } else {
     console.error(`World info not found: ${worldId}`);
@@ -424,7 +424,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
     where: whereClauses,
     groupBy: groupByClauses,
     orderBy: orderByClauses,
-    pagination: paginationClauses
+    pagination: paginationClauses,
   });
 
   const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string, genreIds: string} & { total_count: number })[];
@@ -437,12 +437,12 @@ export function getBookmarkList(options: BookmarkListOptions) {
     return {
       ...worldInfo,
       tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
-      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(",").map(id => parseInt(id, 10)) : []
+      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(",").map(id => parseInt(id, 10)) : [],
     };
   });
 
   return {
     bookmarkList,
-    totalCount
+    totalCount,
   };
 }

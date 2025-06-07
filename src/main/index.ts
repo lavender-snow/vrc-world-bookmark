@@ -20,7 +20,7 @@ const createWindow = (): void => {
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
-    autoHideMenuBar: true
+    autoHideMenuBar: true,
   });
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {

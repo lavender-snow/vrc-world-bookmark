@@ -10,5 +10,5 @@ export const plugins: WebpackPluginInstance[] = [
     "process.env.APP_NAME": JSON.stringify(packageJson.name),
     "process.env.APP_VERSION": JSON.stringify(packageJson.version),
     "process.env.REPOSITORY": JSON.stringify(packageJson.repository?.url),
-  })
+  }),
 ];

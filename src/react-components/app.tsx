@@ -14,12 +14,12 @@ const TAB_KEYS = {
 const TABS = [
   {
     key: TAB_KEYS.list,
-    label: "ワールド一覧"
+    label: "ワールド一覧",
   },
   {
     key: TAB_KEYS.register,
     label: "ワールド情報登録",
-  }
+  },
 ];
 
 type TabKey = typeof TAB_KEYS[keyof typeof TAB_KEYS];

@@ -12,7 +12,7 @@ const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all
+  allConfig: js.configs.all,
 });
 
 export default defineConfig([{
@@ -26,7 +26,7 @@ export default defineConfig([{
   )),
 
   plugins: {
-    "@stylistic": stylistic
+    "@stylistic": stylistic,
   },
 
   languageOptions: {
@@ -41,5 +41,6 @@ export default defineConfig([{
   rules: {
     "@stylistic/semi": ["error", "always"],
     "@stylistic/indent": ["error", 2],
-  }
+    "@stylistic/comma-dangle": ["error", "always-multiline"],
+  },
 }]);
