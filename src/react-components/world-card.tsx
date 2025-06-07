@@ -18,7 +18,7 @@ function WorldProperty({ name, value }: { name: string, value: string | number }
       <div className={classNames(style.worldPropertyName)}>{name}</div>
       <div className={style.worldPropertyValue}>{value}</div>
     </div>
-  )
+  );
 }
 
 function WorldTags({ tags }: { tags: string[] }) {
@@ -36,7 +36,7 @@ function WorldTags({ tags }: { tags: string[] }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
@@ -125,14 +125,14 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   }, [worldInfo]);
 
   const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
-    return { id: status.id.toString(), name: status.name_jp }
+    return { id: status.id.toString(), name: status.name_jp };
   });
 
   return (
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick() }} aria-label={"ワールド名をコピー"}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={"ワールド名をコピー"}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
@@ -154,7 +154,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
       </div>
       <div className={style.bookmarkArea}>
         <div className={style.memoArea}>
-          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} onBlur={() => { onNoteBlur() }} value={worldNote}></textarea>
+          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value); }} onBlur={() => { onNoteBlur(); }} value={worldNote}></textarea>
         </div>
         <div className={style.genreArea}>
           <strong>ジャンル</strong>
@@ -172,7 +172,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
-      <Toast message={toast} onClose={() => { setToast("") }} noticeType={toastNoticeType} />
+      <Toast message={toast} onClose={() => { setToast(""); }} noticeType={toastNoticeType} />
     </div >
   );
 }

@@ -21,7 +21,7 @@ type BookmarkListContextValue = {
   setSortOrder?: React.Dispatch<React.SetStateAction<SortOrder>>;
   filterVisible?: boolean;
   setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
-}
+};
 
 const BookmarkListContext = createContext<BookmarkListContextValue | null>(null);
 

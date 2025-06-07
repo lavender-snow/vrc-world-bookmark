@@ -7,7 +7,7 @@ import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, 
 import { GENRE, ORDERABLE_COLUMNS } from "../consts/const";
 
 const DB_PATH = "app.db";
-const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
+const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite"); // TODO: パッケージ化に対応する
 
 let db: Database.Database;
 
@@ -36,7 +36,7 @@ export function runMigrations() {
       db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, datetime('now'));").run(file);
       console.log(`Migration executed: ${file}`);
     }
-  })
+  });
 }
 
 function buildSelectQuery({
@@ -93,7 +93,7 @@ function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
   }
 
   if (lowerTags.includes("author_tag_chill")) {
-    genreIds.push(GENRE.CHILL)
+    genreIds.push(GENRE.CHILL);
   }
 
   return genreIds;
@@ -134,7 +134,7 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
   const keys = Object.keys(options).filter(key => key !== "worldId");
   const params: Partial<UpdateWorldBookmarkOptions> = {
     worldId: options.worldId,
-  }
+  };
 
   if (keys.some(key => options[key as keyof typeof options] !== undefined)) {
     const setClauses: string[] = [];
@@ -183,7 +183,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     urlList: JSON.stringify(world.urlList),
     version: world.version,
     visits: world.visits,
-  }
+  };
 
   const result = db.prepare(`INSERT INTO vrchat_worlds (
     id,
@@ -304,7 +304,7 @@ export function getWorldInfo(worldId: string) {
     GROUP_CONCAT(wg.genre_id) AS genreIds,
     bookmark.note,
     bookmark.visit_status_id AS visitStatusId
-  `
+  `;
 
   const fromSql = `
     vrchat_worlds world
@@ -316,7 +316,7 @@ export function getWorldInfo(worldId: string) {
     select: selectSql,
     from: fromSql,
     where: [`world.id = ?`],
-  })
+  });
 
   const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
 
@@ -372,7 +372,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
 
   const groupByClauses = ["world.id"];
 
-  const params: Record<string, string | number> = {}
+  const params: Record<string, string | number> = {};
   const whereClauses: string[] = [];
   const orderByClauses: string[] = [];
   const paginationClauses: string[] = [];
@@ -438,7 +438,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
       ...worldInfo,
       tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
       genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(",").map(id => parseInt(id, 10)) : []
-    }
+    };
   });
 
   return {

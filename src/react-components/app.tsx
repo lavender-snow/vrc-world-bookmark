@@ -9,7 +9,7 @@ import classNames from "classnames";
 const TAB_KEYS = {
   register: "register",
   list: "list",
-}
+};
 
 const TABS = [
   {

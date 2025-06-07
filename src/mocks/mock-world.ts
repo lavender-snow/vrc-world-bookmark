@@ -36,4 +36,4 @@ export const mockWorld: VRChatWorld = {
   "urlList": [],
   "version": 19,
   "visits": 6590
-}
+};

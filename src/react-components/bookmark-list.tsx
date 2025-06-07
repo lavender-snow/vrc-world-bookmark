@@ -51,7 +51,7 @@ export function BookmarkList() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-  }, [page])
+  }, [page]);
 
   const debouncedSearch = useCallback(
     debounce((term: string) => {

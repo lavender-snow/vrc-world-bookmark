@@ -5,6 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import stylistic from '@stylistic/eslint-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,10 @@ export default defineConfig([{
         "plugin:import/typescript",
     )),
 
+    plugins: {
+        "@stylistic": stylistic
+    },
+
     languageOptions: {
         globals: {
             ...globals.browser,
@@ -32,4 +37,8 @@ export default defineConfig([{
     },
 
     ignores: ["node_modules/**", "out/**", ".webpack/**"],
+
+    rules: {
+        "@stylistic/semi": ["error", "always"],
+    }
 }]);

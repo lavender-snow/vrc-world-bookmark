@@ -4,7 +4,7 @@ import type { VRChatWorld } from "../types/vrchat";
 export class WorldNotFoundError extends Error {}
 
 function userAgent() {
-    return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`
+    return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`;
 }
 
 export async function fetchWorldInfo(worldId: string) {
