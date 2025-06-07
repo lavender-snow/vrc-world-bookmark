@@ -23,7 +23,7 @@ type BookmarkListContextValue = {
   setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BookmarkListContext = createContext<BookmarkListContextValue>(null);
+const BookmarkListContext = createContext<BookmarkListContextValue | null>(null);
 
 export function BookmarkListProvider({ children }: { children: React.ReactNode }) {
   const [page, setPage] = useState(1);
@@ -62,5 +62,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 }
 
 export function useBookmarkListState() {
+  const ctx = useContext(BookmarkListContext);
+  if (!ctx) throw new Error("useBookmarkListState must be used within a BookmarkListProvider");
   return useContext(BookmarkListContext);
 }
