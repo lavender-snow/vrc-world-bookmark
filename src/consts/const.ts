@@ -15,6 +15,7 @@ export const ORDERABLE_COLUMNS = [
   { id: "world.world_updated_at", value: "更新日" },
   { id: "world.favorites_cached", value: "お気に入り数" },
   { id: "world.visits_cached", value: "訪問数"  },
+  { id: "bookmark.created_at", value: "ブックマーク登録日" },
 ] as const;
 
 export type OrderableColumnKey = typeof ORDERABLE_COLUMNS[number]["id"];
