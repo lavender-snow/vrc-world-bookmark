@@ -28,6 +28,7 @@ export function WorldDataEntry() {
     <div className={classNames(styles.worldDataEntry)}>
       <div className={classNames(styles.searchArea)}>
         <InputText
+          value={worldIdOrUrl}
           onChange={onChangeWorldIdOrUrl}
           placeholder='World ID or World URL'
           className={classNames(styles.searchInputText)}
