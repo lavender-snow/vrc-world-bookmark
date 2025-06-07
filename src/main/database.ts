@@ -289,9 +289,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
   }
 
   if (options.orderBy && ORDERABLE_COLUMNS.find(column => column.id === options.orderBy)) {
-    orderByClauses.push(`ORDER BY @orderBy @sortOrder`);
-    params.sortOrder = options.sortOrder;
-    params.orderBy = options.orderBy;
+    orderByClauses.push(`ORDER BY ${options.orderBy} ${options.sortOrder}`);
   }
 
   if (options.limit) {

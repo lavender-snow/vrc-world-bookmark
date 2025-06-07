@@ -12,7 +12,7 @@ export const RESULT_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
 export const ORDERABLE_COLUMNS = [
   { id: "world.world_created_at", value: "作成日" },
-  { id: "world.world_updated_at", value: "更新日" },
+  { id: "world.world_updated_at_cached", value: "更新日" },
   { id: "world.favorites_cached", value: "お気に入り数" },
   { id: "world.visits_cached", value: "訪問数"  },
   { id: "bookmark.created_at", value: "ブックマーク登録日" },

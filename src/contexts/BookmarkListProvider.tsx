@@ -16,7 +16,7 @@ type BookmarkListContextValue = {
   debouncedTerm?: string;
   setDebouncedTerm?: React.Dispatch<React.SetStateAction<string>>;
   orderBy?: string;
-  setOrderBy?: React.Dispatch<React.SetStateAction<OrderableColumnKey | undefined>>;
+  setOrderBy?: React.Dispatch<React.SetStateAction<OrderableColumnKey>>;
   sortOrder?: "asc" | "desc";
   setSortOrder?: React.Dispatch<React.SetStateAction<SortOrder>>;
   filterVisible?: boolean;
@@ -32,7 +32,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
-  const [orderBy, setOrderBy] = useState<OrderableColumnKey | undefined>(undefined);
+  const [orderBy, setOrderBy] = useState<OrderableColumnKey>("bookmark.created_at");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [filterVisible, setFilterVisible] = useState(true);
 
