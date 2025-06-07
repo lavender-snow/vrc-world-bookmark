@@ -3,6 +3,7 @@ import { WorldDataEntry } from "./world-data-entry";
 import { BookmarkList } from "./bookmark-list";
 import styles from "./app.scss";
 import { AppDataProvider } from "../contexts/AppDataProvider";
+import { BookmarkListProvider } from "../contexts/BookmarkListProvider";
 import classNames from "classnames";
 
 const TAB_KEYS = {
@@ -42,7 +43,9 @@ export function App(): React.ReactNode {
       </div>
       <div className={styles.tabContent}>
         <AppDataProvider>
-          {activeTab === TAB_KEYS.list && <BookmarkList />}
+          <BookmarkListProvider>
+            {activeTab === TAB_KEYS.list && <BookmarkList />}
+          </BookmarkListProvider>
           {activeTab === TAB_KEYS.register && <WorldDataEntry />}
         </AppDataProvider>
       </div>
