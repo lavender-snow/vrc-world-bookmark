@@ -6,7 +6,7 @@ import { App } from "./react-components/app";
 const container = document.getElementById("root");
 
 if (container) {
-    createRoot(container).render(<App />);
+  createRoot(container).render(<App />);
 } else {
-    console.error("Root container not found");
+  console.error("Root container not found");
 }

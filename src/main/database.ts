@@ -270,7 +270,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     version_cached = @version,
     visits_cached = @visits,
     updated_at = datetime('now');`)
-  .run(params);
+    .run(params);
 
   if (result.changes > 0) {
     console.log(`World info upsert: ${world.id}`);

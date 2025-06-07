@@ -9,9 +9,9 @@ rules.push(
     test: /\.(scss|css)$/,
     use: [
       {
-          loader: MiniCssExtractPlugin.loader
+        loader: MiniCssExtractPlugin.loader
       },
-    {
+      {
         loader: 'css-loader',
         options: {
           modules: {
@@ -57,8 +57,8 @@ rules.push(
 plugins.push(
   new MiniCssExtractPlugin({
     filename: 'assets/styles/index-[name].css',
-  }
-));
+  })
+);
 
 export const rendererConfig: Configuration = {
   module: {
