@@ -9,7 +9,9 @@ export function Accordion({ icon: Icon, title, children, defaultOpen = false, on
       <div className={style.accordionTitle} onClick={() => {
         const newValue = !open;
         setOpen(newValue);
-        onToggle(newValue);
+        if (onToggle) {
+          onToggle(newValue);
+        }
       }}><Icon /> {title} {open ? "▲" : "▼"} </div>
       {open && (
         <div style={{ marginTop: 8 }}>
