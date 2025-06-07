@@ -7,7 +7,7 @@ type BookmarkListContextValue = {
   setPage: React.Dispatch<React.SetStateAction<number>>;
   limit: number;
   setLimit: React.Dispatch<React.SetStateAction<number>>;
-  selectedGenres?: number[];
+  selectedGenres: number[];
   setSelectedGenres: React.Dispatch<React.SetStateAction<number[]>>;
   selectedVisitStatuses: number[];
   setSelectedVisitStatuses: React.Dispatch<React.SetStateAction<number[]>>;
