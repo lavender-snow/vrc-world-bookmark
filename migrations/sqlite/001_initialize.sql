@@ -56,8 +56,8 @@ INSERT INTO
   visit_statuses (id, name, name_jp)
 VALUES
   (0, 'Unvisited', '未訪問'),
-  (1, 'Visited', '訪問済'),
-  (2, 'Blocked', 'ブロック'),
+  (1, 'InProgress', '進行中'),
+  (2, 'Completed', '完了'),
   (3, 'Hidden', '非表示');
 
 CREATE TABLE bookmarks (
