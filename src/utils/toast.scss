@@ -7,20 +7,15 @@ $fadeout: 0.6s;
 :local(.toast) {
   max-width: 80vw;
   width: fit-content;
-  position: fixed;
-  left: 50%;
-  bottom: 40px;
-  transform: translateX(-50%);
   color: theme.$white;
   padding: 12px 32px;
   border-radius: 8px;
   font-size: 1rem;
-  z-index: 9999;
   box-shadow: 0 2px 8px theme.$toast-shadow;
   pointer-events: none;
   text-align: center;
   word-break: break-word;
-  animation: fadein $fadein, fadeout $fadeout $visible + $fadein;
+  animation: fadein $fadein, fadeout $fadeout $visible + $fadein forwards;
 
   svg {
     width: 24px;
@@ -49,25 +44,23 @@ $fadeout: 0.6s;
 @keyframes fadein {
   from {
     opacity: 0;
+    transform: translateX(30vw);
   }
 
   to {
     opacity: 1;
+    transform: translateX(0);
   }
 }
 
 @keyframes fadeout {
   from {
     opacity: 1;
+    transform: translateX(0);
   }
 
   to {
     opacity: 0;
+    transform: translateX(30vw);
   }
-}
-
-:export {
-  FADEIN: $fadein;
-  VISIBLE: $visible;
-  FADEOUT: $fadeout;
 }

@@ -1,0 +1,9 @@
+:local(.toast-list) {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8;
+}
