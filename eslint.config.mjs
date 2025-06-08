@@ -1,10 +1,10 @@
-import { defineConfig } from "@eslint/config-helpers";
-import { fixupConfigRules } from "@eslint/compat";
-import globals from "globals";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from '@eslint/config-helpers';
+import { fixupConfigRules } from '@eslint/compat';
+import globals from 'globals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import js from '@eslint/js';
+import { FlatCompat } from '@eslint/eslintrc';
 import stylistic from '@stylistic/eslint-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,16 +17,16 @@ const compat = new FlatCompat({
 
 export default defineConfig([{
   extends: fixupConfigRules(compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/electron",
-    "plugin:import/typescript",
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/recommended',
+    'plugin:import/electron',
+    'plugin:import/typescript',
   )),
 
   plugins: {
-    "@stylistic": stylistic,
+    '@stylistic': stylistic,
   },
 
   languageOptions: {
@@ -36,11 +36,12 @@ export default defineConfig([{
     },
   },
 
-  ignores: ["node_modules/**", "out/**", ".webpack/**"],
+  ignores: ['node_modules/**', 'out/**', '.webpack/**'],
 
   rules: {
-    "@stylistic/semi": ["error", "always"],
-    "@stylistic/indent": ["error", 2],
-    "@stylistic/comma-dangle": ["error", "always-multiline"],
+    '@stylistic/semi': ['error', 'always'],
+    '@stylistic/indent': ['error', 2],
+    '@stylistic/comma-dangle': ['error', 'always-multiline'],
+    '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
   },
 }]);

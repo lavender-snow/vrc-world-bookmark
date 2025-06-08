@@ -36,5 +36,5 @@ export interface BookmarkListOptions {
   selectedVisitStatuses: number[];
   searchTerm?: string;
   orderBy?: string;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: 'asc' | 'desc';
 }

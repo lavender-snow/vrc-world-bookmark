@@ -16,7 +16,7 @@ rules.push(
         options: {
           modules: {
             localIdentName: '[name]__[local]__[hash:base64:5]',
-            exportLocalsConvention: "camelCase",
+            exportLocalsConvention: 'camelCase',
             mode: 'global',
           },
         },
@@ -27,16 +27,16 @@ rules.push(
     test: /\.svg$/,
     use: [
       {
-        loader: "@svgr/webpack",
+        loader: '@svgr/webpack',
         options: {
           titleProp: true,
-          replaceAttrValues: { "#000": "currentColor" },
-          exportType: "named",
+          replaceAttrValues: { '#000': 'currentColor' },
+          exportType: 'named',
           svgo: true,
           svgoConfig: {
             plugins: [
               {
-                name: "preset-default",
+                name: 'preset-default',
                 params: {
                   overrides: {
                     removeViewBox: false,
@@ -64,7 +64,7 @@ export const rendererConfig: Configuration = {
   module: {
     rules,
   },
-  devtool: process.env.NODE_ENV === "development" ? 'source-map' : false,
+  devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],

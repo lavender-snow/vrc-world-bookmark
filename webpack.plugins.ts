@@ -7,8 +7,8 @@ export const plugins: WebpackPluginInstance[] = [
     logger: 'webpack-infrastructure',
   }),
   new DefinePlugin({
-    "process.env.APP_NAME": JSON.stringify(packageJson.name),
-    "process.env.APP_VERSION": JSON.stringify(packageJson.version),
-    "process.env.REPOSITORY": JSON.stringify(packageJson.repository?.url),
+    'process.env.APP_NAME': JSON.stringify(packageJson.name),
+    'process.env.APP_VERSION': JSON.stringify(packageJson.version),
+    'process.env.REPOSITORY': JSON.stringify(packageJson.repository?.url),
   }),
 ];

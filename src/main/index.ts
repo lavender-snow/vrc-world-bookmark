@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
-import "./vrchat-api";
-import "./database";
+import './vrchat-api';
+import './database';
 import { initializeApp } from './bookmark-service';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -27,7 +27,7 @@ const createWindow = (): void => {
     callback({
       responseHeaders: {
         ...details.responseHeaders,
-        "Content-Security-Policy": [
+        'Content-Security-Policy': [
           "default-src 'self';",
           "script-src 'self';",
           "style-src 'self' 'unsafe-inline';",
@@ -36,7 +36,7 @@ const createWindow = (): void => {
           "font-src 'self';",
           "object-src 'none';",
           "frame-src 'none';",
-        ].join(" "),
+        ].join(' '),
       },
     });
   });

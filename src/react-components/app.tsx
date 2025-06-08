@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { WorldDataEntry } from "./world-data-entry";
-import { BookmarkList } from "./bookmark-list";
-import styles from "./app.scss";
-import { AppDataProvider } from "../contexts/AppDataProvider";
-import { BookmarkListProvider } from "../contexts/BookmarkListProvider";
-import classNames from "classnames";
+import { useState } from 'react';
+import { WorldDataEntry } from './world-data-entry';
+import { BookmarkList } from './bookmark-list';
+import styles from './app.scss';
+import { AppDataProvider } from '../contexts/AppDataProvider';
+import { BookmarkListProvider } from '../contexts/BookmarkListProvider';
+import classNames from 'classnames';
 
 const TAB_KEYS = {
-  register: "register",
-  list: "list",
+  register: 'register',
+  list: 'list',
 };
 
 const TABS = [
   {
     key: TAB_KEYS.list,
-    label: "ワールド一覧",
+    label: 'ワールド一覧',
   },
   {
     key: TAB_KEYS.register,
-    label: "ワールド情報登録",
+    label: 'ワールド情報登録',
   },
 ];
 

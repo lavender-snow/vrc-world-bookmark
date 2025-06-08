@@ -1,7 +1,7 @@
-import { ipcMain } from "electron";
-import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo, getVisitStatuses, getBookmarkList, updateWorldGenres } from "./database";
-import { fetchWorldInfo, WorldNotFoundError } from "./vrchat-api";
-import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from "../types/renderer";
+import { ipcMain } from 'electron';
+import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo, getVisitStatuses, getBookmarkList, updateWorldGenres } from './database';
+import { fetchWorldInfo, WorldNotFoundError } from './vrchat-api';
+import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from '../types/renderer';
 
 export async function upsertWorldBookmark(worldId: string) {
   try {
@@ -23,36 +23,35 @@ export function initializeApp() {
   initDB();
   runMigrations();
 
-  ipcMain.handle("get_genres", async () => {
+  ipcMain.handle('get_genres', async () => {
     const genres = getGenres();
 
     return genres;
   });
 
-  ipcMain.handle("get_visit_statuses", async () => {
+  ipcMain.handle('get_visit_statuses', async () => {
     const visitStatuses = getVisitStatuses();
-    
+
     return visitStatuses;
   });
 
-  ipcMain.handle("add_or_update_world_info", async (event, worldId: string) => {
+  ipcMain.handle('add_or_update_world_info', async (event, worldId: string) => {
     return upsertWorldBookmark(worldId);
   });
 
-  ipcMain.handle("get_world_info", async (event, worldId: string) => {
+  ipcMain.handle('get_world_info', async (event, worldId: string) => {
     return getWorldInfo(worldId);
   });
 
-  ipcMain.handle("update_world_bookmark", async (event, options: UpdateWorldBookmarkOptions) => {
+  ipcMain.handle('update_world_bookmark', async (event, options: UpdateWorldBookmarkOptions) => {
     updateWorldBookmark(options);
   });
 
-  ipcMain.handle("update_world_genres", async (event, options: UpdateWorldGenresOptions) => {
+  ipcMain.handle('update_world_genres', async (event, options: UpdateWorldGenresOptions) => {
     updateWorldGenres(options);
   });
 
-  ipcMain.handle("get_bookmark_list", async (event, options: BookmarkListOptions) => {
+  ipcMain.handle('get_bookmark_list', async (event, options: BookmarkListOptions) => {
     return getBookmarkList(options);
   });
 }
-
