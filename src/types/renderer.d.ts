@@ -29,10 +29,13 @@ export interface UpdateWorldGenresOptions {
   genreIds: number[];
 }
 
+export type LogicMode = 'and' | 'or';
+
 export interface BookmarkListOptions {
   page?: number;
   limit?: number;
   selectedGenres: number[];
+  genreFilterMode: LogicMode;
   selectedVisitStatuses: number[];
   searchTerm?: string;
   orderBy?: string;

@@ -1,10 +1,11 @@
+import type { LogicMode } from 'src/types/renderer';
+
 export const NoticeType = {
   info: 'info',
   success: 'success',
   warning: 'warning',
   error: 'error',
 };
-
 export type NoticeType = typeof NoticeType[keyof typeof NoticeType];
 
 export const DEFAULT_RESULT_PER_PAGE = 10;
@@ -17,14 +18,12 @@ export const ORDERABLE_COLUMNS = [
   { id: 'world.visits_cached', value: '訪問数'  },
   { id: 'bookmark.created_at', value: 'ブックマーク登録日' },
 ] as const;
-
 export type OrderableColumnKey = typeof ORDERABLE_COLUMNS[number]['id'];
 
 export const SORT_ORDERS = [
   { id: 'desc', value: '降順' },
   { id: 'asc', value: '昇順' },
 ] as const;
-
 export type SortOrder = typeof SORT_ORDERS[number]['id'];
 
 export const GENRE = {
@@ -33,4 +32,9 @@ export const GENRE = {
   GAME: 2,
   HORROR: 3,
   PHOTO_SPOT: 4,
+};
+
+export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
+  and: 'and',
+  or: 'or',
 };
