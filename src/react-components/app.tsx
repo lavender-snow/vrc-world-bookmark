@@ -1,11 +1,13 @@
+import classNames from 'classnames';
 import { useState } from 'react';
-import { WorldDataEntry } from './world-data-entry';
-import { BookmarkList } from './bookmark-list';
-import styles from './app.scss';
+
 import { AppDataProvider } from '../contexts/app-data-provider';
 import { BookmarkListProvider } from '../contexts/bookmark-list-provider';
 import { WorldDataEntryProvider } from '../contexts/world-data-entry-provider';
-import classNames from 'classnames';
+
+import styles from './app.scss';
+import { BookmarkList } from './bookmark-list';
+import { WorldDataEntry } from './world-data-entry';
 
 const TAB_KEYS = {
   register: 'register',

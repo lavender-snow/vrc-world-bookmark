@@ -1,8 +1,8 @@
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import type { Configuration } from 'webpack';
 
-import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { rules } from './webpack.rules';
 
 rules.push(
   {

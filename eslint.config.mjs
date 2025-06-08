@@ -1,11 +1,12 @@
-import { defineConfig, globalIgnores } from '@eslint/config-helpers';
-import { fixupConfigRules } from '@eslint/compat';
-import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
+
+import { fixupConfigRules } from '@eslint/compat';
+import { defineConfig, globalIgnores } from '@eslint/config-helpers';
 import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
+import globals from 'globals';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,6 +44,10 @@ export default defineConfig([{
     '@stylistic/indent': ['error', 2],
     '@stylistic/comma-dangle': ['error', 'always-multiline'],
     '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+    'import/order': ['error', {
+      'newlines-between': 'always',
+      alphabetize: { order: 'asc', caseInsensitive: true },
+    }],
   },
 }, globalIgnores([
   '.webpack/**',

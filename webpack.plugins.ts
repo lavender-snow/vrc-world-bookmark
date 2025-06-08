@@ -1,5 +1,6 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import { DefinePlugin, type WebpackPluginInstance } from 'webpack';
+
 import packageJson from './package.json';
 
 export const plugins: WebpackPluginInstance[] = [

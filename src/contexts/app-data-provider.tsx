@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+
 import type { Genre, VisitStatus } from '../types/table';
 
 type AppData = {
