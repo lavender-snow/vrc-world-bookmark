@@ -1,4 +1,4 @@
-import { defineConfig } from '@eslint/config-helpers';
+import { defineConfig, globalIgnores } from '@eslint/config-helpers';
 import { fixupConfigRules } from '@eslint/compat';
 import globals from 'globals';
 import path from 'node:path';
@@ -44,4 +44,6 @@ export default defineConfig([{
     '@stylistic/comma-dangle': ['error', 'always-multiline'],
     '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
   },
-}]);
+}, globalIgnores([
+  '.webpack/**',
+])]);
