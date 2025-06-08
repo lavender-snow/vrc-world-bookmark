@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { WorldDataEntry } from './world-data-entry';
 import { BookmarkList } from './bookmark-list';
 import styles from './app.scss';
-import { AppDataProvider } from '../contexts/AppDataProvider';
-import { BookmarkListProvider } from '../contexts/BookmarkListProvider';
+import { AppDataProvider } from '../contexts/app-data-provider';
+import { BookmarkListProvider } from '../contexts/bookmark-list-provider';
 import classNames from 'classnames';
 
 const TAB_KEYS = {
