@@ -8,7 +8,7 @@ import { Button } from './common/button';
 import { debounce, writeClipboard } from '../utils/util';
 import { Toast } from '../utils/toast';
 import { NoticeType } from '../consts/const';
-import { useAppData } from '../contexts/AppDataProvider';
+import { useAppData } from '../contexts/app-data-provider';
 import { DropDownList, SelectOption } from './common/drop-down-list';
 import { CheckboxGroup } from './common/checkbox-group';
 

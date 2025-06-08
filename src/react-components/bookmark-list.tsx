@@ -2,14 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import type { BookmarkListOptions, VRChatWorldInfo } from '../types/renderer';
 import { WorldCard } from './world-card';
 import style from './bookmark-list.scss';
-import { useAppData } from '../contexts/AppDataProvider';
+import { useAppData } from '../contexts/app-data-provider';
+import { useBookmarkListState } from '../contexts/bookmark-list-provider';
 import { DropDownList } from './common/drop-down-list';
 import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder } from '../consts/const';
 import { InputText } from './common/input-text';
 import { Accordion } from './common/accordion';
 import { ReactComponent as FilterIcon } from '../../assets/images/MaterialSymbolsFilterAltOutline.svg';
 import { debounce } from '../utils/util';
-import { useBookmarkListState } from '../contexts/BookmarkListProvider';
 import { CheckboxGroup } from './common/checkbox-group';
 
 export function BookmarkList() {
