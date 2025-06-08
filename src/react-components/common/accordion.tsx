@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import style from './accordion.scss';
 
 export function Accordion({ icon: Icon, title, children, defaultOpen = false, onToggle }: { icon: React.FC<React.SVGProps<SVGSVGElement>>, title: string; children: React.ReactNode, defaultOpen?: boolean, onToggle?: (isOpen: boolean) => void }) {

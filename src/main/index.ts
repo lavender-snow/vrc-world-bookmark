@@ -1,5 +1,7 @@
 import { app, BrowserWindow, shell } from 'electron';
+
 import electronSquirrelStartup from 'electron-squirrel-startup';
+
 import './vrchat-api';
 import './database';
 import { initializeApp } from './bookmark-service';

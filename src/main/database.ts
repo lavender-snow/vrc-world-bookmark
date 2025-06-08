@@ -1,10 +1,12 @@
-import Database from 'better-sqlite3';
-import * as path from 'path';
 import * as fs from 'fs';
-import type { VRChatWorld } from '../types/vrchat';
-import type { Genre, VisitStatus } from '../types/table';
-import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from '../types/renderer';
+import * as path from 'path';
+
+import Database from 'better-sqlite3';
+
 import { GENRE, ORDERABLE_COLUMNS } from '../consts/const';
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from '../types/renderer';
+import type { Genre, VisitStatus } from '../types/table';
+import type { VRChatWorld } from '../types/vrchat';
 
 const DB_PATH = 'app.db';
 const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO: パッケージ化に対応する
