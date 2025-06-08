@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
 
-import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from '../types/renderer';
-
 import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo, getVisitStatuses, getBookmarkList, updateWorldGenres } from './database';
 import { fetchWorldInfo, VRChatServerError, WorldNotFoundError } from './vrchat-api';
+
+import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 
 export async function upsertWorldBookmark(worldId: string) {
   try {

@@ -1,6 +1,9 @@
+import path from 'path';
+
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import type { Configuration } from 'webpack';
 
+import { alias } from './webpack.alias';
 import { plugins } from './webpack.plugins';
 import { rules } from './webpack.rules';
 
@@ -21,7 +24,14 @@ rules.push(
           },
         },
       },
-      'sass-loader',
+      {
+        loader: 'sass-loader',
+        options: {
+          sassOptions: {
+            includePaths: [path.resolve(__dirname, 'assets')],
+          },
+        },
+      },
     ],
   },{
     test: /\.svg$/,
@@ -67,6 +77,7 @@ export const rendererConfig: Configuration = {
   devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
   plugins,
   resolve: {
+    alias,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
 };

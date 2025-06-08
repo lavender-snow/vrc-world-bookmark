@@ -1,5 +1,6 @@
 import type { Configuration } from 'webpack';
 
+import { alias } from './webpack.alias';
 import { plugins } from './webpack.plugins';
 import { rules } from './webpack.rules';
 
@@ -15,6 +16,7 @@ export const mainConfig: Configuration = {
   },
   plugins,
   resolve: {
+    alias,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
 };

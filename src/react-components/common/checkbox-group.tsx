@@ -1,4 +1,4 @@
-import type { MasterTable } from '../../types/table';
+import type { MasterTable } from 'src/types/table';
 
 export function CheckboxGroup({ options, selected, onChange, allOption, allLabel = 'すべて' }: {
   options: MasterTable[],
