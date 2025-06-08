@@ -381,6 +381,10 @@ export function getBookmarkList(options: BookmarkListOptions) {
   const paginationClauses: string[] = [];
 
   if (options.selectedGenres.length > 0) {
+    const genreFilterCondition = options.genreFilterMode === 'and'
+      ? 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length
+      : '';
+
     whereClauses.push(`
       world.id IN (
           SELECT world_id
@@ -388,7 +392,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
           WHERE genre_id IN (
             ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
           )
-          ${options.genreFilterMode === 'and' ? 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length : ''}
+          ${genreFilterCondition}
       )
     `);
     options.selectedGenres.forEach((id, i) => {
