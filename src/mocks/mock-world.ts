@@ -1,4 +1,4 @@
-import type { VRChatWorld } from '../types/vrchat';
+import type { VRChatWorld } from 'src/types/vrchat';
 
 export const mockWorld: VRChatWorld = {
   'authorId': 'usr_cc9f24f1-09da-42a6-9e4f-b3656a6ffad6',

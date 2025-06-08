@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import type { VRChatWorld } from '../types/vrchat';
+import type { VRChatWorld } from 'src/types/vrchat';
 
 export class WorldNotFoundError extends Error {}
 export class VRChatServerError extends Error {

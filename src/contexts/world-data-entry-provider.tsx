@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import type { VRChatWorldInfo } from '../types/renderer';
+import type { VRChatWorldInfo } from 'src/types/renderer';
 
 type WorldDataEntryContextValue = {
   worldIdOrUrl: string;

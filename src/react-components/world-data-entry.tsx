@@ -1,15 +1,16 @@
 import classNames from 'classnames';
 import { useState } from 'react';
 
-import { NoticeType } from '../consts/const';
-import { useWorldDataEntryState } from '../contexts/world-data-entry-provider';
-import { Toast } from '../utils/toast';
-import { getWorldId } from '../utils/util';
-
 import { Button } from './common/button';
 import { InputText } from './common/input-text';
 import { WorldCard } from './world-card';
 import styles from './world-data-entry.scss';
+
+import { NoticeType } from 'src/consts/const';
+import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';
+import { Toast } from 'src/utils/toast';
+import { getWorldId } from 'src/utils/util';
+
 
 
 

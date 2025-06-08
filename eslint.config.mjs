@@ -37,6 +37,14 @@ export default defineConfig([{
     },
   },
 
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: './tsconfig.json',
+      },
+    },
+  },
+
   ignores: ['node_modules/**', 'out/**', '.webpack/**'],
 
   rules: {
@@ -48,6 +56,7 @@ export default defineConfig([{
       'newlines-between': 'always',
       alphabetize: { order: 'asc', caseInsensitive: true },
     }],
+    'no-restricted-imports': ['error', { 'patterns': ['../']}],
   },
 }, globalIgnores([
   '.webpack/**',

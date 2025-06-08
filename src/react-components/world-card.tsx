@@ -1,18 +1,18 @@
 import classNames from 'classnames';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import { ReactComponent as MailSendIcon } from '../../assets/images/IconoirSendMail.svg';
-import { ReactComponent as ClipboardIcon } from '../../assets/images/MdiClipboardTextOutline.svg';
-import { NoticeType } from '../consts/const';
-import { useAppData } from '../contexts/app-data-provider';
-import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from '../types/renderer';
-import { Toast } from '../utils/toast';
-import { debounce, writeClipboard } from '../utils/util';
-
 import { Button } from './common/button';
 import { CheckboxGroup } from './common/checkbox-group';
 import { DropDownList, SelectOption } from './common/drop-down-list';
 import style from './world-card.scss';
+
+import { ReactComponent as MailSendIcon } from 'assets/images/IconoirSendMail.svg';
+import { ReactComponent as ClipboardIcon } from 'assets/images/MdiClipboardTextOutline.svg';
+import { NoticeType } from 'src/consts/const';
+import { useAppData } from 'src/contexts/app-data-provider';
+import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
+import { Toast } from 'src/utils/toast';
+import { debounce, writeClipboard } from 'src/utils/util';
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (

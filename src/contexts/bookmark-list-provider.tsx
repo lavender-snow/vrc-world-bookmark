@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from 'react';
 
-import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder } from '../consts/const';
-
 import { useAppData } from './app-data-provider';
+
+import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder } from 'src/consts/const';
+
 
 type BookmarkListContextValue = {
   page: number;

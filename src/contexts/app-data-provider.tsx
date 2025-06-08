@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-import type { Genre, VisitStatus } from '../types/table';
+import type { Genre, VisitStatus } from 'src/types/table';
 
 type AppData = {
   genres?: Genre[];
