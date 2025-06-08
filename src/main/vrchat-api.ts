@@ -1,19 +1,19 @@
-import { ipcMain } from "electron";
-import type { VRChatWorld } from "../types/vrchat";
+import { ipcMain } from 'electron';
+import type { VRChatWorld } from '../types/vrchat';
 
 export class WorldNotFoundError extends Error {}
 
 function userAgent() {
-    return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`
+  return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`;
 }
 
 export async function fetchWorldInfo(worldId: string) {
   const response = await fetch(`https://api.vrchat.cloud/api/1/worlds/${worldId}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "User-Agent": userAgent(),
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'User-Agent': userAgent(),
     },
   });
 
@@ -29,6 +29,6 @@ export async function fetchWorldInfo(worldId: string) {
   return data as VRChatWorld;
 }
 
-ipcMain.handle("fetch_world_info", async (event, worldId: string) => {
+ipcMain.handle('fetch_world_info', async (event, worldId: string) => {
   return await fetchWorldInfo(worldId);
 });

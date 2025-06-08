@@ -11,10 +11,17 @@
     ],
     "cSpell.words": [
         "AUTOINCREMENT",
+        "Elems",
         "fadein",
         "Iconoir",
         "Uncategorized",
         "vrchat",
         "wrld"
     ],
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    }
 }

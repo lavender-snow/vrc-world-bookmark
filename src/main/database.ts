@@ -1,13 +1,13 @@
-import Database from "better-sqlite3";
-import * as path from "path";
-import * as fs from "fs";
-import type { VRChatWorld } from "../types/vrchat";
+import Database from 'better-sqlite3';
+import * as path from 'path';
+import * as fs from 'fs';
+import type { VRChatWorld } from '../types/vrchat';
 import type { Genre, VisitStatus } from '../types/table';
-import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from "../types/renderer";
-import { GENRE, ORDERABLE_COLUMNS } from "../consts/const";
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from '../types/renderer';
+import { GENRE, ORDERABLE_COLUMNS } from '../consts/const';
 
-const DB_PATH = "app.db";
-const MIGRATIONS_DIR = path.join(__dirname, "../../migrations/sqlite") // TODO: パッケージ化に対応する
+const DB_PATH = 'app.db';
+const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO: パッケージ化に対応する
 
 let db: Database.Database;
 
@@ -23,20 +23,20 @@ export function runMigrations() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       filename TEXT NOT NULL UNIQUE,
       applied_at TEXT NOT NULL
-    );`
+    );`,
   );
 
-  const files = fs.readdirSync(MIGRATIONS_DIR).filter(f => f.endsWith(".sql")).sort();
+  const files = fs.readdirSync(MIGRATIONS_DIR).filter(f => f.endsWith('.sql')).sort();
 
   files.forEach(file => {
-    const already = db.prepare("SELECT 1 FROM migrations WHERE filename = ?;").get(file);
+    const already = db.prepare('SELECT 1 FROM migrations WHERE filename = ?;').get(file);
     if (!already) {
-      const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), "utf-8");
+      const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf-8');
       db.exec(sql);
-      db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, datetime('now'));").run(file);
+      db.prepare('INSERT INTO migrations (filename, applied_at) VALUES (?, datetime("now"));').run(file);
       console.log(`Migration executed: ${file}`);
     }
-  })
+  });
 }
 
 function buildSelectQuery({
@@ -45,7 +45,7 @@ function buildSelectQuery({
   where = [],
   groupBy = [],
   orderBy = [],
-  pagination = []
+  pagination = [],
 }: {
   select: string;
   from: string;
@@ -57,21 +57,21 @@ function buildSelectQuery({
   return [
     `SELECT ${select}`,
     `FROM ${from}`,
-    where.length ? `WHERE ${where.join(" AND ")}` : "",
-    groupBy.length ? `GROUP BY ${groupBy.join(", ")}` : "",
-    orderBy.length ? orderBy.join(" ") : "",
-    pagination.length ? pagination.join(" ") : ""
-  ].filter(Boolean).join("\n");
+    where.length ? `WHERE ${where.join(' AND ')}` : '',
+    groupBy.length ? `GROUP BY ${groupBy.join(', ')}` : '',
+    orderBy.length ? orderBy.join(' ') : '',
+    pagination.length ? pagination.join(' ') : '',
+  ].filter(Boolean).join('\n');
 }
 
 export function getGenres(): Genre[] {
-  const result = db.prepare("SELECT * FROM genres ORDER BY id;").all() as Genre[];
+  const result = db.prepare('SELECT * FROM genres ORDER BY id;').all() as Genre[];
 
   return result;
 }
 
 export function getVisitStatuses(): VisitStatus[] {
-  const result = db.prepare("SELECT * FROM visit_statuses ORDER BY id;").all() as VisitStatus[];
+  const result = db.prepare('SELECT * FROM visit_statuses ORDER BY id;').all() as VisitStatus[];
 
   return result;
 }
@@ -80,20 +80,20 @@ function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
   const genreIds = [];
   const lowerTags = worldTags.map(tag => tag.toLowerCase());
 
-  if (lowerTags.includes("author_tag_horror")) {
+  if (lowerTags.includes('author_tag_horror')) {
     genreIds.push(GENRE.HORROR);
   }
 
-  if (lowerTags.includes("author_tag_game")) {
+  if (lowerTags.includes('author_tag_game')) {
     genreIds.push(GENRE.GAME);
   }
 
-  if (lowerTags.findIndex(tag => tag.startsWith("admin_")) >= 0) {
+  if (lowerTags.findIndex(tag => tag.startsWith('admin_')) >= 0) {
     genreIds.push(GENRE.HIGH_QUALITY);
   }
 
-  if (lowerTags.includes("author_tag_chill")) {
-    genreIds.push(GENRE.CHILL)
+  if (lowerTags.includes('author_tag_chill')) {
+    genreIds.push(GENRE.CHILL);
   }
 
   return genreIds;
@@ -108,7 +108,7 @@ function addWorldGenres(worldId: string, genreIds: number[]) {
     params[`genreId${i}`] = id;
   });
 
-  db.prepare(`INSERT INTO world_genres (world_id, genre_id) VALUES ${values.join(", ")};`).run(params);
+  db.prepare(`INSERT INTO world_genres (world_id, genre_id) VALUES ${values.join(', ')};`).run(params);
 }
 
 function addBookmark(worldId: string, worldTags: string[]) {
@@ -124,33 +124,33 @@ function addBookmark(worldId: string, worldTags: string[]) {
 export function updateWorldGenres(options: UpdateWorldGenresOptions) {
   const { worldId, genreIds } = options;
 
-  db.prepare("DELETE FROM world_genres WHERE world_id = @worldId;").run({ worldId });
+  db.prepare('DELETE FROM world_genres WHERE world_id = @worldId;').run({ worldId });
 
   if (genreIds.length === 0) return;
   addWorldGenres(worldId, genreIds);
 }
 
 export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
-  const keys = Object.keys(options).filter(key => key !== "worldId");
+  const keys = Object.keys(options).filter(key => key !== 'worldId');
   const params: Partial<UpdateWorldBookmarkOptions> = {
     worldId: options.worldId,
-  }
+  };
 
   if (keys.some(key => options[key as keyof typeof options] !== undefined)) {
     const setClauses: string[] = [];
 
     if (options.note !== undefined) {
-      setClauses.push("note = @note");
+      setClauses.push('note = @note');
       params.note = options.note;
     }
     if (options.visitStatusId !== undefined) {
-      setClauses.push("visit_status_id = @visitStatusId");
+      setClauses.push('visit_status_id = @visitStatusId');
       params.visitStatusId = options.visitStatusId;
     }
 
-    db.prepare(`UPDATE bookmarks SET ${setClauses.join(", ")}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+    db.prepare(`UPDATE bookmarks SET ${setClauses.join(', ')}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
   } else {
-    console.warn("No fields to update in bookmark for world:", options.worldId);
+    console.warn('No fields to update in bookmark for world:', options.worldId);
   }
 }
 
@@ -183,7 +183,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     urlList: JSON.stringify(world.urlList),
     version: world.version,
     visits: world.visits,
-  }
+  };
 
   const result = db.prepare(`INSERT INTO vrchat_worlds (
     id,
@@ -270,12 +270,12 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
     version_cached = @version,
     visits_cached = @visits,
     updated_at = datetime('now');`)
-  .run(params);
+    .run(params);
 
   if (result.changes > 0) {
     console.log(`World info upsert: ${world.id}`);
 
-    const exists = db.prepare("SELECT 1 FROM bookmarks WHERE world_id = ?;").get(world.id);
+    const exists = db.prepare('SELECT 1 FROM bookmarks WHERE world_id = ?;').get(world.id);
 
     if (!exists) {
       addBookmark(world.id, world.tags);
@@ -304,7 +304,7 @@ export function getWorldInfo(worldId: string) {
     GROUP_CONCAT(wg.genre_id) AS genreIds,
     bookmark.note,
     bookmark.visit_status_id AS visitStatusId
-  `
+  `;
 
   const fromSql = `
     vrchat_worlds world
@@ -315,8 +315,8 @@ export function getWorldInfo(worldId: string) {
   const sql = buildSelectQuery({
     select: selectSql,
     from: fromSql,
-    where: [`world.id = ?`],
-  })
+    where: ['world.id = ?'],
+  });
 
   const result = db.prepare(sql).get(worldId) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
 
@@ -324,7 +324,7 @@ export function getWorldInfo(worldId: string) {
     return {
       ...result,
       tags: result.tags ? JSON.parse(result.tags) as string[] : [],
-      genreIds: result.genreIds ? result.genreIds.split(",").map(id => parseInt(id, 10)) : []
+      genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
     };
   } else {
     console.error(`World info not found: ${worldId}`);
@@ -370,9 +370,9 @@ export function getBookmarkList(options: BookmarkListOptions) {
     LEFT JOIN world_genres wg ON world.id = wg.world_id
   `;
 
-  const groupByClauses = ["world.id"];
+  const groupByClauses = ['world.id'];
 
-  const params: Record<string, string | number> = {}
+  const params: Record<string, string | number> = {};
   const whereClauses: string[] = [];
   const orderByClauses: string[] = [];
   const paginationClauses: string[] = [];
@@ -383,7 +383,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
           SELECT world_id
           FROM world_genres
           WHERE genre_id IN (
-            ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(",")}
+            ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
           )
       )
     `);
@@ -393,14 +393,14 @@ export function getBookmarkList(options: BookmarkListOptions) {
   }
 
   if (options.selectedVisitStatuses.length > 0) {
-    whereClauses.push(`bookmark.visit_status_id IN (${options.selectedVisitStatuses.map((_, i) => `@visitStatusId${i}`).join(",")})`);
+    whereClauses.push(`bookmark.visit_status_id IN (${options.selectedVisitStatuses.map((_, i) => `@visitStatusId${i}`).join(',')})`);
     options.selectedVisitStatuses.forEach((id, i) => {
       params[`visitStatusId${i}`] = id;
     });
   }
 
   if (options.searchTerm) {
-    whereClauses.push("(world.name_cached LIKE @searchTerm OR world.description_cached LIKE @searchTerm OR bookmark.note LIKE @searchTerm)");
+    whereClauses.push('(world.name_cached LIKE @searchTerm OR world.description_cached LIKE @searchTerm OR bookmark.note LIKE @searchTerm)');
     params.searchTerm = `%${options.searchTerm}%`;
   }
 
@@ -409,11 +409,11 @@ export function getBookmarkList(options: BookmarkListOptions) {
   }
 
   if (options.limit) {
-    paginationClauses.push("LIMIT @limit");
+    paginationClauses.push('LIMIT @limit');
     params.limit = options.limit;
 
     if (options.page) {
-      paginationClauses.push("OFFSET @offset");
+      paginationClauses.push('OFFSET @offset');
       params.offset = (options.page - 1) * (options.limit);
     }
   }
@@ -424,7 +424,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
     where: whereClauses,
     groupBy: groupByClauses,
     orderBy: orderByClauses,
-    pagination: paginationClauses
+    pagination: paginationClauses,
   });
 
   const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string, genreIds: string} & { total_count: number })[];
@@ -437,12 +437,12 @@ export function getBookmarkList(options: BookmarkListOptions) {
     return {
       ...worldInfo,
       tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
-      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(",").map(id => parseInt(id, 10)) : []
-    }
+      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(',').map(id => parseInt(id, 10)) : [],
+    };
   });
 
   return {
     bookmarkList,
-    totalCount
+    totalCount,
   };
 }

@@ -1,16 +1,16 @@
-import classNames from "classnames";
-import { useState, useEffect, useCallback, useRef } from "react";
-import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from "../types/renderer";
-import style from "./world-card.scss";
-import { ReactComponent as MailSendIcon } from "../../assets/images/IconoirSendMail.svg";
-import { ReactComponent as ClipboardIcon } from "../../assets/images/MdiClipboardTextOutline.svg";
-import { Button } from "./common/button";
-import { debounce, writeClipboard } from "../utils/util";
-import { Toast } from "../utils/toast";
-import { NoticeType } from "../consts/const";
+import classNames from 'classnames';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from '../types/renderer';
+import style from './world-card.scss';
+import { ReactComponent as MailSendIcon } from '../../assets/images/IconoirSendMail.svg';
+import { ReactComponent as ClipboardIcon } from '../../assets/images/MdiClipboardTextOutline.svg';
+import { Button } from './common/button';
+import { debounce, writeClipboard } from '../utils/util';
+import { Toast } from '../utils/toast';
+import { NoticeType } from '../consts/const';
 import { useAppData } from '../contexts/AppDataProvider';
-import { DropDownList, SelectOption } from "./common/drop-down-list";
-import { CheckboxGroup } from "./common/checkbox-group";
+import { DropDownList, SelectOption } from './common/drop-down-list';
+import { CheckboxGroup } from './common/checkbox-group';
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -18,7 +18,7 @@ function WorldProperty({ name, value }: { name: string, value: string | number }
       <div className={classNames(style.worldPropertyName)}>{name}</div>
       <div className={style.worldPropertyValue}>{value}</div>
     </div>
-  )
+  );
 }
 
 function WorldTags({ tags }: { tags: string[] }) {
@@ -27,16 +27,16 @@ function WorldTags({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <div key={tag} className={classNames(
           style.worldTag,
-          tag.toLowerCase() === "author_tag_chill" && style.chillWorldTag,
-          tag.toLowerCase() === "author_tag_horror" && style.horrorWorldTag,
-          tag.toLowerCase() === "author_tag_game" && style.gameWorldTag,
-          tag.startsWith("admin_") && style.adminWorldTag,
+          tag.toLowerCase() === 'author_tag_chill' && style.chillWorldTag,
+          tag.toLowerCase() === 'author_tag_horror' && style.horrorWorldTag,
+          tag.toLowerCase() === 'author_tag_game' && style.gameWorldTag,
+          tag.startsWith('admin_') && style.adminWorldTag,
         )}>
           {tag}
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
@@ -44,7 +44,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [debouncedSelectedGenreIds, setDebouncedSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
-  const [toast, setToast] = useState<string>("");
+  const [toast, setToast] = useState<string>('');
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
   const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
   const genres = useAppData().genres;
@@ -53,18 +53,18 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
     setToastNoticeType(NoticeType.success);
-    setToast("ワールド名をコピーしました");
+    setToast('ワールド名をコピーしました');
   }
 
   async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
     try {
       await window.dbAPI.updateWorldBookmark(options);
       setToastNoticeType(NoticeType.success);
-      setToast("ブックマークを更新しました");
+      setToast('ブックマークを更新しました');
     } catch (error) {
-      console.error("Failed to update world bookmark:", error);
+      console.error('Failed to update world bookmark:', error);
       setToastNoticeType(NoticeType.error);
-      setToast("ブックマークの更新に失敗しました");
+      setToast('ブックマークの更新に失敗しました');
     }
   }
 
@@ -72,11 +72,11 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
     try {
       await window.dbAPI.updateWorldGenres(options);
       setToastNoticeType(NoticeType.success);
-      setToast("ジャンル設定を更新しました");
+      setToast('ジャンル設定を更新しました');
     } catch (error) {
-      console.error("Failed to update world genres:", error);
+      console.error('Failed to update world genres:', error);
       setToastNoticeType(NoticeType.error);
-      setToast("ジャンル設定の更新に失敗しました");
+      setToast('ジャンル設定の更新に失敗しました');
     }
   }
 
@@ -96,7 +96,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
     debounce((genreIds: number[]) => {
       setDebouncedSelectedGenreIds(genreIds);
     }, 500),
-    []
+    [],
   );
 
   function onGenresChange(genreIds: number[]) {
@@ -125,14 +125,14 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   }, [worldInfo]);
 
   const visitStatusesNames: SelectOption[] = visitStatuses.map((status) => {
-    return { id: status.id.toString(), name: status.name_jp }
+    return { id: status.id.toString(), name: status.name_jp };
   });
 
   return (
     <div className={classNames(style.worldCard)}>
       <div className={style.worldTitle}>
         <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick() }} aria-label={"ワールド名をコピー"}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
+          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={'ワールド名をコピー'}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
       <div className={style.worldInfoArea}>
@@ -154,7 +154,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
       </div>
       <div className={style.bookmarkArea}>
         <div className={style.memoArea}>
-          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value) }} onBlur={() => { onNoteBlur() }} value={worldNote}></textarea>
+          <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value); }} onBlur={() => { onNoteBlur(); }} value={worldNote}></textarea>
         </div>
         <div className={style.genreArea}>
           <strong>ジャンル</strong>
@@ -172,7 +172,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
-      <Toast message={toast} onClose={() => { setToast("") }} noticeType={toastNoticeType} />
+      <Toast message={toast} onClose={() => { setToast(''); }} noticeType={toastNoticeType} />
     </div >
   );
 }

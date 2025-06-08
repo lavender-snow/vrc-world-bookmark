@@ -1,11 +1,11 @@
-import classNames from "classnames";
-import styles from "./button.scss";
+import classNames from 'classnames';
+import styles from './button.scss';
 
 export function Button({
   onClick,
   children,
   className = '',
-  disabled = false
+  disabled = false,
 }: {
   onClick: () => void;
   children: React.ReactNode;

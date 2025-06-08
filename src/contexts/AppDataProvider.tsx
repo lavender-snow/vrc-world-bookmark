@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import type { Genre, VisitStatus } from "../types/table";
+import { createContext, useContext, useState, useEffect } from 'react';
+import type { Genre, VisitStatus } from '../types/table';
 
 type AppData = {
   genres?: Genre[];
@@ -16,7 +16,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     Promise.all([
       window.dbAPI.getGenres().then(setGenres),
-      window.dbAPI.getVisitStatuses().then(setVisitStatuses)
+      window.dbAPI.getVisitStatuses().then(setVisitStatuses),
     ]).finally(() => setLoading(false));
   }, []);
 

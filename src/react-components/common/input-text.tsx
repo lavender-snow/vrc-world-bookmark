@@ -1,5 +1,5 @@
-import classNames from "classnames";
-import styles from "./input-text.scss";
+import classNames from 'classnames';
+import styles from './input-text.scss';
 
 export function InputText({
   value,

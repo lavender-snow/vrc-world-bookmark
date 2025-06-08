@@ -1,16 +1,16 @@
-import { useState, useEffect, useCallback } from "react";
-import type { BookmarkListOptions, VRChatWorldInfo } from "../types/renderer";
-import { WorldCard } from "./world-card";
-import style from "./bookmark-list.scss";
-import { useAppData } from "../contexts/AppDataProvider";
-import { DropDownList } from "./common/drop-down-list";
-import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder } from "../consts/const";
-import { InputText } from "./common/input-text";
-import { Accordion } from "./common/accordion";
-import { ReactComponent as FilterIcon } from "../../assets/images/MaterialSymbolsFilterAltOutline.svg";
-import { debounce } from "../utils/util";
-import { useBookmarkListState } from "../contexts/BookmarkListProvider";
-import { CheckboxGroup } from "./common/checkbox-group";
+import { useState, useEffect, useCallback } from 'react';
+import type { BookmarkListOptions, VRChatWorldInfo } from '../types/renderer';
+import { WorldCard } from './world-card';
+import style from './bookmark-list.scss';
+import { useAppData } from '../contexts/AppDataProvider';
+import { DropDownList } from './common/drop-down-list';
+import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder } from '../consts/const';
+import { InputText } from './common/input-text';
+import { Accordion } from './common/accordion';
+import { ReactComponent as FilterIcon } from '../../assets/images/MaterialSymbolsFilterAltOutline.svg';
+import { debounce } from '../utils/util';
+import { useBookmarkListState } from '../contexts/BookmarkListProvider';
+import { CheckboxGroup } from './common/checkbox-group';
 
 export function BookmarkList() {
   const [bookmarkList, setBookmarkList] = useState<VRChatWorldInfo[]>([]);
@@ -25,7 +25,7 @@ export function BookmarkList() {
     debouncedTerm, setDebouncedTerm,
     orderBy, setOrderBy,
     sortOrder, setSortOrder,
-    filterVisible, setFilterVisible
+    filterVisible, setFilterVisible,
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
@@ -51,14 +51,14 @@ export function BookmarkList() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
-  }, [page])
+  }, [page]);
 
   const debouncedSearch = useCallback(
     debounce((term: string) => {
       setDebouncedTerm(term);
       setPage(1);
     }, 500),
-    []
+    [],
   );
 
   function onKeywordSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -86,7 +86,7 @@ export function BookmarkList() {
           disabled={i === page}
         >
           {i}
-        </button>
+        </button>,
       );
     }
     return pages;
@@ -95,7 +95,7 @@ export function BookmarkList() {
   return (
     <>
       <div className={style.filterAreaWrapper}>
-        <Accordion icon={FilterIcon} title={"フィルター"} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
+        <Accordion icon={FilterIcon} title={'フィルター'} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
           <div className={style.filterArea}>
             <div className={style.filterItems}>
               <div className={style.filterItemRow}>
@@ -132,7 +132,7 @@ export function BookmarkList() {
                   <DropDownList
                     options={
                       ORDERABLE_COLUMNS.map(
-                        (column) => ({ id: column.id, name: column.value })
+                        (column) => ({ id: column.id, name: column.value }),
                       )
                     }
                     currentValue={orderBy}
@@ -147,7 +147,7 @@ export function BookmarkList() {
                   <DropDownList
                     options={
                       SORT_ORDERS.map(
-                        (order) => ({ id: order.id, name: order.value })
+                        (order) => ({ id: order.id, name: order.value }),
                       )
                     }
                     currentValue={sortOrder}
@@ -161,7 +161,7 @@ export function BookmarkList() {
                   <strong>表示件数</strong>
                   <DropDownList
                     options={RESULT_PER_PAGE_OPTIONS.map(
-                      (num) => ({ id: num.toString(), name: `${num}件` })
+                      (num) => ({ id: num.toString(), name: `${num}件` }),
                     )}
                     currentValue={limit.toString()}
                     onChange={(e) => {
