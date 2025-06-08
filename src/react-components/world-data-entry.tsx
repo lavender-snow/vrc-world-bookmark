@@ -5,15 +5,15 @@ import classNames from 'classnames';
 import styles from './world-data-entry.scss';
 import { getWorldId } from '../utils/util';
 import { WorldCard } from './world-card';
-import type { VRChatWorldInfo } from '../types/renderer';
 import { Toast } from '../utils/toast';
 import { NoticeType } from '../consts/const';
+import { useWorldDataEntryState } from '../contexts/world-data-entry-provider';
 
 export function WorldDataEntry() {
-  const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
-  const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
   const [toast, setToast] = useState<string>('');
   const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
+
+  const {worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo}= useWorldDataEntryState();
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
     setWorldIdOrUrl(e.target.value);
