@@ -38,9 +38,9 @@
   gap: 16px;
 }
 
-:local(.keyword-search) {
+:local(input.keyword-search) {
   font-size: 13px;
-  padding: 5px;
+  padding: 6px 8px;
   border-radius: 4px;
   width: 20rem;
 }
