@@ -6,10 +6,14 @@ import styles from './world-data-entry.scss';
 import { getWorldId } from '../utils/util';
 import { WorldCard } from './world-card';
 import type { VRChatWorldInfo } from '../types/renderer';
+import { Toast } from '../utils/toast';
+import { NoticeType } from '../consts/const';
 
 export function WorldDataEntry() {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
   const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
+  const [toast, setToast] = useState<string>('');
+  const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
     setWorldIdOrUrl(e.target.value);
@@ -20,7 +24,14 @@ export function WorldDataEntry() {
 
     if (worldId) {
       const response = await window.dbAPI.addOrUpdateWorldInfo(worldId);
-      setVRChatWorldInfo(response);
+      if (!response) {
+        setToastNoticeType(NoticeType.error);
+        setToast('ワールド情報の取得に失敗しました。ワールドIDが正しいか、VRChatサーバーが正常に稼働しているか確認してください。');
+      } else {
+        setVRChatWorldInfo(response);
+        setToastNoticeType(NoticeType.success);
+        setToast('ワールド情報を取得しました。');
+      }
     }
   }
 
@@ -43,6 +54,7 @@ export function WorldDataEntry() {
           <WorldCard worldInfo={vrchatWorldInfo} />
         )}
       </div>
+      <Toast message={toast} onClose={() => { setToast(''); }} noticeType={toastNoticeType} />
     </div>
   );
 }
