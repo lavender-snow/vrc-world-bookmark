@@ -61,5 +61,5 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 export function useBookmarkListState() {
   const ctx = useContext(BookmarkListContext);
   if (!ctx) throw new Error('useBookmarkListState must be used within a BookmarkListProvider');
-  return useContext(BookmarkListContext);
+  return ctx;
 }

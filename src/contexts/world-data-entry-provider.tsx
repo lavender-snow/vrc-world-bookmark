@@ -27,5 +27,5 @@ export function WorldDataEntryProvider({ children }: { children: React.ReactNode
 export function useWorldDataEntryState() {
   const ctx = useContext(WorldDataEntryContext);
   if (!ctx) throw new Error('useWorldDataEntryState must be used within a WorldDataEntryProvider');
-  return useContext(WorldDataEntryContext);
+  return ctx;
 }
