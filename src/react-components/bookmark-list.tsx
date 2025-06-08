@@ -9,10 +9,10 @@ import { InputText } from './common/input-text';
 import { WorldCard } from './world-card';
 
 import { ReactComponent as FilterIcon } from 'assets/images/MaterialSymbolsFilterAltOutline.svg';
-import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, LogicMode } from 'src/consts/const';
+import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
-import type { BookmarkListOptions, VRChatWorldInfo } from 'src/types/renderer';
+import type { BookmarkListOptions, VRChatWorldInfo, LogicMode } from 'src/types/renderer';
 import { debounce } from 'src/utils/util';
 
 export function BookmarkList() {

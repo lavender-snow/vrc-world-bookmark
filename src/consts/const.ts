@@ -1,3 +1,5 @@
+import type { LogicMode } from 'src/types/renderer';
+
 export const NoticeType = {
   info: 'info',
   success: 'success',
@@ -32,5 +34,7 @@ export const GENRE = {
   PHOTO_SPOT: 4,
 };
 
-export const LOGIC_MODES = {'and': 'and','or': 'or'} as const;
-export type LogicMode = typeof LOGIC_MODES[keyof typeof LOGIC_MODES];
+export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
+  and: 'and',
+  or: 'or',
+};
