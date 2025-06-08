@@ -9,7 +9,7 @@ declare global {
     dbAPI: {
       getGenres: () => Promise<Genre[]>;
       getVisitStatuses: () => Promise<VisitStatus[]>;
-      addOrUpdateWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
+      addOrUpdateWorldInfo: (worldId: string) => Promise<{ data?: VRChatWorldInfo, error?: string }>;
       getWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
       updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
       updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<void>;

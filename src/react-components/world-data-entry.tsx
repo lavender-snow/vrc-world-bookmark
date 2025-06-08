@@ -24,13 +24,17 @@ export function WorldDataEntry() {
 
     if (worldId) {
       const response = await window.dbAPI.addOrUpdateWorldInfo(worldId);
-      if (!response) {
+
+      if (response.error) {
         setToastNoticeType(NoticeType.error);
-        setToast('ワールド情報の取得に失敗しました。ワールドIDが正しいか、VRChatサーバーが正常に稼働しているか確認してください。');
-      } else {
-        setVRChatWorldInfo(response);
+        setToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`);
+      } else if (response.data) {
+        setVRChatWorldInfo(response.data);
         setToastNoticeType(NoticeType.success);
         setToast('ワールド情報を取得しました。');
+      } else {
+        setToastNoticeType(NoticeType.error);
+        setToast('予期せぬエラーが発生しました。');
       }
     }
   }
