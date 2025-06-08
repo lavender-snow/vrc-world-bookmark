@@ -33,6 +33,7 @@ export interface BookmarkListOptions {
   page?: number;
   limit?: number;
   selectedGenres: number[];
+  genreFilterMode: 'and' | 'or';
   selectedVisitStatuses: number[];
   searchTerm?: string;
   orderBy?: string;

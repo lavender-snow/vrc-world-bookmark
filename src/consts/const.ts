@@ -4,7 +4,6 @@ export const NoticeType = {
   warning: 'warning',
   error: 'error',
 };
-
 export type NoticeType = typeof NoticeType[keyof typeof NoticeType];
 
 export const DEFAULT_RESULT_PER_PAGE = 10;
@@ -17,14 +16,12 @@ export const ORDERABLE_COLUMNS = [
   { id: 'world.visits_cached', value: '訪問数'  },
   { id: 'bookmark.created_at', value: 'ブックマーク登録日' },
 ] as const;
-
 export type OrderableColumnKey = typeof ORDERABLE_COLUMNS[number]['id'];
 
 export const SORT_ORDERS = [
   { id: 'desc', value: '降順' },
   { id: 'asc', value: '昇順' },
 ] as const;
-
 export type SortOrder = typeof SORT_ORDERS[number]['id'];
 
 export const GENRE = {
@@ -34,3 +31,6 @@ export const GENRE = {
   HORROR: 3,
   PHOTO_SPOT: 4,
 };
+
+export const LOGIC_MODES = {'and': 'and','or': 'or'} as const;
+export type LogicMode = typeof LOGIC_MODES[keyof typeof LOGIC_MODES];

@@ -9,7 +9,7 @@ import { InputText } from './common/input-text';
 import { WorldCard } from './world-card';
 
 import { ReactComponent as FilterIcon } from 'assets/images/MaterialSymbolsFilterAltOutline.svg';
-import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder } from 'src/consts/const';
+import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, LogicMode } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
 import type { BookmarkListOptions, VRChatWorldInfo } from 'src/types/renderer';
@@ -23,6 +23,7 @@ export function BookmarkList() {
     page, setPage,
     limit, setLimit,
     selectedGenres, setSelectedGenres,
+    genreFilterMode, setGenreFilterMode,
     selectedVisitStatuses, setSelectedVisitStatuses,
     searchTerm, setSearchTerm,
     debouncedTerm, setDebouncedTerm,
@@ -37,6 +38,7 @@ export function BookmarkList() {
       page,
       limit,
       selectedGenres,
+      genreFilterMode,
       selectedVisitStatuses,
       searchTerm: debouncedTerm,
       orderBy,
@@ -50,11 +52,16 @@ export function BookmarkList() {
 
   useEffect(() => {
     getBookmarkList();
-  }, [page, limit, selectedGenres, selectedVisitStatuses, debouncedTerm, orderBy, sortOrder]);
+  }, [page, limit, selectedGenres, genreFilterMode, selectedVisitStatuses, debouncedTerm, orderBy, sortOrder]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [page]);
+
+  function onFilterModeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setGenreFilterMode(e.target.value as LogicMode);
+    setPage(1);
+  }
 
   const debouncedSearch = useCallback(
     debounce((term: string) => {
@@ -113,6 +120,26 @@ export function BookmarkList() {
                     }}
                     allOption={true}
                   />
+                  <label>
+                    <input
+                      type="radio"
+                      name="filterMode"
+                      value={LOGIC_MODES.and}
+                      checked={genreFilterMode === LOGIC_MODES.and}
+                      onChange={onFilterModeChange}
+                    />
+                    AND検索
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="filterMode"
+                      value={LOGIC_MODES.or}
+                      checked={genreFilterMode === LOGIC_MODES.or}
+                      onChange={onFilterModeChange}
+                    />
+                    OR検索
+                  </label>
                 </div>
               </div>
               <div className={style.filterItemRow}>

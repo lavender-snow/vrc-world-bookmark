@@ -388,6 +388,7 @@ export function getBookmarkList(options: BookmarkListOptions) {
           WHERE genre_id IN (
             ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
           )
+          ${options.genreFilterMode === 'and' ? 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length : ''}
       )
     `);
     options.selectedGenres.forEach((id, i) => {
