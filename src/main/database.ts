@@ -103,6 +103,8 @@ function addWorldGenres(worldId: string, genreIds: number[]) {
   const values: string[] = [];
   const params: Record<string, string | number> = { worldId };
 
+  if (genreIds.length === 0) return;
+
   genreIds.forEach((id, i) => {
     values.push(`(@worldId, @genreId${i})`);
     params[`genreId${i}`] = id;
@@ -126,7 +128,6 @@ export function updateWorldGenres(options: UpdateWorldGenresOptions) {
 
   db.prepare('DELETE FROM world_genres WHERE world_id = @worldId;').run({ worldId });
 
-  if (genreIds.length === 0) return;
   addWorldGenres(worldId, genreIds);
 }
 
