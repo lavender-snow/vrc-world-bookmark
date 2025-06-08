@@ -13,6 +13,7 @@ export async function upsertWorldBookmark(worldId: string) {
       deleteWorldInfo(worldId);
     } else {
       console.error(`Error fetching world info for ${worldId}:`, error);
+      return null;
     }
   }
 
