@@ -1,3 +1,5 @@
+import path from 'path';
+
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import type { Configuration } from 'webpack';
 
@@ -22,7 +24,14 @@ rules.push(
           },
         },
       },
-      'sass-loader',
+      {
+        loader: 'sass-loader',
+        options: {
+          sassOptions: {
+            includePaths: [path.resolve(__dirname, 'assets')],
+          },
+        },
+      },
     ],
   },{
     test: /\.svg$/,
