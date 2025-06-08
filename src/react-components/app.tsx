@@ -7,6 +7,7 @@ import { WorldDataEntry } from './world-data-entry';
 
 import { AppDataProvider } from 'src/contexts/app-data-provider';
 import { BookmarkListProvider } from 'src/contexts/bookmark-list-provider';
+import { ToastProvider } from 'src/contexts/toast-provider';
 import { WorldDataEntryProvider } from 'src/contexts/world-data-entry-provider';
 
 const TAB_KEYS = {
@@ -46,12 +47,14 @@ export function App(): React.ReactNode {
       </div>
       <div className={styles.tabContent}>
         <AppDataProvider>
-          <BookmarkListProvider>
-            {activeTab === TAB_KEYS.list && <BookmarkList />}
-          </BookmarkListProvider>
-          <WorldDataEntryProvider>
-            {activeTab === TAB_KEYS.register && <WorldDataEntry />}
-          </WorldDataEntryProvider>
+          <ToastProvider>
+            <BookmarkListProvider>
+              {activeTab === TAB_KEYS.list && <BookmarkList />}
+            </BookmarkListProvider>
+            <WorldDataEntryProvider>
+              {activeTab === TAB_KEYS.register && <WorldDataEntry />}
+            </WorldDataEntryProvider>
+          </ToastProvider>
         </AppDataProvider>
       </div>
     </>

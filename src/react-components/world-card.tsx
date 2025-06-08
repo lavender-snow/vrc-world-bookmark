@@ -10,8 +10,8 @@ import { ReactComponent as MailSendIcon } from 'assets/images/IconoirSendMail.sv
 import { ReactComponent as ClipboardIcon } from 'assets/images/MdiClipboardTextOutline.svg';
 import { NoticeType } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
+import { useToast } from 'src/contexts/toast-provider';
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
-import { Toast } from 'src/utils/toast';
 import { debounce, writeClipboard } from 'src/utils/util';
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
@@ -46,39 +46,47 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [debouncedSelectedGenreIds, setDebouncedSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
-  const [toast, setToast] = useState<string>('');
-  const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
+  const { addToast } = useToast();
   const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
   const genres = useAppData().genres;
   const visitStatuses = useAppData().visitStatuses;
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
-    setToastNoticeType(NoticeType.success);
-    setToast('ワールド名をコピーしました');
+    addToast('ワールド名をコピーしました', NoticeType.success);
   }
 
   async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
     try {
       await window.dbAPI.updateWorldBookmark(options);
-      setToastNoticeType(NoticeType.success);
-      setToast('ブックマークを更新しました');
+
+      if (options.note) {
+        addToast('メモを更新しました', NoticeType.success);
+      }
+
+      if(options.visitStatusId) {
+        addToast('訪問状況を更新しました', NoticeType.success);
+      }
     } catch (error) {
       console.error('Failed to update world bookmark:', error);
-      setToastNoticeType(NoticeType.error);
-      setToast('ブックマークの更新に失敗しました');
+
+      if (options.note) {
+        addToast('メモの更新に失敗しました', NoticeType.error);
+      }
+
+      if(options.visitStatusId) {
+        addToast('ブックマークの更新に失敗しました', NoticeType.error);
+      }
     }
   }
 
   async function handleUpdateWorldGenres(options: UpdateWorldGenresOptions) {
     try {
       await window.dbAPI.updateWorldGenres(options);
-      setToastNoticeType(NoticeType.success);
-      setToast('ジャンル設定を更新しました');
+      addToast('ジャンル設定を更新しました', NoticeType.success);
     } catch (error) {
       console.error('Failed to update world genres:', error);
-      setToastNoticeType(NoticeType.error);
-      setToast('ジャンル設定の更新に失敗しました');
+      addToast('ジャンル設定の更新に失敗しました', NoticeType.error);
     }
   }
 
@@ -174,7 +182,6 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
 
         <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
-      <Toast message={toast} onClose={() => { setToast(''); }} noticeType={toastNoticeType} />
     </div >
   );
 }

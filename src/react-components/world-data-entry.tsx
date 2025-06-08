@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useState } from 'react';
 
 import { Button } from './common/button';
 import { InputText } from './common/input-text';
@@ -7,18 +6,12 @@ import { WorldCard } from './world-card';
 import styles from './world-data-entry.scss';
 
 import { NoticeType } from 'src/consts/const';
+import { useToast } from 'src/contexts/toast-provider';
 import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';
-import { Toast } from 'src/utils/toast';
 import { getWorldId } from 'src/utils/util';
 
-
-
-
-
 export function WorldDataEntry() {
-  const [toast, setToast] = useState<string>('');
-  const [toastNoticeType, setToastNoticeType] = useState<NoticeType>(NoticeType.info);
-
+  const { addToast } = useToast();
   const {worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo}= useWorldDataEntryState();
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
@@ -32,15 +25,12 @@ export function WorldDataEntry() {
       const response = await window.dbAPI.addOrUpdateWorldInfo(worldId);
 
       if (response.error) {
-        setToastNoticeType(NoticeType.error);
-        setToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`);
+        addToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`, NoticeType.error);
       } else if (response.data) {
+        addToast('ワールド情報を取得しました。', NoticeType.success);
         setVRChatWorldInfo(response.data);
-        setToastNoticeType(NoticeType.success);
-        setToast('ワールド情報を取得しました。');
       } else {
-        setToastNoticeType(NoticeType.error);
-        setToast('予期せぬエラーが発生しました。');
+        addToast('予期せぬエラーが発生しました。', NoticeType.error);
       }
     }
   }
@@ -64,7 +54,6 @@ export function WorldDataEntry() {
           <WorldCard worldInfo={vrchatWorldInfo} />
         )}
       </div>
-      <Toast message={toast} onClose={() => { setToast(''); }} noticeType={toastNoticeType} />
     </div>
   );
 }
