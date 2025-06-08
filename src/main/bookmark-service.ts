@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { initDB, runMigrations, addOrUpdateWorldInfo, deleteWorldInfo, getGenres, updateWorldBookmark, getWorldInfo, getVisitStatuses, getBookmarkList, updateWorldGenres } from './database';
-import { fetchWorldInfo, WorldNotFoundError } from './vrchat-api';
+import { fetchWorldInfo, VRChatServerError, WorldNotFoundError } from './vrchat-api';
 import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from '../types/renderer';
 
 export async function upsertWorldBookmark(worldId: string) {
@@ -11,13 +11,20 @@ export async function upsertWorldBookmark(worldId: string) {
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
       deleteWorldInfo(worldId);
+    } else if (error instanceof VRChatServerError) {
+      console.error('VRChat server error:', error);
+      return {
+        error: `VRChat server error: ${error.message}`,
+      };
     } else {
       console.error(`Error fetching world info for ${worldId}:`, error);
-      return null;
+      return {
+        error: `Error fetching world info: ${error.message}`,
+      };
     }
   }
 
-  return getWorldInfo(worldId);
+  return { data: getWorldInfo(worldId) };
 }
 
 export function initializeApp() {
