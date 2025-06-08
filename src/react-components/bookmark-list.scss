@@ -38,10 +38,10 @@
   gap: 16px;
 }
 
-:local(.keyword-search) {
-  font-size: 13px !important;
-  padding: 5px 8px !important;
-  border-radius: 4px !important;
+:local(input.keyword-search) {
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: 4px;
   width: 20rem;
 }
 
