@@ -14,7 +14,8 @@ const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO:
 let db: Database.Database;
 
 export function initDB() {
-  db = new Database(DB_PATH, { verbose: console.log });
+  const isDebug = process.env.NODE_ENV === 'development';
+  db = new Database(DB_PATH, { verbose: isDebug ? console.log : undefined});
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
 }
