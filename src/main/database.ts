@@ -87,7 +87,8 @@ function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
     genreIds.push(GENRE.HORROR);
   }
 
-  if (lowerTags.includes('author_tag_game')) {
+  const gameTags = ['author_tag_game', 'author_tag_riddle'];
+  if (lowerTags.some(tag => gameTags.includes(tag))) {
     genreIds.push(GENRE.GAME);
   }
 
