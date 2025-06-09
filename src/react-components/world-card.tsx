@@ -27,10 +27,11 @@ function WorldTags({ tags }: { tags: string[] }) {
   return (
     <div className={style.worldTags}>
       {tags.map((tag) => {
-        const isChill = tag.toLowerCase() === 'author_tag_chill';
-        const isHorror = tag.toLowerCase() === 'author_tag_horror';
-        const isGame = ['author_tag_game', 'author_tag_riddle'].includes(tag.toLowerCase());
-        const isAdmin = tag.startsWith('admin_');
+        const lowerTag = tag.toLowerCase();
+        const isChill = lowerTag === 'author_tag_chill';
+        const isHorror = lowerTag === 'author_tag_horror';
+        const isGame = ['author_tag_game', 'author_tag_riddle'].includes(lowerTag);
+        const isAdmin = lowerTag.startsWith('admin_');
 
         return (
           <div key={tag} className={classNames(
