@@ -33,7 +33,7 @@ const createWindow = (): void => {
           "default-src 'self';",
           "script-src 'self';",
           "style-src 'self' 'unsafe-inline';",
-          "img-src 'self' data: *.vrchat.cloud;",
+          "img-src 'self' data: https://*.vrchat.cloud;",
           "connect-src 'self';",
           "font-src 'self';",
           "object-src 'none';",
