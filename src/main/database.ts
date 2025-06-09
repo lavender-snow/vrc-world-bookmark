@@ -8,7 +8,7 @@ import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, 
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
 
-const DB_PATH = 'app.db';
+const DB_PATH = path.join(process.env.APPDATA || '', process.env.APP_NAME, 'app.db');
 const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO: パッケージ化に対応する
 
 let db: Database.Database;
