@@ -8,13 +8,14 @@ import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, 
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
 
-const DB_PATH = 'app.db';
+const DB_PATH = path.join(process.env.APPDATA || '', process.env.APP_NAME, 'app.db');
 const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO: パッケージ化に対応する
 
 let db: Database.Database;
 
 export function initDB() {
-  db = new Database(DB_PATH, { verbose: console.log });
+  const isDebug = process.env.NODE_ENV === 'development';
+  db = new Database(DB_PATH, { verbose: isDebug ? console.log : undefined});
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
 }
@@ -35,7 +36,7 @@ export function runMigrations() {
     if (!already) {
       const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf-8');
       db.exec(sql);
-      db.prepare('INSERT INTO migrations (filename, applied_at) VALUES (?, datetime("now"));').run(file);
+      db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, datetime('now'));").run(file);
       console.log(`Migration executed: ${file}`);
     }
   });
