@@ -36,7 +36,7 @@ export function runMigrations() {
     if (!already) {
       const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf-8');
       db.exec(sql);
-      db.prepare('INSERT INTO migrations (filename, applied_at) VALUES (?, datetime("now"));').run(file);
+      db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, datetime('now'));").run(file);
       console.log(`Migration executed: ${file}`);
     }
   });
