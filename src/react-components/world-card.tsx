@@ -24,6 +24,17 @@ function WorldProperty({ name, value }: { name: string, value: string | number }
   );
 }
 
+function ThumbnailArea({thumbnailImageUrl, worldName, releaseStatus}: {thumbnailImageUrl: string, worldName: string, releaseStatus: string}) {
+  return (
+    <div className={classNames(style.thumbnailArea)}>
+      <img src={thumbnailImageUrl} alt={worldName} />
+      <span className={classNames(style.releaseStatusBadge, releaseStatus === 'public' ? style.public : style.private)}>
+        {releaseStatus === 'public' ? 'Public' : 'Private'}
+      </span>
+    </div>
+  );
+}
+
 export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [debouncedSelectedGenreIds, setDebouncedSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
@@ -129,10 +140,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
         </h2>
       </div>
       <div className={style.worldInfoArea}>
-        <div className={classNames(style.thumbnailArea)}>
-          <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
-        </div>
-
+        <ThumbnailArea thumbnailImageUrl={worldInfo.thumbnailImageUrl} worldName={worldInfo.name} releaseStatus={worldInfo.releaseStatus}/>
         <div className={classNames(style.infoArea)}>
           <div className={classNames(style.worldProperties)}>
             <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
