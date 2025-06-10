@@ -55,3 +55,7 @@ electron-forgeを使用しzipファイルを直接作成します
 ```
 npm run make
 ```
+
+# ライセンス
+
+本ソフトウェアは [GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.html) のもとで公開されています。
