@@ -1,3 +1,4 @@
+import { app } from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -9,7 +10,9 @@ import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
 
 const DB_PATH = path.join(process.env.APPDATA || '', process.env.APP_NAME, 'app.db');
-const MIGRATIONS_DIR = path.join(__dirname, '../../migrations/sqlite'); // TODO: パッケージ化に対応する
+const MIGRATIONS_DIR = app.isPackaged
+  ? path.join(process.resourcesPath, 'migrations/sqlite')
+  : path.join(process.cwd() , 'migrations/sqlite');
 
 let db: Database.Database;
 

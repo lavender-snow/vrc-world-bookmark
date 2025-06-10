@@ -16,7 +16,8 @@
         "Iconoir",
         "Uncategorized",
         "vrchat",
-        "wrld"
+        "wrld",
+        "asar"
     ],
     "[typescript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
