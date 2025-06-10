@@ -38,3 +38,9 @@ export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
   and: 'and',
   or: 'or',
 };
+
+export const VIEW_TYPES = {
+  list: 'list',
+  grid: 'grid',
+};
+export type ViewType = typeof VIEW_TYPES[keyof typeof VIEW_TYPES];

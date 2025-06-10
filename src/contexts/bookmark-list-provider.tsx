@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 import { useAppData } from './app-data-provider';
 
-import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder } from 'src/consts/const';
+import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
 
 
 type BookmarkListContextValue = {
@@ -26,6 +26,8 @@ type BookmarkListContextValue = {
   setSortOrder?: React.Dispatch<React.SetStateAction<SortOrder>>;
   filterVisible?: boolean;
   setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
+  viewType?: ViewType;
+  setViewType?: React.Dispatch<React.SetStateAction<ViewType>>;
 };
 
 const BookmarkListContext = createContext<BookmarkListContextValue | null>(null);
@@ -46,6 +48,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [orderBy, setOrderBy] = useState<OrderableColumnKey>('bookmark.created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [filterVisible, setFilterVisible] = useState(true);
+  const [viewType, setViewType] = useState<ViewType>(VIEW_TYPES.list);
 
   return (
     <BookmarkListContext.Provider value={{
@@ -59,6 +62,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
       orderBy, setOrderBy,
       sortOrder, setSortOrder,
       filterVisible, setFilterVisible,
+      viewType, setViewType,
     }}>
       {children}
     </BookmarkListContext.Provider>
