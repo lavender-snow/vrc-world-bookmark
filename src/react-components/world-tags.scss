@@ -1,0 +1,35 @@
+@use 'assets/styles/theme.scss';
+
+:local(.world-tags) {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+:local(.world-tag) {
+  display: inline-block;
+  width: auto;
+  font-weight: bold;
+  background-color: theme.$light-blue;
+  color: theme.$white;
+  padding: 2px 6px;
+  font-size: small;
+  border-radius: 4px;
+}
+
+:local(.chill-world-tag) {
+  background-color: theme.$light-green;
+}
+
+:local(.horror-world-tag) {
+  background-color: theme.$light-red;
+}
+
+:local(.game-world-tag) {
+  background-color: theme.$orange;
+}
+
+:local(.admin-world-tag) {
+  background-color: theme.$purple;
+}

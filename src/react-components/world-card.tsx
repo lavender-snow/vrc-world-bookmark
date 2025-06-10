@@ -5,6 +5,7 @@ import { Button } from './common/button';
 import { CheckboxGroup } from './common/checkbox-group';
 import { DropDownList, SelectOption } from './common/drop-down-list';
 import style from './world-card.scss';
+import { WorldTags } from './world-tags';
 
 import { ReactComponent as MailSendIcon } from 'assets/images/IconoirSendMail.svg';
 import { ReactComponent as ClipboardIcon } from 'assets/images/MdiClipboardTextOutline.svg';
@@ -23,28 +24,13 @@ function WorldProperty({ name, value }: { name: string, value: string | number }
   );
 }
 
-function WorldTags({ tags }: { tags: string[] }) {
+function ThumbnailArea({thumbnailImageUrl, worldName, releaseStatus}: {thumbnailImageUrl: string, worldName: string, releaseStatus: string}) {
   return (
-    <div className={style.worldTags}>
-      {tags.map((tag) => {
-        const lowerTag = tag.toLowerCase();
-        const isChill = lowerTag === 'author_tag_chill';
-        const isHorror = lowerTag === 'author_tag_horror';
-        const isGame = ['author_tag_game', 'author_tag_riddle'].includes(lowerTag);
-        const isAdmin = lowerTag.startsWith('admin_');
-
-        return (
-          <div key={tag} className={classNames(
-            style.worldTag,
-            isChill && style.chillWorldTag,
-            isHorror && style.horrorWorldTag,
-            isGame && style.gameWorldTag,
-            isAdmin && style.adminWorldTag,
-          )}>
-            {tag}
-          </div>
-        );
-      })}
+    <div className={classNames(style.thumbnailArea)}>
+      <img src={thumbnailImageUrl} alt={worldName} />
+      <span className={classNames(style.releaseStatusBadge, releaseStatus === 'public' ? style.public : style.private)}>
+        {releaseStatus === 'public' ? 'Public' : 'Private'}
+      </span>
     </div>
   );
 }
@@ -154,10 +140,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
         </h2>
       </div>
       <div className={style.worldInfoArea}>
-        <div className={classNames(style.thumbnailArea)}>
-          <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
-        </div>
-
+        <ThumbnailArea thumbnailImageUrl={worldInfo.thumbnailImageUrl} worldName={worldInfo.name} releaseStatus={worldInfo.releaseStatus}/>
         <div className={classNames(style.infoArea)}>
           <div className={classNames(style.worldProperties)}>
             <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
