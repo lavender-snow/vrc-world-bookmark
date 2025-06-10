@@ -22,7 +22,7 @@ type BookmarkListContextValue = {
   setDebouncedTerm?: React.Dispatch<React.SetStateAction<string>>;
   orderBy?: string;
   setOrderBy?: React.Dispatch<React.SetStateAction<OrderableColumnKey>>;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: SortOrder;
   setSortOrder?: React.Dispatch<React.SetStateAction<SortOrder>>;
   filterVisible?: boolean;
   setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
