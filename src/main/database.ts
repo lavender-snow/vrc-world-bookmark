@@ -87,20 +87,20 @@ function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
   const lowerTags = worldTags.map(tag => tag.toLowerCase());
 
   if (lowerTags.includes('author_tag_horror')) {
-    genreIds.push(GENRE.HORROR);
+    genreIds.push(GENRE.horror);
   }
 
   const gameTags = ['author_tag_game', 'author_tag_riddle'];
   if (lowerTags.some(tag => gameTags.includes(tag))) {
-    genreIds.push(GENRE.GAME);
+    genreIds.push(GENRE.game);
   }
 
   if (lowerTags.findIndex(tag => tag.startsWith('admin_')) >= 0) {
-    genreIds.push(GENRE.HIGH_QUALITY);
+    genreIds.push(GENRE.high_quality);
   }
 
   if (lowerTags.includes('author_tag_chill')) {
-    genreIds.push(GENRE.CHILL);
+    genreIds.push(GENRE.chill);
   }
 
   return genreIds;

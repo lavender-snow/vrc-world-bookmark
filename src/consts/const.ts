@@ -27,11 +27,11 @@ export const SORT_ORDERS = [
 export type SortOrder = typeof SORT_ORDERS[number]['id'];
 
 export const GENRE = {
-  CHILL: 0,
-  HIGH_QUALITY: 1,
-  GAME: 2,
-  HORROR: 3,
-  PHOTO_SPOT: 4,
+  chill: 0,
+  high_quality: 1,
+  game: 2,
+  horror: 3,
+  photo_spot: 4,
 };
 
 export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
