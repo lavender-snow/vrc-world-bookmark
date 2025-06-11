@@ -2,7 +2,7 @@ import style from './world-list-item.scss';
 
 import { ReactComponent as ControllerIcon } from 'assets/images/IonGameControllerOutline.svg';
 import { ReactComponent as CameraIcon } from 'assets/images/MaterialSymbolsAndroidCameraOutline.svg';
-import { ReactComponent as RightArrowIcon } from 'assets/images/MaterialSymbolsChevronRight.svg';
+import { ReactComponent as RightArrowIcon } from 'assets/images/MaterialSymbolsArrowRightAltRounded.svg';
 import { ReactComponent as SparklesIcon } from 'assets/images/MynauiSparkles.svg';
 import { ReactComponent as SleepIcon } from 'assets/images/SolarMoonSleepBroken.svg';
 import { ReactComponent as GhostIcon } from 'assets/images/TablerGhost2.svg';
@@ -14,7 +14,7 @@ export function WorldListItem({ worldInfo, setWorldInfo }: { worldInfo: VRChatWo
   const { genres } = useAppData();
 
   return (
-    <div className={style.worldListItem}>
+    <div className={style.worldListItem} onClick={() => setWorldInfo(worldInfo)}>
       <div className={style.worldThumbnailName}>
         <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
         <span className={style.worldName}>{worldInfo.name}</span>
@@ -26,7 +26,7 @@ export function WorldListItem({ worldInfo, setWorldInfo }: { worldInfo: VRChatWo
         {worldInfo.genreIds.includes(GENRE.horror) && <div title={genres.find(genre => genre.id === GENRE.horror).name_jp ?? ''}><GhostIcon /></div>}
         {worldInfo.genreIds.includes(GENRE.photo_spot) && <div title={genres.find(genre => genre.id === GENRE.photo_spot).name_jp ?? ''}><CameraIcon /></div>}
       </div>
-      <div onClick={() => setWorldInfo(worldInfo)}>
+      <div>
         <RightArrowIcon className={style.openWorldCard}/>
       </div>
     </div>

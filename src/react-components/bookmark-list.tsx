@@ -1,6 +1,7 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 
-
+import { BookmarkListDetail } from './bookmark-list-detail';
 import style from './bookmark-list.scss';
 import { Accordion } from './common/accordion';
 import { CheckboxGroup } from './common/checkbox-group';
@@ -33,6 +34,7 @@ export function BookmarkList() {
     sortOrder, setSortOrder,
     filterVisible, setFilterVisible,
     viewType,
+    listViewSelectedWorld, setListViewSelectedWorld,
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
@@ -106,151 +108,171 @@ export function BookmarkList() {
   }
 
   return (
-    <>
-      <div className={style.filterAreaWrapper}>
-        <ViewTypeArea />
-        <Accordion icon={FilterIcon} title={'フィルター'} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
-          <div className={style.filterArea}>
-            <div className={style.filterItems}>
-              <div className={style.filterItemRow}>
-                <div className={style.filterItem}>
-                  <strong>ジャンル</strong>
-                  <CheckboxGroup
-                    options={genres}
-                    selected={selectedGenres}
-                    onChange={values => {
-                      setSelectedGenres(values.map(Number));
-                      setPage(1);
-                    }}
-                    allOption={true}
-                  />
-                  <label>
-                    <input
-                      type="radio"
-                      name="filterMode"
-                      value={LOGIC_MODES.and}
-                      checked={genreFilterMode === LOGIC_MODES.and}
-                      onChange={onFilterModeChange}
-                    />
-                    AND検索
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="filterMode"
-                      value={LOGIC_MODES.or}
-                      checked={genreFilterMode === LOGIC_MODES.or}
-                      onChange={onFilterModeChange}
-                    />
-                    OR検索
-                  </label>
+    <AnimatePresence mode='wait'>
+      { listViewSelectedWorld ? (
+        <motion.div
+          key="detail"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 40 }}
+          transition={{ duration: 0.3 }}
+        >
+          <BookmarkListDetail worldInfo={listViewSelectedWorld}/>
+        </motion.div>
+      ) : (
+        <motion.div
+          key="list"
+          initial={{ opacity: 0, x: -40 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -40 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className={style.filterAreaWrapper}>
+            <ViewTypeArea />
+            <Accordion icon={FilterIcon} title={'フィルター'} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
+              <div className={style.filterArea}>
+                <div className={style.filterItems}>
+                  <div className={style.filterItemRow}>
+                    <div className={style.filterItem}>
+                      <strong>ジャンル</strong>
+                      <CheckboxGroup
+                        options={genres}
+                        selected={selectedGenres}
+                        onChange={values => {
+                          setSelectedGenres(values.map(Number));
+                          setPage(1);
+                        }}
+                        allOption={true}
+                      />
+                      <label>
+                        <input
+                          type="radio"
+                          name="filterMode"
+                          value={LOGIC_MODES.and}
+                          checked={genreFilterMode === LOGIC_MODES.and}
+                          onChange={onFilterModeChange}
+                        />
+                        AND検索
+                      </label>
+                      <label>
+                        <input
+                          type="radio"
+                          name="filterMode"
+                          value={LOGIC_MODES.or}
+                          checked={genreFilterMode === LOGIC_MODES.or}
+                          onChange={onFilterModeChange}
+                        />
+                        OR検索
+                      </label>
+                    </div>
+                  </div>
+                  <div className={style.filterItemRow}>
+                    <div className={style.filterItem}>
+                      <strong>訪問状況</strong>
+                      <CheckboxGroup
+                        options={visitStatuses}
+                        selected={selectedVisitStatuses}
+                        onChange={values => {
+                          setSelectedVisitStatuses(values.map(Number));
+                          setPage(1);
+                        }}
+                        allOption={true}
+                      />
+                    </div>
+                  </div>
+                  <div className={style.filterItemRow}>
+                    <div className={style.filterItem}>
+                      <strong>ソート項目</strong>
+                      <DropDownList
+                        options={
+                          ORDERABLE_COLUMNS.map(
+                            (column) => ({ id: column.id, name: column.value }),
+                          )
+                        }
+                        currentValue={orderBy}
+                        onChange={(e) => {
+                          setOrderBy(e.target.value as OrderableColumnKey);
+                          setPage(1);
+                        }}
+                      />
+                    </div>
+                    <div className={style.filterItem}>
+                      <strong>並び順</strong>
+                      <DropDownList
+                        options={
+                          SORT_ORDERS.map(
+                            (order) => ({ id: order.id, name: order.value }),
+                          )
+                        }
+                        currentValue={sortOrder}
+                        onChange={(e) => {
+                          setSortOrder(e.target.value as SortOrder);
+                          setPage(1);
+                        }}
+                      ></DropDownList>
+                    </div>
+                    <div className={style.filterItem}>
+                      <strong>表示件数</strong>
+                      <DropDownList
+                        options={RESULT_PER_PAGE_OPTIONS.map(
+                          (num) => ({ id: num.toString(), name: `${num}件` }),
+                        )}
+                        currentValue={limit.toString()}
+                        onChange={(e) => {
+                          setLimit(parseInt(e.target.value, 10));
+                          setPage(1);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className={style.filterItemRow}>
+                    <div className={style.filterItem}>
+                      <strong>キーワード</strong>
+                      <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={style.keywordSearch} />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className={style.filterItemRow}>
-                <div className={style.filterItem}>
-                  <strong>訪問状況</strong>
-                  <CheckboxGroup
-                    options={visitStatuses}
-                    selected={selectedVisitStatuses}
-                    onChange={values => {
-                      setSelectedVisitStatuses(values.map(Number));
-                      setPage(1);
-                    }}
-                    allOption={true}
-                  />
-                </div>
-              </div>
-              <div className={style.filterItemRow}>
-                <div className={style.filterItem}>
-                  <strong>ソート項目</strong>
-                  <DropDownList
-                    options={
-                      ORDERABLE_COLUMNS.map(
-                        (column) => ({ id: column.id, name: column.value }),
-                      )
-                    }
-                    currentValue={orderBy}
-                    onChange={(e) => {
-                      setOrderBy(e.target.value as OrderableColumnKey);
-                      setPage(1);
-                    }}
-                  />
-                </div>
-                <div className={style.filterItem}>
-                  <strong>並び順</strong>
-                  <DropDownList
-                    options={
-                      SORT_ORDERS.map(
-                        (order) => ({ id: order.id, name: order.value }),
-                      )
-                    }
-                    currentValue={sortOrder}
-                    onChange={(e) => {
-                      setSortOrder(e.target.value as SortOrder);
-                      setPage(1);
-                    }}
-                  ></DropDownList>
-                </div>
-                <div className={style.filterItem}>
-                  <strong>表示件数</strong>
-                  <DropDownList
-                    options={RESULT_PER_PAGE_OPTIONS.map(
-                      (num) => ({ id: num.toString(), name: `${num}件` }),
-                    )}
-                    currentValue={limit.toString()}
-                    onChange={(e) => {
-                      setLimit(parseInt(e.target.value, 10));
-                      setPage(1);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={style.filterItemRow}>
-                <div className={style.filterItem}>
-                  <strong>キーワード</strong>
-                  <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={style.keywordSearch} />
-                </div>
-              </div>
+            </Accordion>
+          </div>
+          {viewType === VIEW_TYPES.list && (
+            <div className={style.worldList}>
+              {bookmarkList && bookmarkList.map((worldInfo) => (
+                <WorldListItem key={worldInfo.id} worldInfo={worldInfo} setWorldInfo={setListViewSelectedWorld}/>
+              ))}
+            </div>
+          )}
+          {viewType === VIEW_TYPES.grid && (
+            <div className={style.worldCardList}>
+              {bookmarkList && bookmarkList.map((worldInfo) => (
+                <WorldCard key={worldInfo.id} worldInfo={worldInfo} />
+              ))}
+            </div>
+          )}
+          <div className={style.paginationArea}>
+            <div className={style.paginationButtons}>
+              <button
+                className={style.pageButton}
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                前へ
+              </button>
+              {PageNumbers()}
+              <button
+                className={style.pageButton}
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                次へ
+              </button>
+            </div>
+            <div className={style.pageInfo}>
+              ページ {page} / {totalPages}（全{totalCount}件）
             </div>
           </div>
-        </Accordion>
-      </div>
-      {viewType === VIEW_TYPES.list && (
-        <div className={style.worldList}>
-          {bookmarkList && bookmarkList.map((worldInfo) => (
-            <WorldListItem key={worldInfo.id} worldInfo={worldInfo} setWorldInfo={setSelectedWorldInfo}/>
-          ))}
-        </div>
+        </motion.div>
       )}
-      {viewType === VIEW_TYPES.grid && (
-      <div className={style.worldCardList}>
-        {bookmarkList && bookmarkList.map((worldInfo) => (
-          <WorldCard key={worldInfo.id} worldInfo={worldInfo} />
-        ))}
-      </div>
-      )}
-      <div className={style.paginationArea}>
-        <div className={style.paginationButtons}>
-          <button
-            className={style.pageButton}
-            disabled={page <= 1}
-            onClick={() => setPage(page - 1)}
-          >
-            前へ
-          </button>
-          {PageNumbers()}
-          <button
-            className={style.pageButton}
-            disabled={page >= totalPages}
-            onClick={() => setPage(page + 1)}
-          >
-            次へ
-          </button>
-        </div>
-        <div className={style.pageInfo}>
-          ページ {page} / {totalPages}（全{totalCount}件）
-        </div>
-      </div>
-    </>
+    </AnimatePresence>
   );
 }

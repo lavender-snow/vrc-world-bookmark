@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 import { useAppData } from './app-data-provider';
 
 import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
+import { VRChatWorldInfo } from 'src/types/renderer';
 
 
 type BookmarkListContextValue = {
@@ -28,6 +29,8 @@ type BookmarkListContextValue = {
   setFilterVisible?: React.Dispatch<React.SetStateAction<boolean>>;
   viewType?: ViewType;
   setViewType?: React.Dispatch<React.SetStateAction<ViewType>>;
+  listViewSelectedWorld?: VRChatWorldInfo | null;
+  setListViewSelectedWorld?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
 const BookmarkListContext = createContext<BookmarkListContextValue | null>(null);
@@ -49,6 +52,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [filterVisible, setFilterVisible] = useState(true);
   const [viewType, setViewType] = useState<ViewType>(VIEW_TYPES.list);
+  const [listViewSelectedWorld, setListViewSelectedWorld] = useState<VRChatWorldInfo | null>(null);
 
   return (
     <BookmarkListContext.Provider value={{
@@ -63,6 +67,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
       sortOrder, setSortOrder,
       filterVisible, setFilterVisible,
       viewType, setViewType,
+      listViewSelectedWorld, setListViewSelectedWorld,
     }}>
       {children}
     </BookmarkListContext.Provider>

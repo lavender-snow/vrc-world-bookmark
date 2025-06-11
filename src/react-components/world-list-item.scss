@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 
   & div {
     display: flex;
@@ -36,7 +37,6 @@
 }
 
 :local(.open-world-card) {
-  cursor: pointer;
   width: 32px;
 }
 
