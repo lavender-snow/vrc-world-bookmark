@@ -17,7 +17,7 @@ export function WorldListItem({ worldInfo, setWorldInfo }: { worldInfo: VRChatWo
     <div className={style.worldListItem} onClick={() => setWorldInfo(worldInfo)}>
       <div className={style.worldThumbnailName}>
         <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
-        <span className={style.worldName}>{worldInfo.name}</span>
+        <span title={worldInfo.name} className={style.worldName}>{worldInfo.name}</span>
       </div>
       <div className={style.worldGenreIcons}>
         {worldInfo.genreIds.includes(GENRE.chill) && <div title={genres.find(genre => genre.id === GENRE.chill).name_jp ?? ''}><SleepIcon /></div>}
