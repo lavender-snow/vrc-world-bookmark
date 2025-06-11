@@ -58,3 +58,20 @@ export function debounce<T extends unknown[], R>(
     }, wait);
   };
 }
+
+export function checkTag(tag: string) {
+  const lowerTag = tag.toLowerCase();
+
+  // TODO: タグのハードコーディングを避ける
+  const isChill = lowerTag === 'author_tag_chill';
+  const isHorror = lowerTag === 'author_tag_horror';
+  const isGame = ['author_tag_game', 'author_tag_riddle'].includes(lowerTag);
+  const isAdmin = lowerTag.startsWith('admin_');
+
+  return {
+    isChill,
+    isHorror,
+    isGame,
+    isAdmin,
+  };
+}

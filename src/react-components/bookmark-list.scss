@@ -32,6 +32,12 @@
   gap: 8px;
 }
 
+:local(.world-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 :local(.world-card-list) {
   display: flex;
   flex-direction: column;

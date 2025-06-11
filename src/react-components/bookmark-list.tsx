@@ -6,10 +6,12 @@ import { Accordion } from './common/accordion';
 import { CheckboxGroup } from './common/checkbox-group';
 import { DropDownList } from './common/drop-down-list';
 import { InputText } from './common/input-text';
+import { ViewTypeArea } from './view-type-area';
 import { WorldCard } from './world-card';
+import { WorldListItem } from './world-list-item';
 
 import { ReactComponent as FilterIcon } from 'assets/images/MaterialSymbolsFilterAltOutline.svg';
-import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES } from 'src/consts/const';
+import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, VIEW_TYPES } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
 import type { BookmarkListOptions, VRChatWorldInfo, LogicMode } from 'src/types/renderer';
@@ -30,6 +32,7 @@ export function BookmarkList() {
     orderBy, setOrderBy,
     sortOrder, setSortOrder,
     filterVisible, setFilterVisible,
+    viewType,
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
@@ -105,6 +108,7 @@ export function BookmarkList() {
   return (
     <>
       <div className={style.filterAreaWrapper}>
+        <ViewTypeArea />
         <Accordion icon={FilterIcon} title={'フィルター'} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
           <div className={style.filterArea}>
             <div className={style.filterItems}>
@@ -211,11 +215,20 @@ export function BookmarkList() {
           </div>
         </Accordion>
       </div>
+      {viewType === VIEW_TYPES.list && (
+        <div className={style.worldList}>
+          {bookmarkList && bookmarkList.map((worldInfo) => (
+            <WorldListItem key={worldInfo.id} worldInfo={worldInfo} setWorldInfo={setSelectedWorldInfo}/>
+          ))}
+        </div>
+      )}
+      {viewType === VIEW_TYPES.grid && (
       <div className={style.worldCardList}>
         {bookmarkList && bookmarkList.map((worldInfo) => (
           <WorldCard key={worldInfo.id} worldInfo={worldInfo} />
         ))}
       </div>
+      )}
       <div className={style.paginationArea}>
         <div className={style.paginationButtons}>
           <button

@@ -33,7 +33,6 @@ export function App(): React.ReactNode {
 
   return (
     <>
-      <h1>VRC World Bookmark</h1>
       <div className={styles.tabHeader}>
         {TABS.map(tab => (
           <button

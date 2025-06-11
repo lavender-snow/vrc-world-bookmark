@@ -1,0 +1,52 @@
+@use 'assets/styles/theme.scss';
+
+:local(.view-type-area) {
+  display: flex;
+  justify-content: flex-end;
+}
+
+:local(.view-type-wrap) {
+  display: flex;
+  align-items: center;
+
+  font-size: 0.8em;
+
+  & div {
+    padding: 4px 8px;
+    border: 2px solid theme.$light-gray;
+  }
+
+  & div:first-child {
+    border-radius: 4px 0 0 4px;
+  }
+
+  & div:not(:last-child) {
+    border-right: none;
+  }
+
+  & div:last-child {
+    border-radius: 0 4px 4px 0;
+  }
+
+  svg {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+:local(.active-view-button) {
+  background-color: theme.$view-button-active-bg;
+  font-weight: bold;
+}
+
+:local(.view-button) {
+  @extend :local(.active-view-button);
+  background: #efefef;
+
+  cursor: pointer;
+
+  &:hover {
+    background: theme.$page-button-hover;
+  }
+}

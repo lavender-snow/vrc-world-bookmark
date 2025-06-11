@@ -2,15 +2,13 @@ import classNames from 'classnames';
 
 import style from './world-tags.scss';
 
+import { checkTag } from 'src/utils/util';
+
 export function WorldTags({ tags }: { tags: string[] }) {
   return (
     <div className={style.worldTags}>
       {tags.map((tag) => {
-        const lowerTag = tag.toLowerCase();
-        const isChill = lowerTag === 'author_tag_chill';
-        const isHorror = lowerTag === 'author_tag_horror';
-        const isGame = ['author_tag_game', 'author_tag_riddle'].includes(lowerTag);
-        const isAdmin = lowerTag.startsWith('admin_');
+        const {isChill, isHorror, isGame, isAdmin} = checkTag(tag);
 
         return (
           <div key={tag} className={classNames(

@@ -1,0 +1,47 @@
+:local(.world-list-item) {
+  border: 2px solid #979a9c;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  & div {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  & img {
+    width: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+:local(.world-thumbnail-name) {
+  flex: 1 1 0;
+  min-width: 0;
+
+  & span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+}
+
+:local(.open-world-card) {
+  cursor: pointer;
+  width: 32px;
+}
+
+:local(.world-genre-icons) {
+  width: 160px;
+  display: flex;
+  justify-content: flex-end;
+}
