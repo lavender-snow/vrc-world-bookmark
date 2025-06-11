@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { useCallback, useState } from 'react';
 
 import { Button } from './common/button';
 import { InputText } from './common/input-text';
@@ -8,14 +9,31 @@ import styles from './world-data-entry.scss';
 import { NoticeType } from 'src/consts/const';
 import { useToast } from 'src/contexts/toast-provider';
 import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';
-import { getWorldId } from 'src/utils/util';
+import { debounce, getWorldId } from 'src/utils/util';
 
 export function WorldDataEntry() {
   const { addToast } = useToast();
   const {worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo}= useWorldDataEntryState();
+  const [isWorldIdOrUrl, setIsWorldIdOrUrl] = useState<boolean>(getWorldId(worldIdOrUrl) !== null);
+
+  const debouncedSetIsWorldIdOrUrl = useCallback(
+    debounce((value: string) => {
+      setIsWorldIdOrUrl(getWorldId(value) !== null);
+    }, 500),
+    [],
+  );
 
   function onChangeWorldIdOrUrl(e: React.ChangeEvent<HTMLInputElement>) {
-    setWorldIdOrUrl(e.target.value);
+    const newValue = e.target.value;
+    setWorldIdOrUrl(newValue);
+    debouncedSetIsWorldIdOrUrl(newValue);
+  }
+
+  function onKeyDownInputText(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onClickGetWorldInfo();
+    }
   }
 
   async function onClickGetWorldInfo() {
@@ -32,8 +50,13 @@ export function WorldDataEntry() {
       } else {
         addToast('予期せぬエラーが発生しました。', NoticeType.error);
       }
+    } else {
+      addToast('ワールドIDまたはURLが無効です。正しい形式で入力してください。', NoticeType.error);
     }
   }
+
+  const validInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl;
+  const invalidInput = worldIdOrUrl.length > 0 && !isWorldIdOrUrl;
 
   return (
     <div className={classNames(styles.worldDataEntry)}>
@@ -41,14 +64,19 @@ export function WorldDataEntry() {
         <InputText
           value={worldIdOrUrl}
           onChange={onChangeWorldIdOrUrl}
+          onKeyDown={onKeyDownInputText}
+          onBlur={() => setIsWorldIdOrUrl(getWorldId(worldIdOrUrl) !== null)}
           placeholder='World ID or World URL'
-          className={classNames(styles.searchInputText)}
+          className={classNames([
+            styles.searchInputText,
+            validInput && styles.validInput,
+            invalidInput && styles.invalidInput,
+          ])}
         />
-        <Button onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
+        <Button disabled={worldIdOrUrl.length === 0} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
           ワールド情報登録
         </Button>
       </div>
-
       <div className={classNames(styles.searchResult)}>
         {vrchatWorldInfo && (
           <WorldCard worldInfo={vrchatWorldInfo} />

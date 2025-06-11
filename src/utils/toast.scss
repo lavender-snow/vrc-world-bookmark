@@ -30,15 +30,15 @@ $fadeout: 0.6s;
 }
 
 :local(.success) {
-  background: theme.$toast-success-bg;
+  background: theme.$success;
 }
 
 :local(.warning) {
-  background: theme.$toast-warning-bg;
+  background: theme.$warning;
 }
 
 :local(.error) {
-  background: theme.$toast-error-bg;
+  background: theme.$error;
 }
 
 @keyframes fadein {
