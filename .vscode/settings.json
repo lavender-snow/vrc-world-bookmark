@@ -10,14 +10,16 @@
         "typescriptreact"
     ],
     "cSpell.words": [
+        "asar",
         "AUTOINCREMENT",
         "Elems",
         "fadein",
         "Iconoir",
+        "Mynaui",
+        "Tabler",
         "Uncategorized",
         "vrchat",
-        "wrld",
-        "asar"
+        "wrld"
     ],
     "[typescript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
