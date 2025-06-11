@@ -61,6 +61,7 @@
     "@types/react-dom": "^19.1.5",
     "better-sqlite3": "^11.10.0",
     "electron-squirrel-startup": "^1.0.1",
+    "framer-motion": "^12.17.0",
     "react": "^19.1.0"
   }
 }
