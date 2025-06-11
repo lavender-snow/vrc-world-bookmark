@@ -21,3 +21,19 @@
   padding: 10px;
   border: transparent 1px solid;
 }
+
+:local(.valid-input) {
+  border: 2px solid theme.$success;
+
+  &:focus {
+    border: 2px solid theme.$success;
+  }
+}
+
+:local(.invalid-input) {
+  border: 2px solid theme.$error;
+
+  &:focus {
+    border: 2px solid theme.$error;
+  }
+}
