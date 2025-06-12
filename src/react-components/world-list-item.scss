@@ -1,5 +1,7 @@
+@use 'assets/styles/theme.scss';
+
 :local(.world-list-item) {
-  border: 2px solid #979a9c;
+  border: 2px solid theme.$light-gray;
   padding: 8px 12px;
   border-radius: 8px;
   display: flex;
@@ -21,6 +23,10 @@
 
   svg {
     vertical-align: middle;
+  }
+
+  &:hover {
+    border: 2px solid theme.$light-blue;
   }
 }
 

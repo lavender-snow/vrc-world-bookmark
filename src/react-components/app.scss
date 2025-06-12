@@ -22,12 +22,21 @@
   cursor: pointer;
   border-bottom: 3px solid theme.$light-gray;
   font-size: 0.9rem;
+  font-weight: bold;
+
+  &:hover {
+    color: theme.$header-hover-color;
+  }
 }
 
 :local(.active-tab) {
   border-bottom: 3px solid theme.$light-blue;
   color: theme.$header-active-color;
-  font-weight: bold;
+  cursor: default;
+
+  & :hover {
+    color: theme.$header-active-color;
+  }
 }
 
 :local(.tab-content) {
