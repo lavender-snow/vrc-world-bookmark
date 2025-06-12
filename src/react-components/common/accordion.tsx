@@ -15,7 +15,9 @@ export function Accordion({ icon: Icon, title, children, defaultOpen = false, on
         }
       }}><Icon /> {title} {open ? '▲' : '▼'} </div>
       {open && (
-        <div style={{ marginTop: 8 }}>
+        <div
+          className={style.accordionContent}
+        >
           {children}
         </div>
       )}

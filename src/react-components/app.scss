@@ -2,25 +2,45 @@
 
 :local(.tab-header) {
   display: flex;
+  height: 55px;
   margin-bottom: 4px;
+  background: theme.$header-bg;
+
+  & svg {
+    vertical-align: center;
+  }
 }
 
 :local(.tab-header-item) {
   flex: 1;
+  justify-content: center;
+  display: flex;
+  align-items: center;
   border: none;
   background: transparent;
   padding: 8px 16px;
   cursor: pointer;
-  border-bottom: 2px solid theme.$light-gray;
+  border-bottom: 3px solid theme.$light-gray;
+  font-size: 0.9rem;
+  font-weight: bold;
+
+  &:hover {
+    color: theme.$header-hover-color;
+  }
 }
 
 :local(.active-tab) {
-  background: theme.$tab-active-bg;
-  border-bottom: 2px solid theme.$light-blue;
-  font-weight: bold;
+  border-bottom: 3px solid theme.$light-blue;
+  color: theme.$header-active-color;
+  cursor: default;
+
+  &:hover {
+    color: theme.$header-active-color;
+  }
 }
 
 :local(.tab-content) {
   padding: 12px;
   box-sizing: content-box;
+  padding: 1rem 3rem;
 }

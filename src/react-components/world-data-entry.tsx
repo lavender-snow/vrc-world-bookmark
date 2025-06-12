@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 
 import { Button } from './common/button';
@@ -59,29 +60,38 @@ export function WorldDataEntry() {
   const invalidInput = worldIdOrUrl.length > 0 && !isWorldIdOrUrl;
 
   return (
-    <div className={classNames(styles.worldDataEntry)}>
-      <div className={classNames(styles.searchArea)}>
-        <InputText
-          value={worldIdOrUrl}
-          onChange={onChangeWorldIdOrUrl}
-          onKeyDown={onKeyDownInputText}
-          onBlur={() => setIsWorldIdOrUrl(getWorldId(worldIdOrUrl) !== null)}
-          placeholder='World ID or World URL'
-          className={classNames([
-            styles.searchInputText,
-            validInput && styles.validInput,
-            invalidInput && styles.invalidInput,
-          ])}
-        />
-        <Button disabled={worldIdOrUrl.length === 0} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
-          ワールド情報登録
-        </Button>
-      </div>
-      <div className={classNames(styles.searchResult)}>
-        {vrchatWorldInfo && (
-          <WorldCard worldInfo={vrchatWorldInfo} />
-        )}
-      </div>
-    </div>
+    <AnimatePresence mode='wait'>
+      <motion.div
+        className={classNames(styles.worldDataEntry)}
+        key="list"
+        initial={{ opacity: 0, x: -40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className={classNames(styles.searchArea)}>
+          <InputText
+            value={worldIdOrUrl}
+            onChange={onChangeWorldIdOrUrl}
+            onKeyDown={onKeyDownInputText}
+            onBlur={() => setIsWorldIdOrUrl(getWorldId(worldIdOrUrl) !== null)}
+            placeholder='World ID or World URL'
+            className={classNames([
+              styles.searchInputText,
+              validInput && styles.validInput,
+              invalidInput && styles.invalidInput,
+            ])}
+          />
+          <Button disabled={worldIdOrUrl.length === 0} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
+            ワールド情報登録
+          </Button>
+        </div>
+        <div className={classNames(styles.searchResult)}>
+          {vrchatWorldInfo && (
+            <WorldCard worldInfo={vrchatWorldInfo} />
+          )}
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
