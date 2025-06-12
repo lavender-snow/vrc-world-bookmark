@@ -1,8 +1,11 @@
+@use 'assets/styles/theme.scss';
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
   margin: auto;
   min-width: 25rem;
+  background: theme.$app-bg;
   overflow-y: scroll;
 }
 
