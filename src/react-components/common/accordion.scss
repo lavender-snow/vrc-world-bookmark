@@ -1,5 +1,3 @@
-:local(.accordion-button) {}
-
 :local(.accordion-title) {
   display: flex;
 
@@ -11,4 +9,8 @@
     width: 24px;
     height: 24px;
   }
+}
+
+:local(.accordion-content) {
+  margin-top: 8px;
 }
