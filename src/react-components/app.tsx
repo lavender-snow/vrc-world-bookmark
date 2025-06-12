@@ -5,6 +5,8 @@ import styles from './app.scss';
 import { BookmarkList } from './bookmark-list';
 import { WorldDataEntry } from './world-data-entry';
 
+import { ReactComponent as BookmarkIcon } from 'assets/images/MaterialSymbolsBookmarkAddOutline.svg';
+import { ReactComponent as EarthIcon } from 'assets/images/MdiEarth.svg';
 import { AppDataProvider } from 'src/contexts/app-data-provider';
 import { BookmarkListProvider } from 'src/contexts/bookmark-list-provider';
 import { ToastProvider } from 'src/contexts/toast-provider';
@@ -19,10 +21,12 @@ const TABS = [
   {
     key: TAB_KEYS.list,
     label: 'ワールド一覧',
+    icon: EarthIcon,
   },
   {
     key: TAB_KEYS.register,
     label: 'ワールド情報登録',
+    icon: BookmarkIcon,
   },
 ];
 
@@ -40,7 +44,8 @@ export function App(): React.ReactNode {
             className={classNames(styles.tabHeaderItem, activeTab === tab.key && styles.activeTab)}
             onClick={() => setActiveTab(tab.key)}
           >
-            {tab.label}
+            <tab.icon />
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
