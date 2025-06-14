@@ -14,6 +14,7 @@ declare global {
       updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
       updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<void>;
       getBookmarkList: (options?: BookmarkListOptions) => Promise<{bookmarkList: VRChatWorldInfo[], totalCount: number}>;
+      getWorldIdsToUpdate: () => Promise<string[]>;
     };
   }
 }

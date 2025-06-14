@@ -11,6 +11,7 @@
   color: theme.$white;
   font-weight: 400;
   cursor: pointer;
+  border: none;
 
   &:hover {
     background: color.adjust(theme.$light-blue, $lightness: -10%);

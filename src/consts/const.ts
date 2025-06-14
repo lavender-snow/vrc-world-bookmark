@@ -44,3 +44,13 @@ export const VIEW_TYPES = {
   grid: 'grid',
 };
 export type ViewType = typeof VIEW_TYPES[keyof typeof VIEW_TYPES];
+
+export const WORLD_UPDATE_INFO_STATUS = {
+  idle: 'idle',
+  updating: 'updating',
+  completed: 'completed',
+  noTarget: 'noTarget',
+  error: 'error',
+};
+
+export type WorldUpdateInfoStatusType = typeof VIEW_TYPES[keyof typeof VIEW_TYPES];
