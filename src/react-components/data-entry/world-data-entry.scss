@@ -8,8 +8,24 @@
 
 :local(.search-area) {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:local(.search-input) {
+  display: flex;
   width: 100%;
   gap: 8px;
+}
+
+:local(.search-input-message) {
+  margin-left: 12px;
+  font-size: 0.8rem;
+  min-height: 1.2rem;
+}
+
+:local(.invalid-message) {
+  color: theme.$error;
 }
 
 :local(.search-input-text) {
