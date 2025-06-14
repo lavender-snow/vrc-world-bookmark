@@ -2,11 +2,11 @@ import classNames from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 
-import { Button } from './common/button';
-import { InputText } from './common/input-text';
-import { WorldCard } from './world-card';
 import styles from './world-data-entry.scss';
 
+import { Button } from 'commonComponents/button';
+import { InputText } from 'commonComponents/input-text';
+import { WorldCard } from 'commonComponents/world-card';
 import { NoticeType } from 'src/consts/const';
 import { useToast } from 'src/contexts/toast-provider';
 import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';

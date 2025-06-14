@@ -18,6 +18,9 @@
       "assets/*": [
         "assets/*"
       ],
+      "commonComponents/*": [
+        "src/react-components/common/*"
+      ]
     },
     "jsx": "react-jsx"
   },
