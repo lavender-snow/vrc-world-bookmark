@@ -4,6 +4,8 @@ import { WORLD_UPDATE_INFO_STATUS } from 'src/consts/const';
 import { useSettingsTabState } from 'src/contexts/settings-tab-provider';
 import { Button } from 'src/react-components/common/button';
 
+const UPDATE_DELAY_MS = 1000;
+
 export function WorldUpdateProgress() {
   const {
     updateTargetTotal, setUpdateTargetTotal,
@@ -36,7 +38,7 @@ export function WorldUpdateProgress() {
         return;
       }
       setProcessedCount(i + 1);
-      await new Promise(res => setTimeout(res, 1000));
+      await new Promise(res => setTimeout(res, UPDATE_DELAY_MS));
     }
 
     setWorldInfoIsUpdating(false);
