@@ -32,7 +32,8 @@ export const GENRE = {
   game: 2,
   horror: 3,
   photo_spot: 4,
-};
+} as const;
+export type GenreType = typeof GENRE[keyof typeof GENRE];
 
 export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
   and: 'and',

@@ -12,7 +12,7 @@ import { CheckboxGroup } from 'commonComponents/checkbox-group';
 import { DropDownList } from 'commonComponents/drop-down-list';
 import { InputText } from 'commonComponents/input-text';
 import { WorldCard } from 'commonComponents/world-card';
-import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, VIEW_TYPES } from 'src/consts/const';
+import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, VIEW_TYPES, GenreType } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
 import type { BookmarkListOptions, VRChatWorldInfo, LogicMode } from 'src/types/renderer';
@@ -139,10 +139,10 @@ export function BookmarkList() {
                         options={genres}
                         selected={selectedGenres}
                         onChange={values => {
-                          setSelectedGenres(values.map(Number));
+                          setSelectedGenres(values.map(Number) as GenreType[]);
                           setPage(1);
                         }}
-                        allOption={true}
+                        allOption={false}
                       />
                       <label>
                         <input

@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 
 import { useAppData } from './app-data-provider';
 
-import { DEFAULT_RESULT_PER_PAGE, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
+import { DEFAULT_RESULT_PER_PAGE, GENRE, GenreType, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
 import { VRChatWorldInfo } from 'src/types/renderer';
 
 
@@ -11,8 +11,8 @@ type BookmarkListContextValue = {
   setPage: React.Dispatch<React.SetStateAction<number>>;
   limit: number;
   setLimit: React.Dispatch<React.SetStateAction<number>>;
-  selectedGenres: number[];
-  setSelectedGenres: React.Dispatch<React.SetStateAction<number[]>>;
+  selectedGenres: GenreType[];
+  setSelectedGenres: React.Dispatch<React.SetStateAction<GenreType[]>>;
   genreFilterMode: 'and' | 'or';
   setGenreFilterMode: React.Dispatch<React.SetStateAction<'and' | 'or'>>;
   selectedVisitStatuses: number[];
@@ -40,7 +40,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(DEFAULT_RESULT_PER_PAGE);
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<GenreType[]>([GENRE.high_quality]);
   const [genreFilterMode, setGenreFilterMode] = useState<'and' | 'or'>('and');
   const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>(visitStatuses
     .filter(v => v.name === 'Unvisited' || v.name === 'InProgress')
