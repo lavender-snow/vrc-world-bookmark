@@ -33,7 +33,7 @@ export function WorldUpdateProgress() {
         console.error(`Failed to update world ${worldIds[i]}:`, e);
         setWorldInfoIsUpdating(false);
         setWorldInfoUpdateStatus(WORLD_UPDATE_INFO_STATUS.error);
-        break;
+        return;
       }
       setProcessedCount(i + 1);
       await new Promise(res => setTimeout(res, 1000));
