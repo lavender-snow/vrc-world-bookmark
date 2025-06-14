@@ -14,12 +14,13 @@ export function Button({
   disabled?: boolean;
 }) {
   return (
-    <div
-      className={classNames([styles.button, className, disabled && styles.disabled])}
+    <button
+      type='button'
+      className={classNames([styles.button, className])}
       onClick={disabled ? undefined : onClick}
-      aria-disabled={disabled}
+      disabled={disabled}
     >
       {children}
-    </div>
+    </button>
   );
 }

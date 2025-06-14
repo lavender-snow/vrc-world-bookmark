@@ -459,3 +459,15 @@ export function getBookmarkList(options: BookmarkListOptions) {
     totalCount,
   };
 }
+
+export function getWorldIdsToUpdate() {
+  const sql = buildSelectQuery({
+    select: 'id',
+    from: 'vrchat_worlds',
+    where: ['deleted_at IS NULL', "updated_at <= datetime('now', '-24 hours')"],
+  });
+
+  const result = db.prepare(sql).all() as { id: string }[];
+
+  return result.map(row => row.id);
+}

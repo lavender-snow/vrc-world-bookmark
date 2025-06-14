@@ -1,4 +1,5 @@
 @use 'assets/styles/theme.scss';
+@use "sass:color";
 
 :local(.button) {
   background: theme.$light-blue;
@@ -10,9 +11,15 @@
   color: theme.$white;
   font-weight: 400;
   cursor: pointer;
-}
+  border: none;
 
-:local(.disabled) {
-  opacity: 0.5;
-  cursor: not-allowed;
+  &:hover {
+    background: color.adjust(theme.$light-blue, $lightness: -10%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    background: theme.$light-blue;
+    cursor: not-allowed;
+  }
 }

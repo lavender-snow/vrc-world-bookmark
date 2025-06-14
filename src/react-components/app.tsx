@@ -3,18 +3,22 @@ import { useState } from 'react';
 
 import styles from './app.scss';
 import { BookmarkList } from './bookmark-list';
+import { Settings } from './settings/settings';
 import { WorldDataEntry } from './world-data-entry';
 
 import { ReactComponent as BookmarkIcon } from 'assets/images/MaterialSymbolsBookmarkAddOutline.svg';
+import { ReactComponent as SettingsIcon } from 'assets/images/MaterialSymbolsSettingsRounded.svg';
 import { ReactComponent as EarthIcon } from 'assets/images/MdiEarth.svg';
 import { AppDataProvider } from 'src/contexts/app-data-provider';
 import { BookmarkListProvider } from 'src/contexts/bookmark-list-provider';
+import { SettingsTabProvider } from 'src/contexts/settings-tab-provider';
 import { ToastProvider } from 'src/contexts/toast-provider';
 import { WorldDataEntryProvider } from 'src/contexts/world-data-entry-provider';
 
 const TAB_KEYS = {
   register: 'register',
   list: 'list',
+  settings: 'settings',
 };
 
 const TABS = [
@@ -27,6 +31,11 @@ const TABS = [
     key: TAB_KEYS.register,
     label: 'ワールド情報登録',
     icon: BookmarkIcon,
+  },
+  {
+    key: TAB_KEYS.settings,
+    label: '設定',
+    icon: SettingsIcon,
   },
 ];
 
@@ -58,6 +67,9 @@ export function App(): React.ReactNode {
             <WorldDataEntryProvider>
               {activeTab === TAB_KEYS.register && <WorldDataEntry />}
             </WorldDataEntryProvider>
+            <SettingsTabProvider>
+              {activeTab === TAB_KEYS.settings && <Settings />}
+            </SettingsTabProvider>
           </ToastProvider>
         </AppDataProvider>
       </div>

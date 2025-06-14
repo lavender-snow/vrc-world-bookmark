@@ -14,4 +14,5 @@ contextBridge.exposeInMainWorld('dbAPI', {
   updateWorldBookmark: (options: UpdateWorldBookmarkOptions) => ipcRenderer.invoke('update_world_bookmark', options),
   updateWorldGenres: (options: UpdateWorldGenresOptions) => ipcRenderer.invoke('update_world_genres', options),
   getBookmarkList: (options: BookmarkListOptions) => ipcRenderer.invoke('get_bookmark_list', options),
+  getWorldIdsToUpdate: () => ipcRenderer.invoke('get_world_ids_to_update'),
 });

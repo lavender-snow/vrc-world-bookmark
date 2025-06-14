@@ -1,0 +1,35 @@
+@use 'assets/styles/theme.scss';
+
+:local(.world-update-progress) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+:local(.update-button) {
+  display: flex;
+  align-items: flex-end;
+  padding: 6px 8px;
+}
+
+:local(.progress-area) {
+  width: 100%;
+}
+
+:local(.progress-label) {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: theme.$gray;
+}
+
+:local(.progress-bar) {
+  width: 100%;
+  height: 16px;
+  accent-color: theme.$light-blue;
+}
+
+:local(.progress-bar-completed) {
+  @extend :local(.progress-bar);
+  accent-color: theme.$light-green;
+}
