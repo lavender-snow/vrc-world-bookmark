@@ -403,6 +403,8 @@ export function getBookmarkList(options: BookmarkListOptions) {
     options.selectedGenres.forEach((id, i) => {
       params[`genreId${i}`] = id;
     });
+  } else {
+    whereClauses.push('NOT EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
   }
 
   if (options.selectedVisitStatuses.length > 0) {
