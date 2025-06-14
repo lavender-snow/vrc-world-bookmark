@@ -15,6 +15,7 @@ export function Button({
 }) {
   return (
     <button
+      type='button'
       className={classNames([styles.button, className])}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
