@@ -42,7 +42,7 @@ export const LOGIC_MODES: Record<LogicMode, LogicMode> = {
 export const VIEW_TYPES = {
   list: 'list',
   grid: 'grid',
-};
+} as const;
 export type ViewType = typeof VIEW_TYPES[keyof typeof VIEW_TYPES];
 
 export const WORLD_UPDATE_INFO_STATUS = {
@@ -51,6 +51,5 @@ export const WORLD_UPDATE_INFO_STATUS = {
   completed: 'completed',
   noTarget: 'noTarget',
   error: 'error',
-};
-
-export type WorldUpdateInfoStatusType = typeof VIEW_TYPES[keyof typeof VIEW_TYPES];
+} as const;
+export type WorldUpdateInfoStatusType = typeof WORLD_UPDATE_INFO_STATUS[keyof typeof WORLD_UPDATE_INFO_STATUS];
