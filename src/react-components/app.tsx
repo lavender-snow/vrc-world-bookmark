@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import styles from './app.scss';
 import { BookmarkList } from './bookmark-list/bookmark-list';
+import { WorldDataEntry } from './data-entry/world-data-entry';
 import { Settings } from './settings/settings';
-import { WorldDataEntry } from './world-data-entry';
 
 import { ReactComponent as BookmarkIcon } from 'assets/images/MaterialSymbolsBookmarkAddOutline.svg';
 import { ReactComponent as SettingsIcon } from 'assets/images/MaterialSymbolsSettingsRounded.svg';
