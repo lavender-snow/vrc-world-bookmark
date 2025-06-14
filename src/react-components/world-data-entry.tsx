@@ -82,7 +82,7 @@ export function WorldDataEntry() {
               invalidInput && styles.invalidInput,
             ])}
           />
-          <Button disabled={worldIdOrUrl.length === 0} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
+          <Button disabled={worldIdOrUrl.length === 0 || invalidInput} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
             ワールド情報登録
           </Button>
         </div>
