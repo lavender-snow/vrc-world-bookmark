@@ -70,21 +70,26 @@ export function WorldDataEntry() {
         transition={{ duration: 0.3 }}
       >
         <div className={classNames(styles.searchArea)}>
-          <InputText
-            value={worldIdOrUrl}
-            onChange={onChangeWorldIdOrUrl}
-            onKeyDown={onKeyDownInputText}
-            onBlur={() => setIsWorldIdOrUrl(getWorldId(worldIdOrUrl) !== null)}
-            placeholder='World ID or World URL'
-            className={classNames([
-              styles.searchInputText,
-              validInput && styles.validInput,
-              invalidInput && styles.invalidInput,
-            ])}
-          />
-          <Button disabled={worldIdOrUrl.length === 0 || invalidInput} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
-            ワールド情報登録
-          </Button>
+          <div className={classNames(styles.searchInput)}>
+            <InputText
+              value={worldIdOrUrl}
+              onChange={onChangeWorldIdOrUrl}
+              onKeyDown={onKeyDownInputText}
+              onBlur={() => setIsWorldIdOrUrl(getWorldId(worldIdOrUrl) !== null)}
+              placeholder='World ID or World URL'
+              className={classNames([
+                styles.searchInputText,
+                validInput && styles.validInput,
+                invalidInput && styles.invalidInput,
+              ])}
+            />
+            <Button disabled={worldIdOrUrl.length === 0 || invalidInput} onClick={onClickGetWorldInfo} className={classNames(styles.searchButton)}>
+              ワールド情報登録
+            </Button>
+          </div>
+          <div className={styles.searchInputMessage}>
+            {invalidInput && <span className={styles.invalidMessage}>無効なワールドIDまたはURLです。正しい形式で入力してください。</span>}
+          </div>
         </div>
         <div className={classNames(styles.searchResult)}>
           {vrchatWorldInfo && (
