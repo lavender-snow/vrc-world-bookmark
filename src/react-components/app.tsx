@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { useState } from 'react';
 
 import styles from './app.scss';
-import { BookmarkList } from './bookmark-list';
+import { BookmarkList } from './bookmark-list/bookmark-list';
 import { Settings } from './settings/settings';
 import { WorldDataEntry } from './world-data-entry';
 

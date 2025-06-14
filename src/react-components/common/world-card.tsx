@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import { Button } from './common/button';
-import { CheckboxGroup } from './common/checkbox-group';
-import { DropDownList, SelectOption } from './common/drop-down-list';
+import { Button } from './button';
+import { CheckboxGroup } from './checkbox-group';
+import { DropDownList, SelectOption } from './drop-down-list';
 import style from './world-card.scss';
 import { WorldTags } from './world-tags';
 

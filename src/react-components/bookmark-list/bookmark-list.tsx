@@ -3,15 +3,15 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { BookmarkListDetail } from './bookmark-list-detail';
 import style from './bookmark-list.scss';
-import { Accordion } from './common/accordion';
-import { CheckboxGroup } from './common/checkbox-group';
-import { DropDownList } from './common/drop-down-list';
-import { InputText } from './common/input-text';
 import { ViewTypeArea } from './view-type-area';
-import { WorldCard } from './world-card';
 import { WorldListItem } from './world-list-item';
 
 import { ReactComponent as FilterIcon } from 'assets/images/MaterialSymbolsFilterAltOutline.svg';
+import { Accordion } from 'commonComponents/accordion';
+import { CheckboxGroup } from 'commonComponents/checkbox-group';
+import { DropDownList } from 'commonComponents/drop-down-list';
+import { InputText } from 'commonComponents/input-text';
+import { WorldCard } from 'commonComponents/world-card';
 import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, VIEW_TYPES } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
