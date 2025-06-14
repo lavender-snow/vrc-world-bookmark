@@ -35,6 +35,6 @@ export function SettingsTabProvider({ children }: { children: React.ReactNode })
 
 export function useSettingsTabState() {
   const ctx = useContext(SettingsTabContext);
-  if (!ctx) throw new Error('useSettingsTabState must be used within a SettingsProvider');
+  if (!ctx) throw new Error('useSettingsTabState must be used within a SettingsTabProvider');
   return ctx;
 }
