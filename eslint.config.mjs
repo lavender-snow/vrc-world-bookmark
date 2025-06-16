@@ -45,7 +45,7 @@ export default defineConfig([{
     },
   },
 
-  ignores: ['node_modules/**', 'out/**', '.webpack/**'],
+  ignores: ['node_modules/**', 'out/**', '.webpack/**', 'jest.config.js', '__mocks__/**'],
 
   rules: {
     '@stylistic/semi': ['error', 'always'],

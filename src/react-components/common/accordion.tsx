@@ -13,7 +13,7 @@ export function Accordion({ icon: Icon, title, children, defaultOpen = false, on
         if (onToggle) {
           onToggle(newValue);
         }
-      }}><Icon /> {title} {open ? '▲' : '▼'} </div>
+      }}><Icon /> <span>{title}</span> {open ? '▲' : '▼'} </div>
       {open && (
         <div
           className={style.accordionContent}

@@ -42,8 +42,7 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const { addToast } = useToast();
   const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
-  const genres = useAppData().genres;
-  const visitStatuses = useAppData().visitStatuses;
+  const { genres, visitStatuses } = useAppData();
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
