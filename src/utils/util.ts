@@ -20,6 +20,7 @@ export function writeClipboard(text: string) {
   navigator.clipboard.writeText(text);
 }
 
+// 指定したミリ秒だけ呼び出しを遅延し、最後の呼び出しのみ実行するdebounce関数
 export function debounce<T extends unknown[], R>(
   func: (...args: T) => R,
   wait: number,
@@ -37,6 +38,7 @@ export function debounce<T extends unknown[], R>(
   };
 }
 
+// タグ文字列から各種属性を判定する関数
 export function checkTag(tag: string) {
   const lowerTag = tag.toLowerCase();
 
