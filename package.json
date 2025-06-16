@@ -52,6 +52,7 @@
     "fork-ts-checker-webpack-plugin": "^7.3.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.0",
+    "jest-environment-jsdom": "^30.0.0",
     "mini-css-extract-plugin": "^2.9.2",
     "node-loader": "^2.1.0",
     "react-dom": "^19.1.0",
