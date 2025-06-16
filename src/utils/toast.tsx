@@ -10,10 +10,10 @@ import { NoticeType } from 'src/consts/const';
 
 function Icon({ noticeType }: { noticeType: NoticeType }) {
   const icons = {
-    [NoticeType.success]: <SuccessIcon />,
-    [NoticeType.warning]: <WarningIcon />,
-    [NoticeType.error]: <ErrorIcon />,
-    [NoticeType.info]: <InfoIcon />,
+    [NoticeType.success]: <SuccessIcon data-testid='icon-success'/>,
+    [NoticeType.warning]: <WarningIcon data-testid='icon-warning'/>,
+    [NoticeType.error]: <ErrorIcon data-testid='icon-error'/>,
+    [NoticeType.info]: <InfoIcon data-testid='icon-info'/>,
   };
 
   return icons[noticeType];
@@ -29,7 +29,7 @@ export function Toast({ message, onClose, noticeType = NoticeType.info }: { mess
       }
     }}>
       <Icon noticeType={noticeType} />
-      {message}
+      <span>{message}</span>
     </div>
   );
 }
