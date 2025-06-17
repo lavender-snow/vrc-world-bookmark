@@ -9,3 +9,16 @@ global.AnimationEvent = class AnimationEvent extends Event {
     this.pseudoElement = eventInitDict?.pseudoElement || '';
   }
 };
+
+beforeAll(() => {
+  global.window.dbAPI = {
+    updateWorldBookmark: jest.fn().mockResolvedValue(undefined),
+    updateWorldGenres: jest.fn().mockResolvedValue(undefined),
+    getGenres: jest.fn().mockResolvedValue([]),
+    getVisitStatuses: jest.fn().mockResolvedValue([]),
+    addOrUpdateWorldInfo: jest.fn().mockResolvedValue({}),
+    getWorldInfo: jest.fn().mockResolvedValue({}),
+    getBookmarkList: jest.fn().mockResolvedValue({bookmarkList: [], totalCount: 1}),
+    getWorldIdsToUpdate: jest.fn().mockResolvedValue([]),
+  };
+});
