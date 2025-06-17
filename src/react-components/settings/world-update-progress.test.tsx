@@ -30,24 +30,8 @@ const mockSetProcessedCount = jest.fn();
 const mockSetWorldInfoIsUpdating = jest.fn();
 const mockSetWorldInfoUpdateStatus = jest.fn();
 
-let state = {
-  updateTargetTotal: 0,
-  setUpdateTargetTotal: mockSetUpdateTargetTotal,
-  processedCount: 0,
-  setProcessedCount: mockSetProcessedCount,
-  worldInfoIsUpdating: false,
-  setWorldInfoIsUpdating: mockSetWorldInfoIsUpdating,
-  worldInfoUpdateStatus: 'idle',
-  setWorldInfoUpdateStatus: mockSetWorldInfoUpdateStatus,
-};
-
-jest.mock('src/contexts/settings-tab-provider', () => ({
-  useSettingsTabState: () => state,
-}));
-
-beforeEach(() => {
-  jest.clearAllMocks();
-  state = {
+function createMockState() {
+  return {
     updateTargetTotal: 0,
     setUpdateTargetTotal: mockSetUpdateTargetTotal,
     processedCount: 0,
@@ -57,6 +41,17 @@ beforeEach(() => {
     worldInfoUpdateStatus: 'idle',
     setWorldInfoUpdateStatus: mockSetWorldInfoUpdateStatus,
   };
+}
+
+let state = createMockState();
+
+jest.mock('src/contexts/settings-tab-provider', () => ({
+  useSettingsTabState: () => state,
+}));
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  state = createMockState();
 });
 
 describe('WorldUpdateProgress', () => {
