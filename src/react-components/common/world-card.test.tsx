@@ -58,6 +58,10 @@ const worldInfo: VRChatWorldInfo = {
   visitStatusId: 2,
 };
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 describe('WorldCard', () => {
   it('ワールド名・作者・説明などが表示される', () => {
     render(<WorldCard worldInfo={worldInfo} />);
