@@ -29,5 +29,5 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
-  "prettier.useTabs": false,
+  "prettier.useTabs": false
 }
