@@ -112,9 +112,7 @@ describe('WorldUpdateProgress', () => {
       expect(mockSetUpdateTargetTotal).toHaveBeenCalledWith(2);
     });
 
-    await act(async () => {
-      await jest.runAllTimersAsync();
-    });
+    await act(() => jest.runAllTimersAsync());
 
     await waitFor(() => {
       expect(window.dbAPI.addOrUpdateWorldInfo).toHaveBeenCalledWith('id1');
