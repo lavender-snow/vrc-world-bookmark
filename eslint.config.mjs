@@ -59,7 +59,7 @@ export default defineConfig([{
     'no-restricted-imports': ['error', { 'patterns': ['../']}],
   },
 }, {
-  files: ['**/*.test.ts', '**/*.test.tsx'],
+  files: ['**/*.test.@(ts|tsx)'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
   },
