@@ -58,13 +58,11 @@ export default defineConfig([{
     }],
     'no-restricted-imports': ['error', { 'patterns': ['../']}],
   },
-
-  overrides: [{
-    'files': ['*.test.ts', '*.test.tsx'],
-    'rules': {
-      '@typescript-eslint/no-explicit-any': 'off'
-    }
-  }]
+}, {
+  files: ['**/*.test.ts', '**/*.test.tsx'],
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+  },
 }, globalIgnores([
   '.webpack/**',
 ])]);
