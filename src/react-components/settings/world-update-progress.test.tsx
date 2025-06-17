@@ -1,6 +1,5 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor ,act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import {act} from 'react';
 
 import { WorldUpdateProgress } from './world-update-progress';
 
