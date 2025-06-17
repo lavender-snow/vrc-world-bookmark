@@ -1,5 +1,6 @@
 {
     "editor.tabSize": 2,
+    "editor.insertSpaces": true,
     "files.insertFinalNewline": true,
     "editor.formatOnSave": true,
     "eslint.format.enable": true,
@@ -27,5 +28,6 @@
     },
     "[typescriptreact]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-    }
+    },
+    "prettier.useTabs": false,
 }
