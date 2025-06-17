@@ -58,19 +58,6 @@ const worldInfo: VRChatWorldInfo = {
   visitStatusId: 2,
 };
 
-beforeAll(() => {
-  global.window.dbAPI = {
-    updateWorldBookmark: jest.fn().mockResolvedValue(undefined),
-    updateWorldGenres: jest.fn().mockResolvedValue(undefined),
-    getGenres: jest.fn().mockResolvedValue([]),
-    getVisitStatuses: jest.fn().mockResolvedValue([]),
-    addOrUpdateWorldInfo: jest.fn().mockResolvedValue({}),
-    getWorldInfo: jest.fn().mockResolvedValue({}),
-    getBookmarkList: jest.fn().mockResolvedValue({bookmarkList: [worldInfo], totalCount: 1}),
-    getWorldIdsToUpdate: jest.fn().mockResolvedValue([]),
-  };
-});
-
 describe('WorldCard', () => {
   it('ワールド名・作者・説明などが表示される', () => {
     render(<WorldCard worldInfo={worldInfo} />);

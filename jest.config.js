@@ -13,5 +13,6 @@ module.exports = {
     '\\.(css|scss)$': 'identity-obj-proxy',
     '\\.svg$': '<rootDir>/__mocks__/svgMock.js',
     '^src/(.*)$': '<rootDir>/src/$1',
+    '^commonComponents/(.*)$': '<rootDir>/src/react-components/common/$1',
   },
 };
