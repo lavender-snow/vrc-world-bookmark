@@ -14,5 +14,6 @@ module.exports = {
     '\\.svg$': '<rootDir>/__mocks__/svgMock.js',
     '^src/(.*)$': '<rootDir>/src/$1',
     '^commonComponents/(.*)$': '<rootDir>/src/react-components/common/$1',
+    '^__mocks__/(.*)$': '<rootDir>/__mocks__/$1',
   },
 };
