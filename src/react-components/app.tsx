@@ -53,7 +53,7 @@ export function App(): React.ReactNode {
             className={classNames(styles.tabHeaderItem, activeTab === tab.key && styles.activeTab)}
             onClick={() => setActiveTab(tab.key)}
           >
-            <tab.icon />
+            <tab.icon data-testid={`icon-${tab.key}`} />
             <span>{tab.label}</span>
           </button>
         ))}
