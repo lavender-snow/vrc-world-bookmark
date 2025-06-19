@@ -4,10 +4,11 @@ import * as path from 'path';
 
 import Database from 'better-sqlite3';
 
-import { GENRE, ORDERABLE_COLUMNS } from 'src/consts/const';
+import { GENRE, ORDERABLE_COLUMNS, VISITS_STATUS } from 'src/consts/const';
 import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
+import { shuffleArray } from 'src/utils/util';
 
 const DB_PATH = path.join(process.env.APPDATA || '', process.env.APP_NAME, 'app.db');
 const MIGRATIONS_DIR = app.isPackaged
@@ -472,4 +473,80 @@ export function getWorldIdsToUpdate() {
   const result = db.prepare(sql).all() as { id: string }[];
 
   return result.map(row => row.id);
+}
+
+// ランダムにおすすめのワールドを1件取得する
+export function getRandomRecommendedWorld() {
+  const selectSql = `
+    world.id,
+    world.author_name_cached AS authorName,
+    world.capacity_cached AS capacity,
+    world.world_created_at AS createdAt,
+    world.description_cached AS description,
+    world.favorites_cached AS favorites,
+    world.image_url_cached AS imageUrl,
+    world.name_cached AS name,
+    world.release_status_cached AS releaseStatus,
+    world.tags_cached AS tags,
+    world.thumbnail_image_url_cached AS thumbnailImageUrl,
+    world.world_updated_at_cached AS updatedAt,
+    world.visits_cached AS visits,
+    world.deleted_at AS deletedAt,
+    GROUP_CONCAT(wg.genre_id) AS genreIds,
+    bookmark.note,
+    bookmark.visit_status_id AS visitStatusId
+  `;
+
+  const fromSql = `
+    vrchat_worlds world
+    INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
+    LEFT JOIN world_genres wg ON world.id = wg.world_id
+  `;
+
+  const groupByClauses = ['world.id'];
+
+  const params: Record<string, string | number> = {};
+  const whereClauses: string[] = [];
+  const orderByClauses: string[] = [];
+  const paginationClauses: string[] = [];
+
+  // 少なくともジャンルが設定されているものを候補にする
+  whereClauses.push('EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
+
+  // 訪れたことの無い場所を対象にする
+  whereClauses.push(`bookmark.visit_status_id = ${VISITS_STATUS.unvisited}`);
+
+  // 削除されていないワールドが対象
+  whereClauses.push('world.deleted_at IS NULL');
+
+  // お気に入り数、訪問数、更新日をランダムな順に用いてソートする
+  const candidateColumns = ['favorites_cached', 'world_updated_at_cached', 'visits_cached'];
+  const shuffledColumns = shuffleArray(candidateColumns);
+  const orderByClause = shuffledColumns.map(col => `${col} DESC`).join(', ');
+  orderByClauses.push(`ORDER BY ${orderByClause}`);
+
+  // 上位5件の中からランダムに1件取得する
+  const offset = Math.floor(Math.random() * 5);
+  paginationClauses.push(`LIMIT 1 OFFSET ${offset}`);
+
+  const sql = buildSelectQuery({
+    select: selectSql,
+    from: fromSql,
+    where: whereClauses,
+    groupBy: groupByClauses,
+    orderBy: orderByClauses,
+    pagination: paginationClauses,
+  });
+
+  const result = db.prepare(sql).get(params) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
+
+  if (!result) {
+    return null;
+  }
+
+  return {
+    ...result,
+    tags: result.tags ? JSON.parse(result.tags) as string[] : [],
+    genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
+  };
 }

@@ -54,3 +54,18 @@ export const WORLD_UPDATE_INFO_STATUS = {
   error: 'error',
 } as const;
 export type WorldUpdateInfoStatusType = typeof WORLD_UPDATE_INFO_STATUS[keyof typeof WORLD_UPDATE_INFO_STATUS];
+
+export const VISITS_STATUS = {
+  unvisited: 0,
+  in_progress: 1,
+  completed: 2,
+  hidden: 3,
+} as const;
+
+export type VisitStatusType = typeof VISITS_STATUS[keyof typeof VISITS_STATUS];
+
+export const RECOMMEND_TYPE = [
+  { id: 'random', label: 'ランダム検索', description: 'お気に入り数、総訪問数、更新日などを加味しつつランダムに未訪問ワールドを取得します。' },
+  { id: 'conversation', label: '対話検索', description: 'LLMを活用し、対話形式でおすすめワールドを検索します。API利用コストが発生します。' },
+] as const;
+export type RecommendType = typeof RECOMMEND_TYPE[number]['id'];

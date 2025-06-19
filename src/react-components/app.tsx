@@ -4,24 +4,33 @@ import { useState } from 'react';
 import styles from './app.scss';
 import { BookmarkList } from './bookmark-list/bookmark-list';
 import { WorldDataEntry } from './data-entry/world-data-entry';
+import { Recommend } from './recommend/recommend';
 import { Settings } from './settings/settings';
 
+import { ReactComponent as ThumbsUpIcon } from 'assets/images/AkarIconsThumbsUp.svg';
 import { ReactComponent as BookmarkIcon } from 'assets/images/MaterialSymbolsBookmarkAddOutline.svg';
 import { ReactComponent as SettingsIcon } from 'assets/images/MaterialSymbolsSettingsRounded.svg';
 import { ReactComponent as EarthIcon } from 'assets/images/MdiEarth.svg';
 import { AppDataProvider } from 'src/contexts/app-data-provider';
 import { BookmarkListProvider } from 'src/contexts/bookmark-list-provider';
+import { RecommendProvider } from 'src/contexts/recommend-provider';
 import { SettingsTabProvider } from 'src/contexts/settings-tab-provider';
 import { ToastProvider } from 'src/contexts/toast-provider';
 import { WorldDataEntryProvider } from 'src/contexts/world-data-entry-provider';
 
 const TAB_KEYS = {
+  recommend: 'recommend',
   register: 'register',
   list: 'list',
   settings: 'settings',
 };
 
 const TABS = [
+  {
+    key: TAB_KEYS.recommend,
+    label: 'おすすめ',
+    icon: ThumbsUpIcon,
+  },
   {
     key: TAB_KEYS.list,
     label: 'ワールド一覧',
@@ -53,7 +62,7 @@ export function App(): React.ReactNode {
             className={classNames(styles.tabHeaderItem, activeTab === tab.key && styles.activeTab)}
             onClick={() => setActiveTab(tab.key)}
           >
-            <tab.icon />
+            <tab.icon data-testid={`icon-${tab.key}`} />
             <span>{tab.label}</span>
           </button>
         ))}
@@ -61,6 +70,9 @@ export function App(): React.ReactNode {
       <div className={styles.tabContent}>
         <AppDataProvider>
           <ToastProvider>
+            <RecommendProvider>
+              {activeTab === TAB_KEYS.recommend && <Recommend />}
+            </RecommendProvider>
             <BookmarkListProvider>
               {activeTab === TAB_KEYS.list && <BookmarkList />}
             </BookmarkListProvider>

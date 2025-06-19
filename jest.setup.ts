@@ -20,5 +20,6 @@ beforeAll(() => {
     getWorldInfo: jest.fn().mockResolvedValue({}),
     getBookmarkList: jest.fn().mockResolvedValue({bookmarkList: [], totalCount: 1}),
     getWorldIdsToUpdate: jest.fn().mockResolvedValue([]),
+    getRandomRecommendedWorld: jest.fn().mockResolvedValue({}),
   };
 });

@@ -11,8 +11,9 @@ module.exports = {
   },
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',
-    '\\.svg$': '<rootDir>/__mocks__/svgMock.js',
+    '\\.svg$': '<rootDir>/__mocks__/svg-mock.ts',
     '^src/(.*)$': '<rootDir>/src/$1',
     '^commonComponents/(.*)$': '<rootDir>/src/react-components/common/$1',
+    '^__mocks__/(.*)$': '<rootDir>/__mocks__/$1',
   },
 };

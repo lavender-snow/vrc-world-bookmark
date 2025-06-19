@@ -1,0 +1,28 @@
+@use 'assets/styles/theme.scss';
+
+:local(.recommend-container) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:local(.recommend-type-selector) {
+  border: 2px solid theme.$light-gray;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+:local(.recommend-type-radio-group) {
+  display: flex;
+  gap: 8px;
+}
+
+:local(.fetch-button) {
+  flex-shrink: 0;
+  padding: 10px;
+  border: transparent 1px solid;
+}

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 
 import { WorldCard } from './world-card';
 
-import { VRChatWorldInfo } from 'src/types/renderer';
+import { mockWorldInfo } from '__mocks__/test-data';
 import { writeClipboard } from 'src/utils/util';
 
 jest.mock('src/contexts/app-data-provider', () => ({
@@ -38,25 +38,6 @@ jest.mock('./world-tags', () => ({
   ),
 }));
 
-const worldInfo: VRChatWorldInfo = {
-  id: 'wrld_15fe33f1-937e-4e93-8a40-902fb9552a11',
-  authorName: 'syuzen',
-  capacity: 24,
-  createdAt: '2020-06-07T17:12:08.318Z',
-  description: 'Simple world with just a mirror and an event calendar․',
-  favorites: 10,
-  imageUrl: 'https://api.vrchat.cloud/api/1/file/file_c68c3996-25d5-4d81-afd3-6c30645391d2/5/file',
-  name: 'VerySimpleWorld',
-  releaseStatus: 'public',
-  tags: ['system_approved'],
-  thumbnailImageUrl: 'https://api.vrchat.cloud/api/1/image/file_c68c3996-25d5-4d81-afd3-6c30645391d2/5/256',
-  updatedAt: '2021-05-26T05:37:15.578Z',
-  visits: 6590,
-  deletedAt: null,
-  genreIds: [0],
-  note: 'マイワールド',
-  visitStatusId: 2,
-};
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -64,30 +45,30 @@ beforeEach(() => {
 
 describe('WorldCard', () => {
   it('ワールド名・作者・説明などが表示される', () => {
-    render(<WorldCard worldInfo={worldInfo} />);
-    expect(screen.getByText(worldInfo.name)).toBeInTheDocument();
-    expect(screen.getByText(`by ${worldInfo.authorName}`)).toBeInTheDocument();
-    expect(screen.getByText(worldInfo.description)).toBeInTheDocument();
-    expect(screen.getByText(worldInfo.favorites)).toBeInTheDocument();
-    expect(screen.getByText(worldInfo.visits.toLocaleString())).toBeInTheDocument();
-    expect(screen.getByText(worldInfo.capacity)).toBeInTheDocument();
-    expect(screen.getByText(new Date(worldInfo.createdAt).toLocaleDateString())).toBeInTheDocument();
-    expect(screen.getByText(new Date(worldInfo.updatedAt).toLocaleDateString())).toBeInTheDocument();
-    expect(screen.getByText(worldInfo.note)).toBeInTheDocument();
+    render(<WorldCard worldInfo={mockWorldInfo} />);
+    expect(screen.getByText(mockWorldInfo.name)).toBeInTheDocument();
+    expect(screen.getByText(`by ${mockWorldInfo.authorName}`)).toBeInTheDocument();
+    expect(screen.getByText(mockWorldInfo.description)).toBeInTheDocument();
+    expect(screen.getByText(mockWorldInfo.favorites)).toBeInTheDocument();
+    expect(screen.getByText(mockWorldInfo.visits.toLocaleString())).toBeInTheDocument();
+    expect(screen.getByText(mockWorldInfo.capacity)).toBeInTheDocument();
+    expect(screen.getByText(new Date(mockWorldInfo.createdAt).toLocaleDateString())).toBeInTheDocument();
+    expect(screen.getByText(new Date(mockWorldInfo.updatedAt).toLocaleDateString())).toBeInTheDocument();
+    expect(screen.getByText(mockWorldInfo.note)).toBeInTheDocument();
     expect(screen.getByLabelText('チル')).toBeInTheDocument();
     expect(screen.getByText('完了')).toBeInTheDocument();
   });
 
   it('ワールド名クリックでクリップボードにコピーされる', () => {
-    render(<WorldCard worldInfo={worldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} />);
     const clipboardButton = screen.getByLabelText('ワールド名をコピー');
     fireEvent.click(clipboardButton);
 
-    expect(writeClipboard).toHaveBeenCalledWith(worldInfo.name);
+    expect(writeClipboard).toHaveBeenCalledWith(mockWorldInfo.name);
   });
 
   it('メモを編集してフォーカスを外すとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={worldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} />);
     const textarea = screen.getByPlaceholderText('ワールドの補足情報を入力');
     fireEvent.change(textarea, { target: { value: '新しいメモ' } });
     fireEvent.blur(textarea);
@@ -99,7 +80,7 @@ describe('WorldCard', () => {
   });
 
   it('ジャンルチェックボックスをクリックするとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={worldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} />);
     const genreCheckbox = screen.getByLabelText('高品質');
     fireEvent.click(genreCheckbox);
     await waitFor(() => {
@@ -110,7 +91,7 @@ describe('WorldCard', () => {
   });
 
   it('訪問状況を変更するとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={worldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} />);
     const select = screen.getByRole('combobox');
     fireEvent.change(select, { target: { value: '1' } });
     await waitFor(() => {
@@ -121,7 +102,7 @@ describe('WorldCard', () => {
   });
 
   it('タグが表示される', () => {
-    render(<WorldCard worldInfo={worldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} />);
     expect(screen.getByText('["system_approved"]')).toBeInTheDocument();
   });
 });

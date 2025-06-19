@@ -94,23 +94,7 @@
   width: 100%;
 }
 
-:local(.bookmark-button) {
-  height: 24px;
-  background-color: theme.$light-blue;
-  color: theme.$white;
-  padding: 6px 10px;
-  font-size: small;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-
-  svg {
-    margin-right: 4px;
-  }
-}
-
 :local(.invite-button) {
-  height: 24px;
   background-color: theme.$light-blue;
   color: theme.$white;
   padding: 6px 10px;
