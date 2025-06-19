@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 import { App } from './app';
@@ -24,44 +24,61 @@ jest.mock('src/contexts/bookmark-list-provider', () => ({
 jest.mock('src/contexts/settings-tab-provider', () => ({
   SettingsTabProvider: ({ children }: any) => <>{children}</>,
 }));
+
+const addToast = jest.fn();
 jest.mock('src/contexts/toast-provider', () => ({
   ToastProvider: ({ children }: any) => <>{children}</>,
+  useToast: () => ({
+    addToast,
+  }),
 }));
+
 jest.mock('src/contexts/world-data-entry-provider', () => ({
   WorldDataEntryProvider: ({ children }: any) => <>{children}</>,
 }));
 
 describe('App', () => {
-  it('初期表示で「ワールド一覧」タブがアクティブ', () => {
+  it('初期表示で「おすすめ」タブがアクティブ', async () => {
     render(<App />);
-    expect(screen.getByRole('button', { name: /ワールド一覧/ })).toHaveClass('activeTab');
-    // 他のタブの内容は表示されていない
-    expect(screen.queryByTestId('world-data-entry')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('settings')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /おすすめ/ })).toHaveClass('activeTab');
+      // 他のタブの内容は表示されていない
+      expect(screen.queryByTestId('bookmark-list')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('world-data-entry')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('settings')).not.toBeInTheDocument();
+    });
   });
 
-  it('「ワールド一覧」タブをクリックするとBookmarkListが表示される', () => {
+  it('「ワールド一覧」タブをクリックするとBookmarkListが表示される', async () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /ワールド一覧/ }));
-    expect(screen.getByTestId('bookmark-list')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('bookmark-list')).toBeInTheDocument();
+    });
   });
 
-  it('「ワールド情報登録」タブをクリックするとWorldDataEntryが表示される', () => {
+  it('「ワールド情報登録」タブをクリックするとWorldDataEntryが表示される', async () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /ワールド情報登録/ }));
-    expect(screen.getByTestId('world-data-entry')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('world-data-entry')).toBeInTheDocument();
+    });
   });
 
-  it('「設定」タブをクリックするとSettingsが表示される', () => {
+  it('「設定」タブをクリックするとSettingsが表示される', async () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /設定/ }));
-    expect(screen.getByTestId('settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('settings')).toBeInTheDocument();
+    });
   });
 
-  it('タブのアイコンが各種表示される', () => {
+  it('タブのアイコンが各種表示される', async () => {
     render(<App />);
-    expect(screen.getByTestId('icon-register')).toBeInTheDocument();
-    expect(screen.getByTestId('icon-list')).toBeInTheDocument();
-    expect(screen.getByTestId('icon-settings')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('icon-register')).toBeInTheDocument();
+      expect(screen.getByTestId('icon-list')).toBeInTheDocument();
+      expect(screen.getByTestId('icon-settings')).toBeInTheDocument();
+    });
   });
 });

@@ -2,6 +2,7 @@ import {
   getWorldId,
   debounce,
   checkTag,
+  shuffleArray,
 } from './util';
 
 describe('getWorldId', () => {
@@ -76,5 +77,35 @@ describe('checkTag', () => {
     expect(check.isHorror).toBe(false);
     expect(check.isGame).toBe(false);
     expect(check.isAdmin).toBe(false);
+  });
+});
+
+describe('shuffleArray', () => {
+  it('順序は一致せずとも元の配列と同じ要素を持つことをテスト', () => {
+    const arr = [1, 2, 3, 4, 5];
+    const shuffled = shuffleArray(arr);
+
+    expect(shuffled.sort()).toEqual(arr.sort());
+    expect(shuffled).not.toBe(arr);
+  });
+
+  it('空配列は空配列を返すことをテスト', () => {
+    expect(shuffleArray([])).toEqual([]);
+  });
+
+  it('1要素配列はそのまま返すことをテスト', () => {
+    expect(shuffleArray([42])).toEqual([42]);
+  });
+
+  it('シャッフルされることを10回試行しテスト', () => {
+    const arr = [1, 2, 3, 4, 5];
+    let different = false;
+    for (let i = 0; i < 10; i++) {
+      if (shuffleArray(arr).join() !== arr.join()) {
+        different = true;
+        break;
+      }
+    }
+    expect(different).toBe(true);
   });
 });

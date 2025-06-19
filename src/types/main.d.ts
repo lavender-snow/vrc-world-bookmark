@@ -15,6 +15,7 @@ declare global {
       updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<void>;
       getBookmarkList: (options?: BookmarkListOptions) => Promise<{bookmarkList: VRChatWorldInfo[], totalCount: number}>;
       getWorldIdsToUpdate: () => Promise<string[]>;
+      getRandomRecommendedWorld: () => Promise<VRChatWorldInfo>;
     };
   }
 }

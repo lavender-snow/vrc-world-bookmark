@@ -12,6 +12,7 @@ import {
   getBookmarkList,
   updateWorldGenres,
   getWorldIdsToUpdate,
+  getRandomRecommendedWorld,
 } from './database';
 import { fetchWorldInfo, VRChatServerError, WorldNotFoundError } from './vrchat-api';
 
@@ -79,5 +80,9 @@ export function initializeApp() {
 
   ipcMain.handle('get_world_ids_to_update', async () => {
     return getWorldIdsToUpdate();
+  });
+
+  ipcMain.handle('get_random_recommended_world', async () => {
+    return getRandomRecommendedWorld();
   });
 }
