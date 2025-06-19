@@ -75,6 +75,21 @@ describe('RecommendProvider', () => {
     });
   });
 
+  it('おすすめワールドが取得できなかった場合は専用のトーストが呼ばれる', async () => {
+    window.dbAPI.getRandomRecommendedWorld = jest.fn().mockResolvedValue(null);
+    render(
+      <RecommendProvider>
+        <ConsumerComponent />
+      </RecommendProvider>,
+    );
+    fireEvent.click(screen.getByTestId('get-world-button'));
+    await waitFor(() => {
+      expect(window.dbAPI.getRandomRecommendedWorld).toHaveBeenCalled();
+      expect(screen.getByTestId('world')).toHaveTextContent('none');
+      expect(addToast).toHaveBeenCalledWith('おすすめワールドが見つかりませんでした。', expect.anything());
+    });
+  });
+
   it('getRecommendWorldでエラー時はnullになりトーストが呼ばれる', async () => {
     (window.dbAPI.getRandomRecommendedWorld as jest.Mock).mockResolvedValueOnce(mockWorldInfo).mockRejectedValueOnce('APIエラー');
     render(

@@ -22,8 +22,14 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   async function getRecommendWorld() {
     try {
       const response = await window.dbAPI.getRandomRecommendedWorld();
-      setVRChatWorldInfo(response);
-      addToast('おすすめワールドを取得しました。', NoticeType.success);
+
+      if (!response) {
+        setVRChatWorldInfo(null);
+        addToast('おすすめワールドが見つかりませんでした。', NoticeType.info);
+      } else {
+        setVRChatWorldInfo(response);
+        addToast('おすすめワールドを取得しました。', NoticeType.success);
+      }
     } catch (error) {
       setVRChatWorldInfo(null);
       addToast(`ワールド情報の取得に失敗しました。エラー: ${error}`, NoticeType.error);

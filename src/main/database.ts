@@ -538,7 +538,11 @@ export function getRandomRecommendedWorld() {
     pagination: paginationClauses,
   });
 
-  const result = db.prepare(sql).get(params) as (VRChatWorldInfo & { tags: string, genreIds: string});
+  const result = db.prepare(sql).get(params) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
+
+  if (!result) {
+    return null;
+  }
 
   return {
     ...result,
