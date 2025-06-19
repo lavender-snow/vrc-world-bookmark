@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
 module.exports = {
-  ReactComponent: (props) => React.createElement('svg', props),
+  ReactComponent: (props: any) => React.createElement('svg', props),
   default: 'svg',
 };

@@ -45,7 +45,7 @@ export default defineConfig([{
     },
   },
 
-  ignores: ['node_modules/**', 'out/**', '.webpack/**', 'jest.config.js', '__mocks__/**'],
+  ignores: ['node_modules/**', 'out/**', '.webpack/**', 'jest.config.js'],
 
   rules: {
     '@stylistic/semi': ['error', 'always'],
@@ -59,7 +59,7 @@ export default defineConfig([{
     'no-restricted-imports': ['error', { 'patterns': ['../']}],
   },
 }, {
-  files: ['**/*.test.@(ts|tsx)'],
+  files: ['**/*.test.@(ts|tsx)', '**/*-mock.@(ts|tsx)'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
   },
