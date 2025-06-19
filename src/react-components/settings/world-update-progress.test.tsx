@@ -120,6 +120,7 @@ describe('WorldUpdateProgress', () => {
   });
 
   it('更新中にAPIエラーが発生した場合はエラー状態になる', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
     window.dbAPI.getWorldIdsToUpdate = jest.fn().mockResolvedValue(['id1', 'id2']);
     window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockImplementationOnce(() => {
       throw new Error('fail');
@@ -132,6 +133,7 @@ describe('WorldUpdateProgress', () => {
       expect(mockSetWorldInfoIsUpdating).toHaveBeenCalledWith(false);
       expect(mockSetWorldInfoUpdateStatus).toHaveBeenCalledWith('error');
     });
+    errorSpy.mockRestore(); // エラーログの抑制を解除
   });
 
   it('更新中はボタンがdisabledになる', () => {
