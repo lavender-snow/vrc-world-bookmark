@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 
 import style from './settings.scss';
 import { WorldUpdateProgress } from './world-update-progress';
@@ -19,17 +20,25 @@ function SettingItem({
 
 export function Settings() {
   return (
-    <div className={style.settings}>
-      <h1>設定</h1>
-
-      <SettingItem
-        title="ワールドデータ更新"
+    <AnimatePresence mode='wait'>
+      <motion.div className={style.settings}
+        key="settings"
+        initial={{ opacity: 0, x: -40 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -40 }}
+        transition={{ duration: 0.3 }}
       >
-        <span>
-          24時間以上前に取得したワールドデータを対象に最新情報へ更新します。VRChatサーバーへの負荷軽減のため1件ごとに1秒待機します。
-        </span>
-        <WorldUpdateProgress />
-      </SettingItem>
-    </div>
+        <h1>設定</h1>
+
+        <SettingItem
+          title="ワールドデータ更新"
+        >
+          <span>
+            24時間以上前に取得したワールドデータを対象に最新情報へ更新します。VRChatサーバーへの負荷軽減のため1件ごとに1秒待機します。
+          </span>
+          <WorldUpdateProgress />
+        </SettingItem>
+      </motion.div>
+    </AnimatePresence>
   );
 }
