@@ -120,20 +120,27 @@ describe('WorldUpdateProgress', () => {
   });
 
   it('更新中にAPIエラーが発生した場合はエラー状態になる', async () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
-    window.dbAPI.getWorldIdsToUpdate = jest.fn().mockResolvedValue(['id1', 'id2']);
-    window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockImplementationOnce(() => {
-      throw new Error('fail');
-    });
+    let errorSpy;
+    try {
+      errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
 
-    render(<WorldUpdateProgress />);
-    fireEvent.click(screen.getByRole('button', { name: '更新' }));
+      window.dbAPI.getWorldIdsToUpdate = jest.fn().mockResolvedValue(['id1', 'id2']);
+      window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockImplementationOnce(() => {
+        throw new Error('fail');
+      });
 
-    await waitFor(() => {
-      expect(mockSetWorldInfoIsUpdating).toHaveBeenCalledWith(false);
-      expect(mockSetWorldInfoUpdateStatus).toHaveBeenCalledWith('error');
-    });
-    errorSpy.mockRestore(); // エラーログの抑制を解除
+      render(<WorldUpdateProgress />);
+      fireEvent.click(screen.getByRole('button', { name: '更新' }));
+
+      await waitFor(() => {
+        expect(mockSetWorldInfoIsUpdating).toHaveBeenCalledWith(false);
+        expect(mockSetWorldInfoUpdateStatus).toHaveBeenCalledWith('error');
+      });
+    } finally {
+      if (errorSpy) {
+        errorSpy.mockRestore(); // エラーログの抑制を解除
+      }
+    }
   });
 
   it('更新中はボタンがdisabledになる', () => {

@@ -97,16 +97,22 @@ describe('RecommendProvider', () => {
         <ConsumerComponent />
       </RecommendProvider>,
     );
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
-    fireEvent.click(screen.getByTestId('get-world-button'));
-    await waitFor(() => {
-      expect(screen.getByTestId('world')).toHaveTextContent('none');
-      expect(addToast).toHaveBeenCalledWith(
-        expect.stringContaining('ワールド情報の取得に失敗しました。エラー: APIエラー'),
-        expect.anything(),
-      );
-    });
-    errorSpy.mockRestore(); // エラーログの抑制を解除
+    let errorSpy;
+    try {
+      errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
+      fireEvent.click(screen.getByTestId('get-world-button'));
+      await waitFor(() => {
+        expect(screen.getByTestId('world')).toHaveTextContent('none');
+        expect(addToast).toHaveBeenCalledWith(
+          expect.stringContaining('ワールド情報の取得に失敗しました。エラー: APIエラー'),
+          expect.anything(),
+        );
+      });
+    } finally {
+      if (errorSpy) {
+        errorSpy.mockRestore(); // エラーログの抑制を解除
+      }
+    }
   });
 
   it('Provider外でuseRecommendStateを使うとエラー', () => {
