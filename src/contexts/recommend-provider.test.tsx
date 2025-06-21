@@ -90,6 +90,26 @@ describe('RecommendProvider', () => {
     });
   });
 
+  it('Provider外でuseRecommendStateを使うとエラー', () => {
+    const ProviderOutside: React.FC = () => {
+      useRecommendState();
+      return null;
+    };
+    expect(() => render(<ProviderOutside />)).toThrow('useRecommendState must be used within a RecommendProvider');
+  });
+});
+
+describe('RecommendProvider', () => {
+  let errorSpy: jest.SpyInstance<void, [message?: any, ...optionalParams: any[]]>;
+
+  beforeEach(() => {
+    errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
+  });
+
+  afterEach(() => {
+    errorSpy.mockRestore(); // エラーログの抑制を解除
+  });
+
   it('getRecommendWorldでエラー時はnullになりトーストが呼ばれる', async () => {
     (window.dbAPI.getRandomRecommendedWorld as jest.Mock).mockResolvedValueOnce(mockWorldInfo).mockRejectedValueOnce('APIエラー');
     render(
@@ -97,29 +117,13 @@ describe('RecommendProvider', () => {
         <ConsumerComponent />
       </RecommendProvider>,
     );
-    let errorSpy;
-    try {
-      errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // エラーログを抑制
-      fireEvent.click(screen.getByTestId('get-world-button'));
-      await waitFor(() => {
-        expect(screen.getByTestId('world')).toHaveTextContent('none');
-        expect(addToast).toHaveBeenCalledWith(
-          expect.stringContaining('ワールド情報の取得に失敗しました。エラー: APIエラー'),
-          expect.anything(),
-        );
-      });
-    } finally {
-      if (errorSpy) {
-        errorSpy.mockRestore(); // エラーログの抑制を解除
-      }
-    }
-  });
-
-  it('Provider外でuseRecommendStateを使うとエラー', () => {
-    const ProviderOutside: React.FC = () => {
-      useRecommendState();
-      return null;
-    };
-    expect(() => render(<ProviderOutside />)).toThrow('useRecommendState must be used within a RecommendProvider');
+    fireEvent.click(screen.getByTestId('get-world-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('world')).toHaveTextContent('none');
+      expect(addToast).toHaveBeenCalledWith(
+        expect.stringContaining('ワールド情報の取得に失敗しました。エラー: APIエラー'),
+        expect.anything(),
+      );
+    });
   });
 });
