@@ -8,8 +8,13 @@ export function saveKey(key: string, value: string) {
   let all: { [key: string]: string } = {};
 
   if (fs.existsSync(filePath)) {
-    const decrypted = safeStorage.decryptString(fs.readFileSync(filePath));
-    all = JSON.parse(decrypted);
+    try {
+      const decrypted = safeStorage.decryptString(fs.readFileSync(filePath));
+      all = JSON.parse(decrypted);
+    } catch (error) {
+      console.error('Error decrypting or parsing file content:', error);
+      all = {};
+    }
   }
   all[key] = value;
   const encrypted = safeStorage.encryptString(JSON.stringify(all));
