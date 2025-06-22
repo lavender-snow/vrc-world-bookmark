@@ -1,4 +1,4 @@
-import style from './bookmark-list-detail.scss';
+import styles from './bookmark-list-detail.scss';
 
 import { ReactComponent as LeftArrowIcon } from 'assets/images/MaterialSymbolsArrowBackRounded.svg';
 import { WorldCard } from 'commonComponents/world-card';
@@ -10,7 +10,7 @@ export function BookmarkListDetail({worldInfo} : {worldInfo: VRChatWorldInfo}) {
 
   return (
     <>
-      <div className={style.backButton} onClick={() => setListViewSelectedWorld(null)}><LeftArrowIcon /></div>
+      <div className={styles.backButton} onClick={() => setListViewSelectedWorld(null)}><LeftArrowIcon /></div>
       <WorldCard worldInfo={worldInfo} />
     </>
   );

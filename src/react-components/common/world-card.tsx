@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from './button';
 import { CheckboxGroup } from './checkbox-group';
 import { DropDownList, SelectOption } from './drop-down-list';
-import style from './world-card.scss';
+import styles from './world-card.scss';
 import { WorldTags } from './world-tags';
 
 import { ReactComponent as MailSendIcon } from 'assets/images/IconoirSendMail.svg';
@@ -17,18 +17,18 @@ import { debounce, writeClipboard } from 'src/utils/util';
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
-    <div className={classNames(style.worldProperty)}>
-      <div className={classNames(style.worldPropertyName)}>{name}</div>
-      <div className={style.worldPropertyValue}>{value}</div>
+    <div className={classNames(styles.worldProperty)}>
+      <div className={classNames(styles.worldPropertyName)}>{name}</div>
+      <div className={styles.worldPropertyValue}>{value}</div>
     </div>
   );
 }
 
 function ThumbnailArea({thumbnailImageUrl, worldName, releaseStatus}: {thumbnailImageUrl: string, worldName: string, releaseStatus: string}) {
   return (
-    <div className={classNames(style.thumbnailArea)}>
+    <div className={classNames(styles.thumbnailArea)}>
       <img src={thumbnailImageUrl} alt={worldName} />
-      <span className={classNames(style.releaseStatusBadge, releaseStatus === 'public' ? style.public : style.private)}>
+      <span className={classNames(styles.releaseStatusBadge, releaseStatus === 'public' ? styles.public : styles.private)}>
         {releaseStatus === 'public' ? 'Public' : 'Private'}
       </span>
     </div>
@@ -132,16 +132,16 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   });
 
   return (
-    <div className={classNames(style.worldCard)}>
-      <div className={style.worldTitle}>
+    <div className={classNames(styles.worldCard)}>
+      <div className={styles.worldTitle}>
         <h2>
           <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={'ワールド名をコピー'}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
         </h2>
       </div>
-      <div className={style.worldInfoArea}>
+      <div className={styles.worldInfoArea}>
         <ThumbnailArea thumbnailImageUrl={worldInfo.thumbnailImageUrl} worldName={worldInfo.name} releaseStatus={worldInfo.releaseStatus}/>
-        <div className={classNames(style.infoArea)}>
-          <div className={classNames(style.worldProperties)}>
+        <div className={classNames(styles.infoArea)}>
+          <div className={classNames(styles.worldProperties)}>
             <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
             <WorldProperty name="訪問" value={worldInfo.visits.toLocaleString()} />
             <WorldProperty name="定員" value={worldInfo.capacity} />
@@ -152,11 +152,11 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
           <WorldTags tags={worldInfo.tags} />
         </div>
       </div>
-      <div className={style.bookmarkArea}>
-        <div className={style.memoArea}>
+      <div className={styles.bookmarkArea}>
+        <div className={styles.memoArea}>
           <strong>メモ</strong> <textarea maxLength={1024} placeholder="ワールドの補足情報を入力" onChange={(e) => { setWorldNote(e.target.value); }} onBlur={() => { onNoteBlur(); }} value={worldNote}></textarea>
         </div>
-        <div className={style.genreArea}>
+        <div className={styles.genreArea}>
           <strong>ジャンル</strong>
           <CheckboxGroup
             options={genres}
@@ -165,12 +165,12 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
             allOption={false}
           />
         </div>
-        <div className={style.visitInfo}>
+        <div className={styles.visitInfo}>
           <strong>訪問状況</strong>
           <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
         </div>
 
-        <Button className={style.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
+        <Button className={styles.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
       </div>
     </div >
   );
