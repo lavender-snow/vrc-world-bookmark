@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron';
 
+import { loadKey, saveKey } from './credential-store';
 import {
   initDB,
   runMigrations,
@@ -42,10 +43,7 @@ export async function upsertWorldBookmark(worldId: string) {
   return { data: getWorldInfo(worldId) };
 }
 
-export function initializeApp() {
-  initDB();
-  runMigrations();
-
+function registerIpcHandlersForDatabase() {
   ipcMain.handle('get_genres', async () => {
     const genres = getGenres();
 
@@ -85,4 +83,27 @@ export function initializeApp() {
   ipcMain.handle('get_random_recommended_world', async () => {
     return getRandomRecommendedWorld();
   });
+}
+
+function registerIpcHandlersForCredentialStore() {
+  ipcMain.handle('save_key', (_event, key: string, value: string) => {
+    saveKey(key, value);
+  });
+
+  ipcMain.handle('load_key', (_event, key: string) => {
+    return loadKey(key);
+  });
+
+  ipcMain.handle('is_key_saved', (_event, key: string) => {
+    const value = loadKey(key);
+    return !!value; // キーが存在する場合trueを返す
+  });
+}
+
+export function initializeApp() {
+  initDB();
+  runMigrations();
+
+  registerIpcHandlersForDatabase();
+  registerIpcHandlersForCredentialStore();
 }

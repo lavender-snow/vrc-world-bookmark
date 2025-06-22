@@ -17,3 +17,9 @@ contextBridge.exposeInMainWorld('dbAPI', {
   getWorldIdsToUpdate: () => ipcRenderer.invoke('get_world_ids_to_update'),
   getRandomRecommendedWorld: () => ipcRenderer.invoke('get_random_recommended_world'),
 });
+
+contextBridge.exposeInMainWorld('credentialStore', {
+  saveKey: (key: string, value: string) => ipcRenderer.invoke('save_key', key, value),
+  loadKey: (key: string) => ipcRenderer.invoke('load_key', key),
+  isKeySaved: (key: string) => ipcRenderer.invoke('is_key_saved', key),
+});
