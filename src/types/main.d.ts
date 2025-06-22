@@ -16,6 +16,11 @@ declare global {
       getBookmarkList: (options?: BookmarkListOptions) => Promise<{bookmarkList: VRChatWorldInfo[], totalCount: number}>;
       getWorldIdsToUpdate: () => Promise<string[]>;
       getRandomRecommendedWorld: () => Promise<VRChatWorldInfo|null>;
+    },
+    credentialStore: {
+      saveKey: (key: string, value: string) => Promise<void>;
+      loadKey: (key: string) => Promise<string | null>;
+      isKeySaved: (key: string) => Promise<boolean>;
     };
   }
 }
