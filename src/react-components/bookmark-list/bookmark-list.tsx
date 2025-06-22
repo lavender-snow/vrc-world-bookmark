@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
 
 import { BookmarkListDetail } from './bookmark-list-detail';
-import style from './bookmark-list.scss';
+import styles from './bookmark-list.scss';
 import { ViewTypeArea } from './view-type-area';
 import { WorldListItem } from './world-list-item';
 
@@ -96,7 +96,7 @@ export function BookmarkList() {
       pages.push(
         <button
           key={i}
-          className={i === page ? style.activePage : style.pageButton}
+          className={i === page ? styles.activePage : styles.pageButton}
           onClick={() => setPage(i)}
           disabled={i === page}
         >
@@ -127,13 +127,13 @@ export function BookmarkList() {
           exit={{ opacity: 0, x: -40 }}
           transition={{ duration: 0.3 }}
         >
-          <div className={style.filterAreaWrapper}>
+          <div className={styles.filterAreaWrapper}>
             <ViewTypeArea />
             <Accordion icon={FilterIcon} title={'フィルター'} defaultOpen={filterVisible} onToggle={(isOpen) => setFilterVisible(isOpen)}>
-              <div className={style.filterArea}>
-                <div className={style.filterItems}>
-                  <div className={style.filterItemRow}>
-                    <div className={style.filterItem}>
+              <div className={styles.filterArea}>
+                <div className={styles.filterItems}>
+                  <div className={styles.filterItemRow}>
+                    <div className={styles.filterItem}>
                       <strong>ジャンル</strong>
                       <CheckboxGroup
                         options={genres}
@@ -166,8 +166,8 @@ export function BookmarkList() {
                       </label>
                     </div>
                   </div>
-                  <div className={style.filterItemRow}>
-                    <div className={style.filterItem}>
+                  <div className={styles.filterItemRow}>
+                    <div className={styles.filterItem}>
                       <strong>訪問状況</strong>
                       <CheckboxGroup
                         options={visitStatuses}
@@ -180,8 +180,8 @@ export function BookmarkList() {
                       />
                     </div>
                   </div>
-                  <div className={style.filterItemRow}>
-                    <div className={style.filterItem}>
+                  <div className={styles.filterItemRow}>
+                    <div className={styles.filterItem}>
                       <strong>ソート項目</strong>
                       <DropDownList
                         options={
@@ -196,7 +196,7 @@ export function BookmarkList() {
                         }}
                       />
                     </div>
-                    <div className={style.filterItem}>
+                    <div className={styles.filterItem}>
                       <strong>並び順</strong>
                       <DropDownList
                         options={
@@ -211,7 +211,7 @@ export function BookmarkList() {
                         }}
                       ></DropDownList>
                     </div>
-                    <div className={style.filterItem}>
+                    <div className={styles.filterItem}>
                       <strong>表示件数</strong>
                       <DropDownList
                         options={RESULT_PER_PAGE_OPTIONS.map(
@@ -225,10 +225,10 @@ export function BookmarkList() {
                       />
                     </div>
                   </div>
-                  <div className={style.filterItemRow}>
-                    <div className={style.filterItem}>
+                  <div className={styles.filterItemRow}>
+                    <div className={styles.filterItem}>
                       <strong>キーワード</strong>
-                      <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={style.keywordSearch} />
+                      <InputText value={searchTerm} onChange={e => onKeywordSearchChange(e)} placeholder="ワールド名など" className={styles.keywordSearch} />
                     </div>
                   </div>
                 </div>
@@ -236,23 +236,23 @@ export function BookmarkList() {
             </Accordion>
           </div>
           {viewType === VIEW_TYPES.list && (
-            <div className={style.worldList}>
+            <div className={styles.worldList}>
               {bookmarkList && bookmarkList.map((worldInfo) => (
                 <WorldListItem key={worldInfo.id} worldInfo={worldInfo} setWorldInfo={setListViewSelectedWorld}/>
               ))}
             </div>
           )}
           {viewType === VIEW_TYPES.grid && (
-            <div className={style.worldCardList}>
+            <div className={styles.worldCardList}>
               {bookmarkList && bookmarkList.map((worldInfo) => (
                 <WorldCard key={worldInfo.id} worldInfo={worldInfo} />
               ))}
             </div>
           )}
-          <div className={style.paginationArea}>
-            <div className={style.paginationButtons}>
+          <div className={styles.paginationArea}>
+            <div className={styles.paginationButtons}>
               <button
-                className={style.pageButton}
+                className={styles.pageButton}
                 disabled={page <= 1}
                 onClick={() => setPage(page - 1)}
               >
@@ -260,14 +260,14 @@ export function BookmarkList() {
               </button>
               {PageNumbers()}
               <button
-                className={style.pageButton}
+                className={styles.pageButton}
                 disabled={page >= totalPages}
                 onClick={() => setPage(page + 1)}
               >
                 次へ
               </button>
             </div>
-            <div className={style.pageInfo}>
+            <div className={styles.pageInfo}>
               ページ {page} / {totalPages}（全{totalCount}件）
             </div>
           </div>

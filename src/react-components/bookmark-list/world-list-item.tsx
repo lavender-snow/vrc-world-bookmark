@@ -1,4 +1,4 @@
-import style from './world-list-item.scss';
+import styles from './world-list-item.scss';
 
 import { ReactComponent as ControllerIcon } from 'assets/images/IonGameControllerOutline.svg';
 import { ReactComponent as CameraIcon } from 'assets/images/MaterialSymbolsAndroidCameraOutline.svg';
@@ -14,12 +14,12 @@ export function WorldListItem({ worldInfo, setWorldInfo }: { worldInfo: VRChatWo
   const { genres } = useAppData();
 
   return (
-    <div className={style.worldListItem} onClick={() => setWorldInfo(worldInfo)}>
-      <div className={style.worldThumbnailName}>
+    <div className={styles.worldListItem} onClick={() => setWorldInfo(worldInfo)}>
+      <div className={styles.worldThumbnailName}>
         <img src={worldInfo.thumbnailImageUrl} alt={worldInfo.name} />
-        <span title={worldInfo.name} className={style.worldName}>{worldInfo.name}</span>
+        <span title={worldInfo.name} className={styles.worldName}>{worldInfo.name}</span>
       </div>
-      <div className={style.worldGenreIcons}>
+      <div className={styles.worldGenreIcons}>
         {worldInfo.genreIds.includes(GENRE.chill) && <div title={genres.find(genre => genre.id === GENRE.chill).name_jp ?? ''}><SleepIcon /></div>}
         {worldInfo.genreIds.includes(GENRE.high_quality) && <div title={genres.find(genre => genre.id === GENRE.high_quality).name_jp ?? ''}><SparklesIcon /></div>}
         {worldInfo.genreIds.includes(GENRE.game) && <div title={genres.find(genre => genre.id === GENRE.game).name_jp ?? ''}><ControllerIcon /></div>}
@@ -27,7 +27,7 @@ export function WorldListItem({ worldInfo, setWorldInfo }: { worldInfo: VRChatWo
         {worldInfo.genreIds.includes(GENRE.photo_spot) && <div title={genres.find(genre => genre.id === GENRE.photo_spot).name_jp ?? ''}><CameraIcon /></div>}
       </div>
       <div>
-        <RightArrowIcon className={style.openWorldCard}/>
+        <RightArrowIcon className={styles.openWorldCard}/>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
-import style from './settings.scss';
+import styles from './settings.scss';
 import { WorldUpdateProgress } from './world-update-progress';
 
 function SettingItem({
@@ -11,7 +11,7 @@ function SettingItem({
   return (
     <div>
       <h2>{title}</h2>
-      <div className={style.settingItemContent}>
+      <div className={styles.settingItemContent}>
         {children}
       </div>
     </div>
@@ -21,7 +21,7 @@ function SettingItem({
 export function Settings() {
   return (
     <AnimatePresence mode='wait'>
-      <motion.div className={style.settings}
+      <motion.div className={styles.settings}
         key="settings"
         initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
