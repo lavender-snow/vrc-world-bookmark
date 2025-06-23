@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { GeneralSettings } from './general-settings';
-import { LLMSettings } from './llm-settings';
+import { GeneralSettings } from './general/general-settings';
+import { LLMSettings } from './llm/llm-settings';
 import { SettingsCategoryMenu } from './settings-category-menu';
 import styles from './settings.scss';
 
@@ -21,7 +21,7 @@ export function Settings() {
         transition={{ duration: 0.3 }}
       >
         <SettingsCategoryMenu activeCategory={activeCategory} />
-        <div>
+        <div className={styles.settingsContent}>
           { activeCategory === SETTINGS_CATEGORY_ID.general && <GeneralSettings /> }
           { activeCategory === SETTINGS_CATEGORY_ID.llm && <LLMSettings /> }
         </div>

@@ -1,0 +1,41 @@
+export const AWS_REGION_ID = {
+  usEast1: 'us-east-1',
+  usEast2: 'us-east-2',
+  usWest1: 'us-west-1',
+  usWest2: 'us-west-2',
+  apSouth1: 'ap-south-1',
+  apNortheast3: 'ap-northeast-3',
+  apNortheast2: 'ap-northeast-2',
+  apSoutheast1: 'ap-southeast-1',
+  apSoutheast2: 'ap-southeast-2',
+  apNortheast1: 'ap-northeast-1',
+  caCentral1: 'ca-central-1',
+  euCentral1: 'eu-central-1',
+  euWest1: 'eu-west-1',
+  euWest2: 'eu-west-2',
+  euWest3: 'eu-west-3',
+  euNorth1: 'eu-north-1',
+  saEast1: 'sa-east-1',
+} as const;
+export type AwsRegionId = typeof AWS_REGION_ID[keyof typeof AWS_REGION_ID];
+
+export const AWS_REGIONS = [
+  { id: AWS_REGION_ID.usEast1, name: 'バージニア北部' },
+  { id: AWS_REGION_ID.usEast2, name: 'オハイオ' },
+  { id: AWS_REGION_ID.usWest1, name: '北カリフォルニア' },
+  { id: AWS_REGION_ID.usWest2, name: 'オレゴン' },
+  { id: AWS_REGION_ID.apSouth1, name: 'ムンバイ' },
+  { id: AWS_REGION_ID.apNortheast3, name: '大阪' },
+  { id: AWS_REGION_ID.apNortheast2, name: 'ソウル' },
+  { id: AWS_REGION_ID.apSoutheast1, name: 'シンガポール' },
+  { id: AWS_REGION_ID.apSoutheast2, name: 'シドニー' },
+  { id: AWS_REGION_ID.apNortheast1, name: '東京' },
+  { id: AWS_REGION_ID.caCentral1, name: 'カナダ中部' },
+  { id: AWS_REGION_ID.euCentral1, name: 'フランクフルト' },
+  { id: AWS_REGION_ID.euWest1, name: 'アイルランド' },
+  { id: AWS_REGION_ID.euWest2, name: 'ロンドン' },
+  { id: AWS_REGION_ID.euWest3, name: 'パリ' },
+  { id: AWS_REGION_ID.euNorth1, name: 'ストックホルム' },
+  { id: AWS_REGION_ID.saEast1, name: 'サンパウロ' },
+] as const;
+export type AwsRegion = typeof AWS_REGIONS[number]['id'];

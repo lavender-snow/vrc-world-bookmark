@@ -1,9 +1,15 @@
 @use 'assets/styles/theme.scss';
 
 :local(.settings-header) {
+  display: flex;
   border-bottom: 2px solid theme.$light-gray;
   padding-bottom: 8px;
   margin-bottom: 16px;
+
+  &>svg {
+    vertical-align: middle;
+    margin-right: 8px;
+  }
 
   &>h2 {
     font-size: 20px;
