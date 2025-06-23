@@ -10,6 +10,7 @@ export function InputText({
   onKeyDown,
   onBlur,
   type = 'text',
+  disabled = false,
 }: {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -18,6 +19,7 @@ export function InputText({
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   type?: 'text' | 'password';
+  disabled?: boolean;
 }) {
   return (
     <input
@@ -28,6 +30,7 @@ export function InputText({
       onBlur={onBlur}
       placeholder={placeholder}
       className={classNames([styles.inputText, className])}
+      disabled={disabled}
     />
   );
 }
