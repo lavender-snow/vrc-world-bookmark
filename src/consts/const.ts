@@ -69,3 +69,26 @@ export const RECOMMEND_TYPE = [
   { id: 'conversation', label: '対話検索', description: 'LLMを活用し、対話形式でおすすめワールドを検索します。API利用コストが発生します。' },
 ] as const;
 export type RecommendType = typeof RECOMMEND_TYPE[number]['id'];
+
+export const SETTINGS_CATEGORY_ID = {
+  general: 'general',
+  llm: 'llm',
+};
+
+export const SETTINGS_CATEGORY = [
+  { id: SETTINGS_CATEGORY_ID.general, value: '一般' },
+  { id: SETTINGS_CATEGORY_ID.llm, value: 'LLM' },
+] as const;
+export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];
+
+export const LLM_API_SERVICES = [
+  {
+    id: 'openai',
+    value: 'OpenAI',
+  },
+  {
+    id: 'bedrock',
+    value: 'Amazon Bedrock',
+  },
+] as const;
+export type llmApiService = typeof LLM_API_SERVICES[number]['id'];;

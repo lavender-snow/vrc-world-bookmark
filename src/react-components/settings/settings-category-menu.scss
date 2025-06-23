@@ -1,0 +1,49 @@
+@use 'assets/styles/theme.scss';
+
+:local(.settings-category-menu) {
+  min-width: 150px;
+  background-color: theme.$category-menu-bg;
+  border-radius: 8px 0 0 8px;
+  border-right: 2px solid theme.$category-menu-border;
+  font-weight: bold;
+
+  &>h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+}
+
+:local(.category-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+:local(.category-item) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: theme.$gray;
+  cursor: pointer;
+
+  &:hover {
+    background-color: theme.$light-blue;
+    color: theme.$white;
+  }
+}
+
+:local(.active-category-item) {
+  @extend :local(.category-item);
+
+  cursor: default;
+  color: theme.$black;
+  background-color: theme.$category-menu-active-bg;
+
+  &:hover {
+    color: theme.$black;
+    background-color: theme.$category-menu-active-bg;
+  }
+}
