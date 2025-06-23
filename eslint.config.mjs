@@ -59,7 +59,7 @@ export default defineConfig([{
     'no-restricted-imports': ['error', { 'patterns': ['../']}],
   },
 }, {
-  files: ['**/*.test.@(ts|tsx)', '**/*-mock.@(ts|tsx)'],
+  files: ['**/*.test.@(ts|tsx)', '**/*.spec.@(ts|tsx)', '**/*-mock.@(ts|tsx)'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
   },
