@@ -4,7 +4,7 @@ import { ReactComponent as SettingsIcon } from 'assets/images/MaterialSymbolsSet
 import { SETTINGS_CATEGORY } from 'src/consts/const';
 import { useSettingsTabState } from 'src/contexts/settings-tab-provider';
 
-export function SettingsCategoryMenu({activeCategory}: { activeCategory: string }) {
+export function SettingsCategoryMenu({ activeCategory }: { activeCategory: string }) {
   const { setActiveCategory } = useSettingsTabState();
 
   return (

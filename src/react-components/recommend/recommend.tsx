@@ -10,7 +10,7 @@ import { RECOMMEND_TYPE } from 'src/consts/const';
 import { useRecommendState } from 'src/contexts/recommend-provider';
 
 export function Recommend() {
-  const {vrchatWorldInfo, getRecommendWorld, recommendType, setRecommendType} = useRecommendState();
+  const { vrchatWorldInfo, getRecommendWorld, recommendType, setRecommendType } = useRecommendState();
 
   const onGetWorldClick = async () => {
     getRecommendWorld();

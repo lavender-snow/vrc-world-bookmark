@@ -9,7 +9,7 @@ import { writeClipboard } from 'src/utils/util';
 jest.mock('src/contexts/app-data-provider', () => ({
   useAppData: () => ({
     genres: [
-      { id: 0, name: 'Chill', name_jp: 'チル'},
+      { id: 0, name: 'Chill', name_jp: 'チル' },
       { id: 1, name: 'HighQuality', name_jp: '高品質' },
       { id: 2, name: 'Game', name_jp: 'ゲーム' },
       { id: 3, name: 'Horror', name_jp: 'ホラー' },

@@ -24,7 +24,7 @@ function WorldProperty({ name, value }: { name: string, value: string | number }
   );
 }
 
-function ThumbnailArea({thumbnailImageUrl, worldName, releaseStatus}: {thumbnailImageUrl: string, worldName: string, releaseStatus: string}) {
+function ThumbnailArea({ thumbnailImageUrl, worldName, releaseStatus }: {thumbnailImageUrl: string, worldName: string, releaseStatus: string}) {
   return (
     <div className={classNames(styles.thumbnailArea)}>
       <img src={thumbnailImageUrl} alt={worldName} />

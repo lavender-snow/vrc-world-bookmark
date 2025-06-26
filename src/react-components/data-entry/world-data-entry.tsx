@@ -14,7 +14,7 @@ import { debounce, getWorldId } from 'src/utils/util';
 
 export function WorldDataEntry() {
   const { addToast } = useToast();
-  const {worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo}= useWorldDataEntryState();
+  const { worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo }= useWorldDataEntryState();
   const [isWorldIdOrUrl, setIsWorldIdOrUrl] = useState<boolean>(getWorldId(worldIdOrUrl) !== null);
 
   const debouncedSetIsWorldIdOrUrl = useCallback(

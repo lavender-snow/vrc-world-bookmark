@@ -56,7 +56,8 @@ export default defineConfig([{
       'newlines-between': 'always',
       alphabetize: { order: 'asc', caseInsensitive: true },
     }],
-    'no-restricted-imports': ['error', { 'patterns': ['../']}],
+    'no-restricted-imports': ['error', { 'patterns': ['../'] }],
+    'object-curly-spacing': ['error', 'always'],
   },
 }, {
   files: ['**/*.test.@(ts|tsx)', '**/*.spec.@(ts|tsx)', '**/*-mock.@(ts|tsx)'],
