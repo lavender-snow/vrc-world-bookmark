@@ -1,3 +1,5 @@
+import { ReactComponent as BrainIcon } from 'assets/images/HugeiconsAiBrain03.svg';
+import { ReactComponent as ToolboxIcon } from 'assets/images/MdiToolboxOutline.svg';
 import type { LogicMode } from 'src/types/renderer';
 
 export const NoticeType = {
@@ -69,3 +71,34 @@ export const RECOMMEND_TYPE = [
   { id: 'conversation', label: '対話検索', description: 'LLMを活用し、対話形式でおすすめワールドを検索します。API利用コストが発生します。' },
 ] as const;
 export type RecommendType = typeof RECOMMEND_TYPE[number]['id'];
+
+export const SETTINGS_CATEGORY_ID = {
+  general: 'general',
+  llm: 'llm',
+} as const;
+export type SettingsCategoryId = typeof SETTINGS_CATEGORY_ID[keyof typeof SETTINGS_CATEGORY_ID];
+
+
+export const SETTINGS_CATEGORY = [
+  { id: SETTINGS_CATEGORY_ID.general, value: '一般', icon: ToolboxIcon},
+  { id: SETTINGS_CATEGORY_ID.llm, value: 'LLM', icon: BrainIcon },
+] as const;
+export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];
+
+export const LLM_API_SERVICE_ID = {
+  openai: 'openai',
+  bedrock: 'bedrock',
+} as const;
+export type LLMApiServiceId = typeof LLM_API_SERVICE_ID[keyof typeof LLM_API_SERVICE_ID];
+
+export const LLM_API_SERVICES = [
+  {
+    id: LLM_API_SERVICE_ID.openai,
+    value: 'OpenAI',
+  },
+  {
+    id: LLM_API_SERVICE_ID.bedrock,
+    value: 'Amazon Bedrock',
+  },
+] as const;
+export type llmApiService = typeof LLM_API_SERVICES[number]['id'];;

@@ -1,0 +1,11 @@
+:local(.setting-item-content) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:local(.setting-item) {
+  &>h3 {
+    font-size: 18px;
+  }
+}

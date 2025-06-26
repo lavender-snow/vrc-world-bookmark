@@ -1,0 +1,15 @@
+:local(.llmApiSetting) {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 16px;
+}
+
+:local(.setting-item) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  & select {
+    margin-top: 6px;
+  }
+}

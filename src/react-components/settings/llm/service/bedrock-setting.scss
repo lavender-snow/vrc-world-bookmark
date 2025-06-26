@@ -1,0 +1,21 @@
+:local(.llm-setting-wrapper) {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:local(.access-key-input-wrapper) {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+:local(.api-key-input-button) {
+  padding: 6px;
+}
+
+:local(.access-key-input) {
+  padding: 5px 10px;
+  flex: 1;
+}

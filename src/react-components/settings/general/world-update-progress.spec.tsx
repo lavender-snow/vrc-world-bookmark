@@ -55,6 +55,11 @@ beforeEach(() => {
 });
 
 describe('WorldUpdateProgress', () => {
+  it('ワールドデータ更新の説明が表示される', () => {
+    render(<WorldUpdateProgress />);
+    expect(screen.getByText(/24時間以上前に取得したワールドデータを対象に最新情報へ更新します。/)).toBeInTheDocument();
+  });
+
   it('初期状態で「未実行」と表示される', () => {
     render(<WorldUpdateProgress />);
     expect(screen.getByText('未実行')).toBeInTheDocument();

@@ -1,0 +1,60 @@
+@use 'assets/styles/theme.scss';
+
+:local(.settings-category-menu) {
+  min-width: 150px;
+  background-color: theme.$category-menu-bg;
+  border-radius: 8px 0 0 8px;
+  border-right: 2px solid theme.$category-menu-border;
+  font-weight: bold;
+  align-items: center;
+}
+
+:local(.category-menu-title) {
+  display: flex;
+  align-items: center;
+
+  &>h1 {
+    font-size: 24px;
+  }
+
+  &>svg {
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+}
+
+:local(.category-list) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+:local(.category-item) {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  color: theme.$gray;
+  cursor: pointer;
+
+  &>svg {
+    margin-right: 8px;
+    vertical-align: center;
+  }
+
+  &:hover {
+    color: theme.$header-hover-color;
+  }
+}
+
+:local(.active-category-item) {
+  @extend :local(.category-item);
+
+  cursor: default;
+  color: theme.$header-active-color;
+  border-right: 3px solid theme.$light-blue;
+
+  &:hover {
+    color: theme.$header-active-color;
+  }
+}
