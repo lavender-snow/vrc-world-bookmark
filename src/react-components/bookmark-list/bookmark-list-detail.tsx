@@ -5,7 +5,7 @@ import { WorldCard } from 'commonComponents/world-card';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
 import { VRChatWorldInfo } from 'src/types/renderer';
 
-export function BookmarkListDetail({worldInfo} : {worldInfo: VRChatWorldInfo}) {
+export function BookmarkListDetail({ worldInfo } : {worldInfo: VRChatWorldInfo}) {
   const { setListViewSelectedWorld } = useBookmarkListState();
 
   return (

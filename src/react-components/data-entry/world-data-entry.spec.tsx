@@ -59,7 +59,7 @@ describe('WorldDataEntry', () => {
     Object.assign(state, {
       worldIdOrUrl: '',
       setWorldIdOrUrl: jest.fn(),
-      vrchatWorldInfo: {id: 'wrld_15fe33f1-937e-4e93-8a40-902fb9552a11', name: 'VerySimpleWorld'},
+      vrchatWorldInfo: { id: 'wrld_15fe33f1-937e-4e93-8a40-902fb9552a11', name: 'VerySimpleWorld' },
       setVRChatWorldInfo: jest.fn(),
     });
     jest.clearAllMocks();

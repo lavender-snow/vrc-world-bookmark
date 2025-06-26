@@ -80,7 +80,7 @@ export type SettingsCategoryId = typeof SETTINGS_CATEGORY_ID[keyof typeof SETTIN
 
 
 export const SETTINGS_CATEGORY = [
-  { id: SETTINGS_CATEGORY_ID.general, value: '一般', icon: ToolboxIcon},
+  { id: SETTINGS_CATEGORY_ID.general, value: '一般', icon: ToolboxIcon },
   { id: SETTINGS_CATEGORY_ID.llm, value: 'LLM', icon: BrainIcon },
 ] as const;
 export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];

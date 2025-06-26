@@ -137,7 +137,7 @@ export function BedrockSetting() {
               />
             ) : (
               <DropDownList
-                options={AWS_REGIONS.map(region => ({ id: region.id, name: `${region.name} (${region.id})`}))}
+                options={AWS_REGIONS.map(region => ({ id: region.id, name: `${region.name} (${region.id})` }))}
                 currentValue={credentials.region}
                 onChange={handleRegionChange}
               />
