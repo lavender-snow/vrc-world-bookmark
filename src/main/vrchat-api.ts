@@ -1,14 +1,7 @@
 import { ipcMain } from 'electron';
 
+import { VRChatServerError, WorldNotFoundError } from 'src/errors/vrchat-errors';
 import type { VRChatWorld } from 'src/types/vrchat';
-
-export class WorldNotFoundError extends Error {}
-export class VRChatServerError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'VRChatServerError';
-  }
-}
 
 function userAgent() {
   return `${process.env.APP_NAME}/${process.env.APP_VERSION} ${process.env.REPOSITORY}`;

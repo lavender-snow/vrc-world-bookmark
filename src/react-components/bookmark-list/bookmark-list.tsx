@@ -15,7 +15,7 @@ import { WorldCard } from 'commonComponents/world-card';
 import { ORDERABLE_COLUMNS, RESULT_PER_PAGE_OPTIONS, OrderableColumnKey, SORT_ORDERS, SortOrder, LOGIC_MODES, VIEW_TYPES, GenreType } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useBookmarkListState } from 'src/contexts/bookmark-list-provider';
-import type { BookmarkListOptions, VRChatWorldInfo, LogicMode } from 'src/types/renderer';
+import type { BookmarkListOptions, VRChatWorldInfo, LogicMode, orderByColumn } from 'src/types/renderer';
 import { debounce } from 'src/utils/util';
 
 export function BookmarkList() {
@@ -38,6 +38,11 @@ export function BookmarkList() {
   } = useBookmarkListState();
   const { genres, visitStatuses } = useAppData();
 
+  const orderByColumns: orderByColumn[] = [{
+    name: orderBy,
+    sortOrder: sortOrder,
+  }];
+
   async function getBookmarkList() {
     const options: BookmarkListOptions = {
       page,
@@ -46,8 +51,7 @@ export function BookmarkList() {
       genreFilterMode,
       selectedVisitStatuses,
       searchTerm: debouncedTerm,
-      orderBy,
-      sortOrder,
+      orderByColumns,
     };
 
     const result = await window.dbAPI.getBookmarkList(options);

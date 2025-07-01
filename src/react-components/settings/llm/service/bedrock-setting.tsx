@@ -10,12 +10,6 @@ import { useToast } from 'src/contexts/toast-provider';
 import { DropDownList } from 'src/react-components/common/drop-down-list';
 import { SettingItem } from 'src/react-components/settings/setting-item';
 
-interface BedrockCredentials {
-  accessKey: string;
-  secretAccessKey: string;
-  region: AwsRegionId;
-}
-
 const defaultCredentials: BedrockCredentials = {
   accessKey: '',
   secretAccessKey: '',

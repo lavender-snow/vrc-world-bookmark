@@ -4,11 +4,10 @@ import * as path from 'path';
 
 import Database from 'better-sqlite3';
 
-import { GENRE, ORDERABLE_COLUMNS, VISITS_STATUS } from 'src/consts/const';
-import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, BookmarkListOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
+import { GENRE } from 'src/consts/const';
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
-import { shuffleArray } from 'src/utils/util';
 
 const DB_PATH = path.join(process.env.APPDATA || '', process.env.APP_NAME, 'app.db');
 const MIGRATIONS_DIR = app.isPackaged
@@ -46,6 +45,18 @@ export function runMigrations() {
   });
 }
 
+export interface SelectQueryBase {
+  select: string;
+  where?: string[];
+  groupBy?: string[];
+  orderBy?: string[];
+  pagination?: string[];
+}
+
+export interface SelectQuery extends SelectQueryBase {
+  from: string;
+}
+
 function buildSelectQuery({
   select,
   from,
@@ -53,20 +64,13 @@ function buildSelectQuery({
   groupBy = [],
   orderBy = [],
   pagination = [],
-}: {
-  select: string;
-  from: string;
-  where?: string[];
-  groupBy?: string[];
-  orderBy?: string[];
-  pagination?: string[];
-}) {
+}: SelectQuery) {
   return [
     `SELECT ${select}`,
     `FROM ${from}`,
     where.length ? `WHERE ${where.join(' AND ')}` : '',
     groupBy.length ? `GROUP BY ${groupBy.join(', ')}` : '',
-    orderBy.length ? orderBy.join(' ') : '',
+    orderBy.length ? `ORDER BY ${orderBy.join(', ')}` : '',
     pagination.length ? pagination.join(' ') : '',
   ].filter(Boolean).join('\n');
 }
@@ -294,7 +298,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
   }
 };
 
-export function getWorldInfo(worldId: string) {
+export function getWorldInfo(worldId: string): VRChatWorldInfo | null {
   const selectSql = `
     world.id,
     world.author_name_cached AS authorName,
@@ -351,116 +355,36 @@ export function deleteWorldInfo(worldId: string) {
   }
 }
 
-export function getBookmarkList(options: BookmarkListOptions) {
-  const selectSql = `
-    world.id,
-    world.author_name_cached AS authorName,
-    world.capacity_cached AS capacity,
-    world.world_created_at AS createdAt,
-    world.description_cached AS description,
-    world.favorites_cached AS favorites,
-    world.image_url_cached AS imageUrl,
-    world.name_cached AS name,
-    world.release_status_cached AS releaseStatus,
-    world.tags_cached AS tags,
-    world.thumbnail_image_url_cached AS thumbnailImageUrl,
-    world.world_updated_at_cached AS updatedAt,
-    world.visits_cached AS visits,
-    world.deleted_at AS deletedAt,
-    GROUP_CONCAT(wg.genre_id) AS genreIds,
-    bookmark.note,
-    bookmark.visit_status_id AS visitStatusId,
-    COUNT(*) OVER() as total_count
-  `;
+const WORLD_BOOKMARK_FROM_SQL = `
+  vrchat_worlds world
+  INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
+  LEFT JOIN world_genres wg ON world.id = wg.world_id
+`.trim();
 
-  const fromSql = `
-    vrchat_worlds world
-    INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
-    LEFT JOIN world_genres wg ON world.id = wg.world_id
-  `;
-
-  const groupByClauses = ['world.id'];
-
-  const params: Record<string, string | number> = {};
-  const whereClauses: string[] = [];
-  const orderByClauses: string[] = [];
-  const paginationClauses: string[] = [];
-
-  if (options.selectedGenres.length > 0) {
-    const genreFilterCondition = options.genreFilterMode === 'and'
-      ? 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length
-      : '';
-
-    whereClauses.push(`
-      world.id IN (
-          SELECT world_id
-          FROM world_genres
-          WHERE genre_id IN (
-            ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
-          )
-          ${genreFilterCondition}
-      )
-    `);
-    options.selectedGenres.forEach((id, i) => {
-      params[`genreId${i}`] = id;
-    });
-  } else {
-    whereClauses.push('NOT EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
-  }
-
-  if (options.selectedVisitStatuses.length > 0) {
-    whereClauses.push(`bookmark.visit_status_id IN (${options.selectedVisitStatuses.map((_, i) => `@visitStatusId${i}`).join(',')})`);
-    options.selectedVisitStatuses.forEach((id, i) => {
-      params[`visitStatusId${i}`] = id;
-    });
-  }
-
-  if (options.searchTerm) {
-    whereClauses.push('(world.name_cached LIKE @searchTerm OR world.description_cached LIKE @searchTerm OR bookmark.note LIKE @searchTerm)');
-    params.searchTerm = `%${options.searchTerm}%`;
-  }
-
-  if (options.orderBy && ORDERABLE_COLUMNS.find(column => column.id === options.orderBy)) {
-    orderByClauses.push(`ORDER BY ${options.orderBy} ${options.sortOrder}`);
-  }
-
-  if (options.limit) {
-    paginationClauses.push('LIMIT @limit');
-    params.limit = options.limit;
-
-    if (options.page) {
-      paginationClauses.push('OFFSET @offset');
-      params.offset = (options.page - 1) * (options.limit);
-    }
-  }
-
+export function getBookmark(selectQueryBase: SelectQueryBase, params: Record<string, string | number> = {}) {
   const sql = buildSelectQuery({
-    select: selectSql,
-    from: fromSql,
-    where: whereClauses,
-    groupBy: groupByClauses,
-    orderBy: orderByClauses,
-    pagination: paginationClauses,
+    select: selectQueryBase.select,
+    from: WORLD_BOOKMARK_FROM_SQL,
+    where: selectQueryBase.where || [],
+    groupBy: selectQueryBase.groupBy || [],
+    orderBy: selectQueryBase.orderBy || [],
+    pagination: selectQueryBase.pagination || [],
   });
 
-  const results = db.prepare(sql).all(params) as (VRChatWorldInfo & { tags: string, genreIds: string} & { total_count: number })[];
+  return db.prepare(sql).get(params);
+}
 
-  const totalCount = results.length > 0 ? results[0].total_count : 0;
-
-  const bookmarkList = results.map((worldInfo) => {
-    delete worldInfo.total_count;
-
-    return {
-      ...worldInfo,
-      tags: worldInfo.tags ? JSON.parse(worldInfo.tags) as string[] : [],
-      genreIds: worldInfo.genreIds ? worldInfo.genreIds.split(',').map(id => parseInt(id, 10)) : [],
-    };
+export function getBookmarkList(selectQueryBase: SelectQueryBase, params: Record<string, string | number> = {}) {
+  const sql = buildSelectQuery({
+    select: selectQueryBase.select,
+    from: WORLD_BOOKMARK_FROM_SQL,
+    where: selectQueryBase.where || [],
+    groupBy: selectQueryBase.groupBy || [],
+    orderBy: selectQueryBase.orderBy || [],
+    pagination: selectQueryBase.pagination || [],
   });
 
-  return {
-    bookmarkList,
-    totalCount,
-  };
+  return db.prepare(sql).all(params);
 }
 
 export function getWorldIdsToUpdate() {
@@ -473,80 +397,4 @@ export function getWorldIdsToUpdate() {
   const result = db.prepare(sql).all() as { id: string }[];
 
   return result.map(row => row.id);
-}
-
-// ランダムにおすすめのワールドを1件取得する
-export function getRandomRecommendedWorld() {
-  const selectSql = `
-    world.id,
-    world.author_name_cached AS authorName,
-    world.capacity_cached AS capacity,
-    world.world_created_at AS createdAt,
-    world.description_cached AS description,
-    world.favorites_cached AS favorites,
-    world.image_url_cached AS imageUrl,
-    world.name_cached AS name,
-    world.release_status_cached AS releaseStatus,
-    world.tags_cached AS tags,
-    world.thumbnail_image_url_cached AS thumbnailImageUrl,
-    world.world_updated_at_cached AS updatedAt,
-    world.visits_cached AS visits,
-    world.deleted_at AS deletedAt,
-    GROUP_CONCAT(wg.genre_id) AS genreIds,
-    bookmark.note,
-    bookmark.visit_status_id AS visitStatusId
-  `;
-
-  const fromSql = `
-    vrchat_worlds world
-    INNER JOIN bookmarks bookmark ON world.id = bookmark.world_id
-    LEFT JOIN world_genres wg ON world.id = wg.world_id
-  `;
-
-  const groupByClauses = ['world.id'];
-
-  const params: Record<string, string | number> = {};
-  const whereClauses: string[] = [];
-  const orderByClauses: string[] = [];
-  const paginationClauses: string[] = [];
-
-  // 少なくともジャンルが設定されているものを候補にする
-  whereClauses.push('EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
-
-  // 訪れたことの無い場所を対象にする
-  whereClauses.push(`bookmark.visit_status_id = ${VISITS_STATUS.unvisited}`);
-
-  // 削除されていないワールドが対象
-  whereClauses.push('world.deleted_at IS NULL');
-
-  // お気に入り数、訪問数、更新日をランダムな順に用いてソートする
-  const candidateColumns = ['favorites_cached', 'world_updated_at_cached', 'visits_cached'];
-  const shuffledColumns = shuffleArray(candidateColumns);
-  const orderByClause = shuffledColumns.map(col => `${col} DESC`).join(', ');
-  orderByClauses.push(`ORDER BY ${orderByClause}`);
-
-  // 上位5件の中からランダムに1件取得する
-  const offset = Math.floor(Math.random() * 5);
-  paginationClauses.push(`LIMIT 1 OFFSET ${offset}`);
-
-  const sql = buildSelectQuery({
-    select: selectSql,
-    from: fromSql,
-    where: whereClauses,
-    groupBy: groupByClauses,
-    orderBy: orderByClauses,
-    pagination: paginationClauses,
-  });
-
-  const result = db.prepare(sql).get(params) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
-
-  if (!result) {
-    return null;
-  }
-
-  return {
-    ...result,
-    tags: result.tags ? JSON.parse(result.tags) as string[] : [],
-    genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
-  };
 }

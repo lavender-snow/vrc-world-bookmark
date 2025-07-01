@@ -10,10 +10,14 @@ import { RECOMMEND_TYPE } from 'src/consts/const';
 import { useRecommendState } from 'src/contexts/recommend-provider';
 
 export function Recommend() {
-  const { vrchatWorldInfo, getRecommendWorld, recommendType, setRecommendType } = useRecommendState();
+  const { vrchatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage } = useRecommendState();
 
   const onGetWorldClick = async () => {
-    getRecommendWorld();
+    if (recommendType === 'conversation') {
+      getLLMRecommendWorld();
+    } else {
+      getRecommendWorld();
+    }
   };
 
   const currentType = RECOMMEND_TYPE.find(type => type.id === recommendType);
@@ -38,7 +42,6 @@ export function Recommend() {
                   value={type.id}
                   checked={recommendType === type.id}
                   onChange={() => setRecommendType(type.id)}
-                  disabled={'conversation' === type.id}
                 />
                 <span>{type.label}</span>
               </label>
@@ -50,7 +53,7 @@ export function Recommend() {
             <span>{currentType.description}</span>
           )}
           {currentType && currentType.id === 'conversation' && (
-            <InputText value={''} onChange={() => {}} placeholder='ワールドの希望条件を入力(オプション)'/>
+            <InputText value={requestMessage} onChange={(e) => setRequestMessage(e.target.value)} placeholder='ワールドの希望条件を入力(オプション)'/>
           )}
           <Button onClick={onGetWorldClick} className={classNames(styles.fetchButton)}>
             ワールド取得

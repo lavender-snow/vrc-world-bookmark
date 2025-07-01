@@ -1,6 +1,11 @@
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from './renderer.d.ts';
 import { World } from './vrchat.d.ts';
 
+export interface LLMRecommendResult {
+  VRChatWorldInfo: VRChatWorldInfo;
+  reason: string;
+}
+
 declare global {
   interface Window {
     vrchatAPI: {
@@ -16,6 +21,7 @@ declare global {
       getBookmarkList: (options?: BookmarkListOptions) => Promise<{bookmarkList: VRChatWorldInfo[], totalCount: number}>;
       getWorldIdsToUpdate: () => Promise<string[]>;
       getRandomRecommendedWorld: () => Promise<VRChatWorldInfo|null>;
+      getLLMRecommendWorld: (requestMessage: string) => Promise<{data?: LLMRecommendResult, error?: string}>;
     },
     credentialStore: {
       saveKey: (key: string, value: string) => Promise<void>;
