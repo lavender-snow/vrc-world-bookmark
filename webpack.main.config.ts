@@ -19,4 +19,7 @@ export const mainConfig: Configuration = {
     alias,
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
+  externals: {
+    'better-sqlite3': 'commonjs2 better-sqlite3',
+  },
 };
