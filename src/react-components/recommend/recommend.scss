@@ -6,14 +6,21 @@
   gap: 16px;
 }
 
-:local(.recommend-type-selector) {
+:local(.recommend-options-wrapper) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   border: 2px solid theme.$light-gray;
   border-radius: 8px;
   padding: 16px 20px;
   box-sizing: content-box;
+}
+
+:local(.recommend-type-selector) {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding: 0 8px;
 }
 
 :local(.recommend-type-radio-group) {
@@ -25,4 +32,24 @@
   flex-shrink: 0;
   padding: 10px;
   border: transparent 1px solid;
+}
+
+:local(.rotate-icon) {
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+  vertical-align: center;
+  animation: rotate 1.5s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+:local(.recommendReasonBox) {
+  border-top: 2px solid theme.$light-gray;
+  padding: 12px 8px 8px 8px;
+  font-size: 0.98em;
 }

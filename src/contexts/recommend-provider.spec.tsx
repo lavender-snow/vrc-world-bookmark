@@ -13,7 +13,7 @@ jest.mock('./toast-provider', () => ({
 beforeEach(() => {
   jest.clearAllMocks();
   window.dbAPI = {
-    getRandomRecommendedWorld: jest.fn().mockResolvedValue(mockWorldInfo),
+    getRandomRecommendedWorld: jest.fn().mockResolvedValue({ data: { VRChatWorldInfo: mockWorldInfo } }),
   } as any;
 });
 
@@ -75,21 +75,6 @@ describe('RecommendProvider', () => {
     });
   });
 
-  it('おすすめワールドが取得できなかった場合は専用のトーストが呼ばれる', async () => {
-    window.dbAPI.getRandomRecommendedWorld = jest.fn().mockResolvedValue(null);
-    render(
-      <RecommendProvider>
-        <ConsumerComponent />
-      </RecommendProvider>,
-    );
-    fireEvent.click(screen.getByTestId('get-world-button'));
-    await waitFor(() => {
-      expect(window.dbAPI.getRandomRecommendedWorld).toHaveBeenCalled();
-      expect(screen.getByTestId('world')).toHaveTextContent('none');
-      expect(addToast).toHaveBeenCalledWith('おすすめワールドが見つかりませんでした。', expect.anything());
-    });
-  });
-
   it('Provider外でuseRecommendStateを使うとエラー', () => {
     const ProviderOutside: React.FC = () => {
       useRecommendState();
@@ -111,7 +96,7 @@ describe('RecommendProvider', () => {
   });
 
   it('getRecommendWorldでエラー時はnullになりトーストが呼ばれる', async () => {
-    (window.dbAPI.getRandomRecommendedWorld as jest.Mock).mockResolvedValueOnce(mockWorldInfo).mockRejectedValueOnce('APIエラー');
+    (window.dbAPI.getRandomRecommendedWorld as jest.Mock).mockResolvedValueOnce({ data: { VRChatWorldInfo: mockWorldInfo } }).mockRejectedValueOnce('APIエラー');
     render(
       <RecommendProvider>
         <ConsumerComponent />
@@ -124,6 +109,21 @@ describe('RecommendProvider', () => {
         expect.stringContaining('ワールド情報の取得に失敗しました。エラー: APIエラー'),
         expect.anything(),
       );
+    });
+  });
+
+  it('おすすめワールドが取得できなかった場合は専用のトーストが呼ばれる', async () => {
+    window.dbAPI.getRandomRecommendedWorld = jest.fn().mockResolvedValue({ error: 'おすすめワールドが見つかりませんでした。' });
+    render(
+      <RecommendProvider>
+        <ConsumerComponent />
+      </RecommendProvider>,
+    );
+    fireEvent.click(screen.getByTestId('get-world-button'));
+    await waitFor(() => {
+      expect(window.dbAPI.getRandomRecommendedWorld).toHaveBeenCalled();
+      expect(screen.getByTestId('world')).toHaveTextContent('none');
+      expect(addToast).toHaveBeenCalledWith('おすすめワールドが見つかりませんでした。', expect.anything());
     });
   });
 });

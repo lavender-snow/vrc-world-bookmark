@@ -31,6 +31,11 @@ export interface UpdateWorldGenresOptions {
 
 export type LogicMode = 'and' | 'or';
 
+export interface orderByColumn {
+  name: string;
+  sortOrder: 'asc' | 'desc';
+}
+
 export interface BookmarkListOptions {
   page?: number;
   limit?: number;
@@ -38,6 +43,5 @@ export interface BookmarkListOptions {
   genreFilterMode: LogicMode;
   selectedVisitStatuses: number[];
   searchTerm?: string;
-  orderBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  orderByColumns?: orderByColumn[];
 }

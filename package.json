@@ -66,6 +66,7 @@
     "typescript-eslint": "^8.32.0"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.835.0",
     "@types/react-dom": "^19.1.5",
     "better-sqlite3": "^11.10.0",
     "electron-squirrel-startup": "^1.0.1",

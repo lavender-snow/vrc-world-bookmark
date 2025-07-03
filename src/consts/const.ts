@@ -22,9 +22,14 @@ export const ORDERABLE_COLUMNS = [
 ] as const;
 export type OrderableColumnKey = typeof ORDERABLE_COLUMNS[number]['id'];
 
+export const SORT_ORDERS_ID = {
+  desc: 'desc',
+  asc: 'asc',
+} as const;
+
 export const SORT_ORDERS = [
-  { id: 'desc', value: '降順' },
-  { id: 'asc', value: '昇順' },
+  { id: SORT_ORDERS_ID.desc, value: '降順' },
+  { id: SORT_ORDERS_ID.asc, value: '昇順' },
 ] as const;
 export type SortOrder = typeof SORT_ORDERS[number]['id'];
 
@@ -86,16 +91,16 @@ export const SETTINGS_CATEGORY = [
 export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];
 
 export const LLM_API_SERVICE_ID = {
-  openai: 'openai',
+  // openai: 'openai',
   bedrock: 'bedrock',
 } as const;
 export type LLMApiServiceId = typeof LLM_API_SERVICE_ID[keyof typeof LLM_API_SERVICE_ID];
 
 export const LLM_API_SERVICES = [
-  {
-    id: LLM_API_SERVICE_ID.openai,
-    value: 'OpenAI',
-  },
+  // {
+  //   id: LLM_API_SERVICE_ID.openai,
+  //   value: 'OpenAI',
+  // },
   {
     id: LLM_API_SERVICE_ID.bedrock,
     value: 'Amazon Bedrock',
