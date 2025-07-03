@@ -35,21 +35,21 @@
 :local(.search-button) {
   flex-shrink: 0;
   padding: 10px;
-  border: transparent 1px solid;
+  border: theme.$base-border transparent;
 }
 
 :local(.valid-input) {
-  border: 2px solid theme.$success;
+  border: theme.$base-border theme.$success;
 
   &:focus {
-    border: 2px solid theme.$success;
+    border: theme.$base-border theme.$success;
   }
 }
 
 :local(.invalid-input) {
-  border: 2px solid theme.$error;
+  border: theme.$base-border theme.$error;
 
   &:focus {
-    border: 2px solid theme.$error;
+    border: theme.$base-border theme.$error;
   }
 }

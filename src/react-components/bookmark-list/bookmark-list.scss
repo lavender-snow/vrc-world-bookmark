@@ -5,7 +5,7 @@
 }
 
 :local(.filter-area) {
-  border: 2px solid theme.$light-gray;
+  border: theme.$base-border theme.$light-gray;
   border-radius: 8px;
   padding: 16px 20px;
   box-sizing: content-box;
@@ -73,7 +73,7 @@
 
 :local(.page-button) {
   padding: 4px 10px;
-  border: 1px solid theme.$light-gray;
+  border: theme.$base-border theme.$light-gray;
   background: theme.$white;
   border-radius: 4px;
   cursor: pointer;
