@@ -7,16 +7,16 @@ import { VRChatWorldInfo } from 'src/types/renderer';
 
 
 type BookmarkListContextValue = {
-  page: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
-  limit: number;
-  setLimit: React.Dispatch<React.SetStateAction<number>>;
-  selectedGenres: GenreType[];
-  setSelectedGenres: React.Dispatch<React.SetStateAction<GenreType[]>>;
-  genreFilterMode: 'and' | 'or';
-  setGenreFilterMode: React.Dispatch<React.SetStateAction<'and' | 'or'>>;
-  selectedVisitStatuses: number[];
-  setSelectedVisitStatuses: React.Dispatch<React.SetStateAction<number[]>>;
+  page?: number;
+  setPage?: React.Dispatch<React.SetStateAction<number>>;
+  limit?: number;
+  setLimit?: React.Dispatch<React.SetStateAction<number>>;
+  selectedGenres?: GenreType[];
+  setSelectedGenres?: React.Dispatch<React.SetStateAction<GenreType[]>>;
+  genreFilterMode?: 'and' | 'or';
+  setGenreFilterMode?: React.Dispatch<React.SetStateAction<'and' | 'or'>>;
+  selectedVisitStatuses?: number[];
+  setSelectedVisitStatuses?: React.Dispatch<React.SetStateAction<number[]>>;
   searchTerm?: string;
   setSearchTerm?: React.Dispatch<React.SetStateAction<string>>;
   debouncedTerm?: string;
@@ -33,7 +33,7 @@ type BookmarkListContextValue = {
   setListViewSelectedWorld?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
-const BookmarkListContext = createContext<BookmarkListContextValue | null>(null);
+const BookmarkListContext = createContext<BookmarkListContextValue>({});
 
 export function BookmarkListProvider({ children }: { children: React.ReactNode }) {
   const { visitStatuses } = useAppData();

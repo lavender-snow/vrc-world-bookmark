@@ -4,7 +4,7 @@ import { NoticeType } from 'src/consts/const';
 import { ToastList } from 'src/utils/toast-list';
 
 type ToastContext = {
-  addToast: (message: string, type?: NoticeType) => void;
+  addToast?: (message: string, type?: NoticeType) => void;
 };
 
 interface toast {
@@ -13,7 +13,7 @@ interface toast {
   noticeType: NoticeType;
 }
 
-const ToastContext = createContext<ToastContext | undefined>(undefined);
+const ToastContext = createContext<ToastContext>({});
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<toast[]>([]);
