@@ -78,10 +78,10 @@ export function createBedrockClient(): BedrockRuntime {
   return client;
 }
 
-export async function sendBedrock(client: BedrockRuntime, prompt: Message[]) {
+export async function sendBedrock(client: BedrockRuntime, messages: Message[]) {
   const params: ConverseCommandInput = {
     modelId,
-    messages: prompt,
+    messages,
     toolConfig:{
       'tools': tools,
     },
