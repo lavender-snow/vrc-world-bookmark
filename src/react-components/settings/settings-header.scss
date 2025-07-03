@@ -2,7 +2,7 @@
 
 :local(.settings-header) {
   display: flex;
-  border-bottom: 1px solid theme.$light-gray;
+  border-bottom: theme.$base-border theme.$light-gray;
   padding-bottom: 8px;
   margin-bottom: 16px;
 

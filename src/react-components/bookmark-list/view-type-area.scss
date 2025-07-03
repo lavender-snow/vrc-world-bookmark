@@ -13,7 +13,7 @@
 
   & div {
     padding: 4px 8px;
-    border: 1px solid theme.$light-gray;
+    border: theme.$base-border theme.$light-gray;
   }
 
   & div:first-child {

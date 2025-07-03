@@ -2,7 +2,7 @@
 
 :local(.settings-wrapper) {
   display: flex;
-  border: 1px solid theme.$light-gray;
+  border: theme.$base-border theme.$light-gray;
   border-radius: 8px;
   min-height: 400px;
 

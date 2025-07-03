@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border: 1px solid theme.$light-gray;
+  border: theme.$base-border theme.$light-gray;
   border-radius: 8px;
   padding: 16px 20px;
   box-sizing: content-box;
@@ -31,7 +31,7 @@
 :local(.fetch-button) {
   flex-shrink: 0;
   padding: 10px;
-  border: transparent 1px solid;
+  border: theme.$base-border transparent;
 }
 
 :local(.rotate-icon) {
@@ -49,7 +49,7 @@
 }
 
 :local(.recommendReasonBox) {
-  border-top: 1px solid theme.$light-gray;
+  border-top: theme.$base-border theme.$light-gray;
   padding: 12px 8px 8px 8px;
   font-size: 0.98em;
 }
