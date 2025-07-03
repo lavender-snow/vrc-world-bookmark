@@ -9,7 +9,7 @@ type WorldDataEntryContextValue = {
   setVRChatWorldInfo?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
-const WorldDataEntryContext = createContext<WorldDataEntryContextValue>({});
+const WorldDataEntryContext = createContext<WorldDataEntryContextValue>(undefined);
 
 export function WorldDataEntryProvider({ children }: { children: React.ReactNode }) {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');

@@ -17,7 +17,7 @@ type RecommendContextValue = {
   reason?: string | null;
 };
 
-const RecommendContext = createContext<RecommendContextValue>({});
+const RecommendContext = createContext<RecommendContextValue>(undefined);
 
 export function RecommendProvider({ children }: { children: React.ReactNode }) {
   const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);

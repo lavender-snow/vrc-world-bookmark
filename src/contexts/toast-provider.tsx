@@ -13,7 +13,7 @@ interface toast {
   noticeType: NoticeType;
 }
 
-const ToastContext = createContext<ToastContext>({});
+const ToastContext = createContext<ToastContext>(undefined);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<toast[]>([]);

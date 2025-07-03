@@ -33,7 +33,7 @@ type BookmarkListContextValue = {
   setListViewSelectedWorld?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
-const BookmarkListContext = createContext<BookmarkListContextValue>({});
+const BookmarkListContext = createContext<BookmarkListContextValue>(undefined);
 
 export function BookmarkListProvider({ children }: { children: React.ReactNode }) {
   const { visitStatuses } = useAppData();

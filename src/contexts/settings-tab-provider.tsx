@@ -15,7 +15,7 @@ type SettingsTabContextValue = {
   setWorldInfoUpdateStatus?: React.Dispatch<React.SetStateAction<WorldUpdateInfoStatusType>>;
 };
 
-const SettingsTabContext = createContext<SettingsTabContextValue>({});
+const SettingsTabContext = createContext<SettingsTabContextValue>(undefined);
 
 export function SettingsTabProvider({ children }: { children: React.ReactNode }) {
   const [activeCategory, setActiveCategory] = useState(SETTINGS_CATEGORY_ID.general);
