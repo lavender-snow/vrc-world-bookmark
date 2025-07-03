@@ -3,10 +3,33 @@ import {
   ContentBlock,
   ConverseCommandInput,
   Message,
+  Tool,
 } from '@aws-sdk/client-bedrock-runtime';
 
+import { LLMApiError } from 'src/errors/llm-errors';
 import { loadKey } from 'src/main/credential-store';
-import { tools } from 'src/main/llm/prompt';
+import { getWorldInfoRequest, getWorldListRequest } from 'src/main/llm/prompt';
+
+const tools: Tool[] = [
+  {
+    toolSpec: {
+      name: getWorldListRequest.name,
+      description: getWorldListRequest.description,
+      inputSchema: {
+        json: getWorldListRequest.parameters,
+      },
+    },
+  },
+  {
+    toolSpec: {
+      name: getWorldInfoRequest.name,
+      description: getWorldInfoRequest.description,
+      inputSchema: {
+        json: getWorldInfoRequest.parameters,
+      },
+    },
+  },
+];
 
 const modelId = 'apac.anthropic.claude-3-5-sonnet-20241022-v2:0';
 
@@ -25,31 +48,25 @@ export function createBedrockClient(): BedrockRuntime {
   return client;
 }
 
-export async function sendBedrock(client: BedrockRuntime, prompt: Message[]) {
+export async function sendBedrock(client: BedrockRuntime, messages: Message[]) {
   const params: ConverseCommandInput = {
     modelId,
-    messages: prompt,
+    messages,
     toolConfig:{
       'tools': tools,
     },
   };
 
-  let resultMessage: Message;
+
   try {
-    await client.converse(params)
-      .then((data) => {
-        resultMessage = data.output.message;
-      })
-      .catch((error) => {
-        console.log(error);
-        throw new Error(error);
-      });
+    const data = await client.converse(params);
+    const resultMessage = data.output.message;
+
+    return resultMessage;
   } catch (e) {
     console.log(e);
-    throw new Error(e);
+    throw new LLMApiError(e);
   }
-
-  return resultMessage;
 }
 
 export function extractToolUseContent(message: Message): ContentBlock | undefined {

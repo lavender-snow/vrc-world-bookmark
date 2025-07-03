@@ -16,7 +16,8 @@ import {
   SelectQueryBase,
   getBookmark,
 } from './database';
-import { getLLMRecommendWorld } from './llm/bedrock/conversation';
+import { getLLMRecommendWorld as getRecommendWorldForBedrock } from './llm/bedrock/conversation';
+import { getLLMRecommendWorld as getRecommendWorldForOpenAI } from './llm/openai/conversation';
 import { fetchWorldInfo } from './vrchat-api';
 
 import { ORDERABLE_COLUMNS, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
@@ -270,7 +271,16 @@ function registerIpcHandlersForDatabase() {
 
   ipcMain.handle('get_llm_recommend_world', async (event, requestMessage: string) => {
     try {
-      const result = await getLLMRecommendWorld(requestMessage);
+      const currentLLM = loadKey('currentLLM');
+
+      let result;
+      if (currentLLM === 'bedrock') {
+        result = await getRecommendWorldForBedrock(requestMessage);
+      } else {
+        // デフォルトはOpenAIを使用
+        result = await getRecommendWorldForOpenAI(requestMessage);
+      }
+
       return { data: result };
     } catch (error) {
       console.error('Error getting LLM recommend world:', error);

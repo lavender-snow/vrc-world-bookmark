@@ -3,13 +3,13 @@ import { createContext, useContext, useState } from 'react';
 import type { VRChatWorldInfo } from 'src/types/renderer';
 
 type WorldDataEntryContextValue = {
-  worldIdOrUrl: string;
-  setWorldIdOrUrl: React.Dispatch<React.SetStateAction<string>>;
-  vrchatWorldInfo: VRChatWorldInfo | null;
-  setVRChatWorldInfo: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
+  worldIdOrUrl?: string;
+  setWorldIdOrUrl?: React.Dispatch<React.SetStateAction<string>>;
+  vrchatWorldInfo?: VRChatWorldInfo | null;
+  setVRChatWorldInfo?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
-const WorldDataEntryContext = createContext<WorldDataEntryContextValue | null>(null);
+const WorldDataEntryContext = createContext<WorldDataEntryContextValue>(undefined);
 
 export function WorldDataEntryProvider({ children }: { children: React.ReactNode }) {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');

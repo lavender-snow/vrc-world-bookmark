@@ -8,10 +8,12 @@ import { Button } from 'commonComponents/button';
 import { InputText } from 'commonComponents/input-text';
 import { WorldCard } from 'commonComponents/world-card';
 import { RECOMMEND_TYPE } from 'src/consts/const';
+import { useAppData } from 'src/contexts/app-data-provider';
 import { useRecommendState } from 'src/contexts/recommend-provider';
 
 export function Recommend() {
   const { vrchatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason } = useRecommendState();
+  const { llmEnabled } = useAppData();
 
   const onGetWorldClick = async () => {
     if (loading) return;
@@ -60,7 +62,7 @@ export function Recommend() {
             {currentType && currentType.id === 'conversation' && (
               <InputText value={requestMessage} onChange={(e) => setRequestMessage(e.target.value)} placeholder='ワールドの希望条件を入力(オプション)' disabled={loading} />
             )}
-            <Button onClick={onGetWorldClick} className={classNames(styles.fetchButton)} disabled={loading}>
+            <Button onClick={onGetWorldClick} className={classNames(styles.fetchButton)} disabled={loading || (currentType.id === 'conversation' && !llmEnabled)}>
               { loading ? (
                 <>
                   <UpdateIcon className={styles.rotateIcon}/>
@@ -72,6 +74,11 @@ export function Recommend() {
                 </>
               )}
             </Button>
+            {currentType.id === 'conversation' && !llmEnabled && (
+              <div className={styles.llmDisabledNotice}>
+                <span>LLMが有効ではありません。設定から認証情報を登録してください。</span>
+              </div>
+            )}
           </div>
           {reason && (
             <div className={styles.recommendReasonBox}>

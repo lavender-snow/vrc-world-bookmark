@@ -18,3 +18,10 @@ export class InvalidParameterError extends Error {
     this.name = 'InvalidParameterError';
   }
 }
+
+export class LLMApiError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'LLMApiError';
+  }
+}

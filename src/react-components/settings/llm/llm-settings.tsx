@@ -1,15 +1,16 @@
 
 import { LLMSelect } from './llm-select';
 import { BedrockSetting } from './service/bedrock-setting';
+import { OpenAISetting } from './service/openai-setting';
 
 import { ReactComponent as BrainIcon } from 'assets/images/HugeiconsAiBrain03.svg';
 import { LLM_API_SERVICE_ID } from 'src/consts/const';
-import { useSettingsTabState } from 'src/contexts/settings-tab-provider';
+import { useAppData } from 'src/contexts/app-data-provider';
 import { SettingItem } from 'src/react-components/settings/setting-item';
 import { SettingsHeader } from 'src/react-components/settings/settings-header';
 
 export function LLMSettings() {
-  const { currentLLM } =useSettingsTabState();
+  const { currentLLM } = useAppData();
 
   return (
     <>
@@ -18,7 +19,7 @@ export function LLMSettings() {
         <LLMSelect/>
       </SettingItem>
 
-      {/* {currentLLM === LLM_API_SERVICE_ID.openai && <OpenAISetting />} */}
+      {currentLLM === LLM_API_SERVICE_ID.openai && <OpenAISetting />}
       {currentLLM === LLM_API_SERVICE_ID.bedrock && <BedrockSetting />}
     </>
   );

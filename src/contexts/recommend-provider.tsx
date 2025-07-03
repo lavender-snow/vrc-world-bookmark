@@ -6,18 +6,18 @@ import { NoticeType, RECOMMEND_TYPE, RecommendType } from 'src/consts/const';
 import { VRChatWorldInfo } from 'src/types/renderer';
 
 type RecommendContextValue = {
-  vrchatWorldInfo: VRChatWorldInfo | null;
-  getRecommendWorld: () => Promise<void>;
-  getLLMRecommendWorld: () => Promise<void>;
-  recommendType: RecommendType;
-  setRecommendType: React.Dispatch<React.SetStateAction<RecommendType>>;
-  requestMessage: string;
-  setRequestMessage: React.Dispatch<React.SetStateAction<string>>;
-  loading: boolean;
-  reason: string | null;
+  vrchatWorldInfo?: VRChatWorldInfo | null;
+  getRecommendWorld?: () => Promise<void>;
+  getLLMRecommendWorld?: () => Promise<void>;
+  recommendType?: RecommendType;
+  setRecommendType?: React.Dispatch<React.SetStateAction<RecommendType>>;
+  requestMessage?: string;
+  setRequestMessage?: React.Dispatch<React.SetStateAction<string>>;
+  loading?: boolean;
+  reason?: string | null;
 };
 
-const RecommendContext = createContext<RecommendContextValue | null>(null);
+const RecommendContext = createContext<RecommendContextValue>(undefined);
 
 export function RecommendProvider({ children }: { children: React.ReactNode }) {
   const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
@@ -30,7 +30,6 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   async function getRecommendWorld() {
     try {
       setLoading(true);
-      setReason(null);
       const response = await window.dbAPI.getRandomRecommendedWorld();
 
       if (response.error) {
@@ -53,7 +52,6 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   async function getLLMRecommendWorld() {
     try {
       setLoading(true);
-      setReason(null);
       const response = await window.dbAPI.getLLMRecommendWorld(requestMessage);
 
       if (response.error) {

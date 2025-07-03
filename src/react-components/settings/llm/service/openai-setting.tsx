@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import styles from './openai-setting.scss';
 
 import { Button } from 'commonComponents/button';
 import { InputText } from 'commonComponents/input-text';
 import { NoticeType } from 'src/consts/const';
+import { useAppData } from 'src/contexts/app-data-provider';
 import { useToast } from 'src/contexts/toast-provider';
 import { SettingItem } from 'src/react-components/settings/setting-item';
 
 export function OpenAISetting() {
-  const [apiKeySaved, setApiKeySaved] = useState(false);
+  const { llmEnabled, setLLMEnabled } = useAppData();
   const [apiKey, setApiKey] = useState('');
   const { addToast } = useToast();
 
@@ -18,23 +19,17 @@ export function OpenAISetting() {
   };
 
   const handleSave = () => {
-    setApiKeySaved(true);
+    setLLMEnabled(true);
     window.credentialStore.saveKey('openaiApiKey', apiKey);
     addToast('APIキーを保存しました', NoticeType.success);
   };
 
   const handleReset = () => {
     setApiKey('');
-    setApiKeySaved(false);
+    setLLMEnabled(false);
     window.credentialStore.saveKey('openaiApiKey', '');
     addToast('APIキーの登録をリセットしました', NoticeType.info);
   };
-
-  useEffect(() => {
-    window.credentialStore.isKeySaved('openaiApiKey').then((exist) => {
-      setApiKeySaved(exist);
-    });
-  }, []);
 
   return (
     <SettingItem title='OpenAI利用設定'>
@@ -42,7 +37,7 @@ export function OpenAISetting() {
         <h4>APIキー設定</h4>
 
         <div className={styles.apiKeyInputWrapper}>
-          {apiKeySaved ? (
+          {llmEnabled ? (
             <>
               <InputText
                 value={'sk-********************************'}
