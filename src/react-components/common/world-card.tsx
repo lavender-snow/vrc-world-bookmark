@@ -1,13 +1,11 @@
 import classNames from 'classnames';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-import { Button } from './button';
 import { CheckboxGroup } from './checkbox-group';
 import { DropDownList, SelectOption } from './drop-down-list';
 import styles from './world-card.scss';
 import { WorldTags } from './world-tags';
 
-import { ReactComponent as MailSendIcon } from 'assets/images/IconoirSendMail.svg';
 import { ReactComponent as ClipboardIcon } from 'assets/images/MdiClipboardTextOutline.svg';
 import { NoticeType } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
@@ -170,7 +168,9 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
           <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
         </div>
 
+        {/* TODO: インバイト機能はクリエイターガイドラインに反するため実装を見送りました。適切な方法で行えるようになった場合に実装します。
         <Button className={styles.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
+        */}
       </div>
     </div >
   );
