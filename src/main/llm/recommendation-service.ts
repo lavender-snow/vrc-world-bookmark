@@ -4,6 +4,18 @@ import { GENRE, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
 import { InvalidParameterError } from 'src/errors/llm-errors';
 import { SelectQueryBase } from 'src/main/database';
 
+export interface WorldRecommendationResult {
+  id: string;
+  name: string;
+  description: string;
+  capacity: number;
+  favorites: number;
+  tags: string[];
+  updatedAt: string;
+  visits: number;
+  note: string;
+}
+
 export function buildWorldListQuery(genre: string, orderBy: string, sortOrder: string): SelectQueryBase {
   const selectSql = `
       world.id AS id,

@@ -7,26 +7,14 @@ import { createBedrockClient, extractToolUseContent, sendBedrock } from './bedro
 
 import { LLMResponseValidationError, ToolInvocationError  } from 'src/errors/llm-errors';
 import { getBookmarkList, getWorldInfo } from 'src/main/database';
-import { systemPrompt } from 'src/main/llm/prompt';
-import { buildWorldListQuery } from 'src/main/llm/recommendation-service';
+import { systemPrompt , getWorldInfoRequest, getWorldListRequest } from 'src/main/llm/prompt';
+import { buildWorldListQuery, WorldRecommendationResult } from 'src/main/llm/recommendation-service';
 import { RecommendResult } from 'src/types/main';
 
-interface WorldRecommendationResult {
-  id: string;
-  name: string;
-  description: string;
-  capacity: number;
-  favorites: number;
-  tags: string[];
-  updatedAt: string;
-  visits: number;
-  note: string;
-}
-
-function buildRecommendWorldPrompt(userRequest: string) {
+function buildRecommendWorldMessages(userRequest: string) {
   const userMessage = userRequest.length > 0 ? `以下の条件を加味してください「${userRequest.trim()}」` : '';
 
-  const prompt: Message[] = [{
+  const messages: Message[] = [{
     'role': 'user',
     'content': [{
       'text': systemPrompt,
@@ -39,7 +27,7 @@ function buildRecommendWorldPrompt(userRequest: string) {
     }],
   }];
 
-  return prompt;
+  return messages;
 }
 
 function extractAndValidateToolInput(toolCall: ContentBlock, expectedName: string) {
@@ -56,12 +44,12 @@ function extractAndValidateToolInput(toolCall: ContentBlock, expectedName: strin
 export async function getLLMRecommendWorld(userRequest: string): Promise<RecommendResult> {
   const client = createBedrockClient();
 
-  const prompt = buildRecommendWorldPrompt(userRequest);
+  const messages = buildRecommendWorldMessages(userRequest);
 
   // ワールドリストを取得するためのツールコールを送信
-  const toolWorldListResponse: Message = await sendBedrock(client, prompt);
+  const toolWorldListResponse: Message = await sendBedrock(client, messages);
   const worldListToolCall = extractToolUseContent(toolWorldListResponse);
-  const worldListToolCallInput = extractAndValidateToolInput(worldListToolCall, 'getWorldListRequest');
+  const worldListToolCallInput = extractAndValidateToolInput(worldListToolCall, getWorldListRequest.name);
 
   const genre = worldListToolCallInput['genre'];
   const orderBy = worldListToolCallInput['orderBy'];
@@ -71,7 +59,7 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
     throw new LLMResponseValidationError(`Invalid input schema from LLM. toolInput: ${worldListToolCallInput}`);
   }
 
-  prompt.push(toolWorldListResponse);
+  messages.push(toolWorldListResponse);
 
   const selectQueryBase = buildWorldListQuery(genre, orderBy, sortOrder);
   const getWorldListRequestResult = getBookmarkList(selectQueryBase) as WorldRecommendationResult[] | undefined;
@@ -80,7 +68,7 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
     throw new ToolInvocationError(`No world found for the given criteria. sql: ${selectQueryBase}`);
   }
 
-  prompt.push({
+  messages.push({
     'role': 'user',
     'content': [
       {
@@ -106,9 +94,9 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
   });
 
   // おすすめワールドを取得するためのツールコールを送信
-  const toolWorldInfoResponse = await sendBedrock(client, prompt);
+  const toolWorldInfoResponse = await sendBedrock(client, messages);
   const worldInfoToolCall = extractToolUseContent(toolWorldInfoResponse);
-  const worldInfoToolCallInput = extractAndValidateToolInput(worldInfoToolCall, 'getWorldInfoRequest');
+  const worldInfoToolCallInput = extractAndValidateToolInput(worldInfoToolCall, getWorldInfoRequest.name);
 
   if (!worldInfoToolCallInput || typeof worldInfoToolCallInput !== 'object' || Array.isArray(worldInfoToolCallInput)) {
     throw new LLMResponseValidationError(`Missing required properties in response schema from LLM. toolInput: ${worldInfoToolCallInput}`);
@@ -118,7 +106,7 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
   const reason = worldInfoToolCallInput['reason'];
 
   if (typeof worldId !== 'string' || typeof reason !== 'string') {
-    throw new LLMResponseValidationError('Invalid input schema from LLM. toolInput: ${worldInfoToolCallInput}');
+    throw new LLMResponseValidationError(`Invalid input schema from LLM. toolInput: ${worldInfoToolCallInput}`);
   }
 
   const worldInfo = getWorldInfo(worldId);

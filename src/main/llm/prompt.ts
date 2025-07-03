@@ -43,6 +43,47 @@ export interface GetWorldListRequest {
 export const worldGenres = ['chill', 'high_quality', 'game', 'horror', 'photo_spot'];
 export const orderableColumns = ['favorites_cached', 'popularity_cached', 'heat_cached', 'visits_cached', 'world_updated_at_cached'];
 
+export const getWorldListRequest ={
+  name: 'getWorldListRequest',
+  description: '指定した条件でワールドのリストを最大10件取得します。',
+  parameters: { type: 'object',
+    properties: {
+      genre: {
+        type: 'string',
+        description: `取得するワールドのジャンルを${JSON.stringify(worldGenres)}から選択します。`,
+      },
+      orderBy: {
+        type: 'string',
+        description: `取得するワールドをどの項目を基準に並べるか指定します。${JSON.stringify(orderableColumns)}から選択します。`,
+      },
+      sortOrder: {
+        type: 'string',
+        description: '取得するワールドの並び順を指定します。["asc", "desc"]から選択します。',
+      },
+    },
+    required: ['genre', 'orderBy', 'sortOrder'],
+  },
+};
+
+export const getWorldInfoRequest = {
+  name: 'getWorldInfoRequest',
+  description: '指定したワールドIDの詳細情報を取得します。',
+  parameters: {
+    type: 'object',
+    properties: {
+      worldId: {
+        type: 'string',
+        description: '取得するワールドのUUID形式のID',
+      },
+      reason: {
+        type: 'string',
+        description: 'ワールドがおすすめできる理由を日本語で簡潔にまとめてください。予測であることを明記してください。',
+      },
+    },
+    required: ['worldId', 'reason'],
+  },
+};
+
 export const systemPrompt = `あなたはVRChatのおすすめワールドを提案するためのAIです。
 
 ユーザーからのリクエストに対してツールを活用しながらおすすめワールドを提案します。

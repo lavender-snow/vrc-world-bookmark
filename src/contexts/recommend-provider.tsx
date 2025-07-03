@@ -30,7 +30,6 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   async function getRecommendWorld() {
     try {
       setLoading(true);
-      setReason(null);
       const response = await window.dbAPI.getRandomRecommendedWorld();
 
       if (response.error) {
@@ -53,7 +52,6 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   async function getLLMRecommendWorld() {
     try {
       setLoading(true);
-      setReason(null);
       const response = await window.dbAPI.getLLMRecommendWorld(requestMessage);
 
       if (response.error) {

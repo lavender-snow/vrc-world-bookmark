@@ -91,16 +91,16 @@ export const SETTINGS_CATEGORY = [
 export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];
 
 export const LLM_API_SERVICE_ID = {
-  // openai: 'openai',
+  openai: 'openai',
   bedrock: 'bedrock',
 } as const;
 export type LLMApiServiceId = typeof LLM_API_SERVICE_ID[keyof typeof LLM_API_SERVICE_ID];
 
 export const LLM_API_SERVICES = [
-  // {
-  //   id: LLM_API_SERVICE_ID.openai,
-  //   value: 'OpenAI',
-  // },
+  {
+    id: LLM_API_SERVICE_ID.openai,
+    value: 'OpenAI',
+  },
   {
     id: LLM_API_SERVICE_ID.bedrock,
     value: 'Amazon Bedrock',
