@@ -9,7 +9,7 @@ import { LLMResponseValidationError, ToolInvocationError  } from 'src/errors/llm
 import { getBookmarkList, getWorldInfo } from 'src/main/database';
 import { systemPrompt } from 'src/main/llm/prompt';
 import { buildWorldListQuery } from 'src/main/llm/recommendation-service';
-import { LLMRecommendResult } from 'src/types/main';
+import { RecommendResult } from 'src/types/main';
 
 interface WorldRecommendationResult {
   id: string;
@@ -53,7 +53,7 @@ function extractAndValidateToolInput(toolCall: ContentBlock, expectedName: strin
   return input;
 }
 
-export async function getLLMRecommendWorld(userRequest: string): Promise<LLMRecommendResult> {
+export async function getLLMRecommendWorld(userRequest: string): Promise<RecommendResult> {
   const client = createBedrockClient();
 
   const prompt = buildRecommendWorldPrompt(userRequest);

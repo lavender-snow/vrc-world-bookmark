@@ -27,7 +27,7 @@ export function SettingsTabProvider({ children }: { children: React.ReactNode })
   const [processedCount, setProcessedCount] = useState<number>(0);
   const [worldInfoIsUpdating, setWorldInfoIsUpdating] = useState<boolean>(false);
   const [worldInfoUpdateStatus, setWorldInfoUpdateStatus] = useState<WorldUpdateInfoStatusType>(WORLD_UPDATE_INFO_STATUS.idle);
-  const [currentLLM, setCurrentLLM] = useState<llmApiService>(LLM_API_SERVICE_ID.openai);
+  const [currentLLM, setCurrentLLM] = useState<llmApiService>(LLM_API_SERVICE_ID.bedrock);
   const [apiKey, setApiKey] = useState('');
   const [loading, setLoading] = useState(true);
 

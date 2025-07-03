@@ -1,7 +1,6 @@
 
 import { LLMSelect } from './llm-select';
 import { BedrockSetting } from './service/bedrock-setting';
-import { OpenAISetting } from './service/openai-setting';
 
 import { ReactComponent as BrainIcon } from 'assets/images/HugeiconsAiBrain03.svg';
 import { LLM_API_SERVICE_ID } from 'src/consts/const';
@@ -19,7 +18,7 @@ export function LLMSettings() {
         <LLMSelect/>
       </SettingItem>
 
-      {currentLLM === LLM_API_SERVICE_ID.openai && <OpenAISetting />}
+      {/* {currentLLM === LLM_API_SERVICE_ID.openai && <OpenAISetting />} */}
       {currentLLM === LLM_API_SERVICE_ID.bedrock && <BedrockSetting />}
     </>
   );

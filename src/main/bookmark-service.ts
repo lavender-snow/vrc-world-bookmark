@@ -243,14 +243,29 @@ function registerIpcHandlersForDatabase() {
     const result = getBookmark(selectQueryBase) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
 
     if (!result) {
-      return null;
+      return { error: '登録されているデータからおすすめとなるワールドが取得できませんでした。' };
     }
 
-    return {
-      ...result,
-      tags: result.tags ? JSON.parse(result.tags) as string[] : [],
-      genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
+    const primaryOrderByColumn = shuffledColumns[0];
+    const columnNames = {
+      favorites_cached: 'お気に入り数',
+      world_updated_at_cached: '更新日時',
+      visits_cached: '訪問数',
     };
+
+    let reason = '';
+
+    if (Object.hasOwn(columnNames, primaryOrderByColumn)) {
+      reason = `${columnNames[primaryOrderByColumn as keyof typeof columnNames]}が上位のワールドから選定しました。`;
+    }
+
+    return { data: {
+      VRChatWorldInfo: { ...result,
+        tags: result.tags ? JSON.parse(result.tags) as string[] : [],
+        genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
+      },
+      reason,
+    } };
   });
 
   ipcMain.handle('get_llm_recommend_world', async (event, requestMessage: string) => {
