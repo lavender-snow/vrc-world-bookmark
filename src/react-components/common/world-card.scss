@@ -1,7 +1,7 @@
 @use 'assets/styles/theme.scss';
 
 :local(.world-card) {
-  border: 2px solid theme.$gray;
+  border: 1px solid theme.$gray;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -124,7 +124,7 @@
     width: stretch;
     height: 4rem;
     padding: 8px;
-    border: 2px solid theme.$gray;
+    border: 1px solid theme.$gray;
     border-radius: 4px;
     box-sizing: border-box;
   }

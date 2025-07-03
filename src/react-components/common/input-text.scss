@@ -4,10 +4,10 @@
   border-radius: 6px;
   font-size: 16px;
   padding: 10px;
-  border: 2px solid theme.$light-gray;
+  border: 1px solid theme.$light-gray;
 
   &:focus {
-    border: 2px solid theme.$light-blue;
+    border: 1px solid theme.$light-blue;
     outline: none;
   }
 }
