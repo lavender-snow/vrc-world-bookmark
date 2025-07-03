@@ -33,7 +33,7 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
       setReason(null);
       const response = await window.dbAPI.getRandomRecommendedWorld();
 
-      if (!response.error) {
+      if (response.error) {
         setVRChatWorldInfo(null);
         addToast(response.error, NoticeType.info);
       } else {
