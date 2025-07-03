@@ -1,5 +1,3 @@
-import { Tool } from '@aws-sdk/client-bedrock-runtime';
-
 const dataSchema = {
   worldList: {
     type: 'array',
@@ -42,58 +40,8 @@ export interface GetWorldListRequest {
   };
 };
 
+export const worldGenres = ['chill', 'high_quality', 'game', 'horror', 'photo_spot'];
 export const orderableColumns = ['favorites_cached', 'popularity_cached', 'heat_cached', 'visits_cached', 'world_updated_at_cached'];
-
-export const tools: Tool[] = [
-  {
-    toolSpec: {
-      name: 'getWorldListRequest',
-      description: '指定した条件でワールドのリストを最大10件取得します。',
-      inputSchema: {
-        json: {
-          type: 'object',
-          properties: {
-            genre: {
-              type: 'string',
-              description: '取得するワールドのジャンルを["chill", "high_quality", "game", "horror", "photo_spot"]から選択します。',
-            },
-            orderBy: {
-              type: 'string',
-              description: `取得するワールドをどの項目を基準に並べるか指定します。${JSON.stringify(orderableColumns)}から選択します。`,
-            },
-            sortOrder: {
-              type: 'string',
-              description: '取得するワールドの並び順を指定します。["asc", "desc"]から選択します。',
-            },
-          },
-          required: ['genre', 'orderBy', 'sortOrder'],
-        },
-      },
-    },
-  },
-  {
-    toolSpec: {
-      name: 'getWorldInfoRequest',
-      description: '指定したワールドIDの詳細情報を取得します。',
-      inputSchema: {
-        json: {
-          type: 'object',
-          properties: {
-            worldId: {
-              type: 'string',
-              description: '取得するワールドのUUID形式のID',
-            },
-            reason: {
-              type: 'string',
-              description: 'ワールドを選定した理由を簡潔にまとめてください。',
-            },
-          },
-          required: ['worldId', 'reason'],
-        },
-      },
-    },
-  },
-];
 
 export const systemPrompt = `あなたはVRChatのおすすめワールドを提案するためのAIです。
 
