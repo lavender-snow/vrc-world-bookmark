@@ -34,22 +34,16 @@ export async function sendBedrock(client: BedrockRuntime, prompt: Message[]) {
     },
   };
 
-  let resultMessage: Message;
+
   try {
-    await client.converse(params)
-      .then((data) => {
-        resultMessage = data.output.message;
-      })
-      .catch((error) => {
-        console.log(error);
-        throw new Error(error);
-      });
+    const data = await client.converse(params);
+    const resultMessage = data.output.message;
+
+    return resultMessage;
   } catch (e) {
     console.log(e);
-    throw new Error(e);
+    throw new LLMApiError(e);
   }
-
-  return resultMessage;
 }
 
 export function extractToolUseContent(message: Message): ContentBlock | undefined {
