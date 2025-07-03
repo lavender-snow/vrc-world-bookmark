@@ -170,7 +170,9 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
           <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
         </div>
 
-        {/* <Button className={styles.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button> */}
+        {/* TODO: インバイト機能はクリエイターガイドラインに反するため実装を見送りました。適切な方法で行えるようになった場合に実装します。
+        <Button className={styles.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
+        */}
       </div>
     </div >
   );
