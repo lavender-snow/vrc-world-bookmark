@@ -91,7 +91,7 @@
 
 :local(.world-property-value) {
   padding: 0px 4px;
-  width: 100%;
+  width: stretch;
 }
 
 :local(.invite-button) {
@@ -121,7 +121,7 @@
 
   textarea {
     resize: none;
-    width: 100%;
+    width: stretch;
     height: 4rem;
     padding: 8px;
     border: 2px solid theme.$gray;

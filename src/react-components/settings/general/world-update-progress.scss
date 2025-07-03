@@ -14,7 +14,7 @@
 }
 
 :local(.progress-area) {
-  width: 100%;
+  width: stretch;
 }
 
 :local(.progress-label) {
@@ -24,7 +24,7 @@
 }
 
 :local(.progress-bar) {
-  width: 100%;
+  width: stretch;
   height: 16px;
   accent-color: theme.$light-blue;
 }
