@@ -81,7 +81,7 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
   const worldInfoToolCallArgs = JSON.parse(worldInfoToolCall.arguments);
 
   if (!worldInfoToolCallArgs || typeof worldInfoToolCallArgs !== 'object' || Array.isArray(worldInfoToolCallArgs)) {
-    throw new LLMResponseValidationError(`Missing required properties in response schema from LLM. arguments: ${worldInfoToolCallArgs.arguments}`);
+    throw new LLMResponseValidationError(`Missing required properties in response schema from LLM. arguments: ${worldInfoToolCallArgs}`);
   }
 
   const worldId = worldInfoToolCallArgs['worldId'];
