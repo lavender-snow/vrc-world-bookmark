@@ -48,8 +48,13 @@
   }
 }
 
-:local(.recommendReasonBox) {
+:local(.recommend-reason-box) {
   border-top: theme.$base-border theme.$light-gray;
   padding: 12px 8px 8px 8px;
   font-size: 0.98em;
+}
+
+:local(.llm-disabled-notice) {
+  color: theme.$error;
+  font-size: 0.9em;
 }

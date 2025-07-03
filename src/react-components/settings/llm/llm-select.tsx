@@ -2,11 +2,11 @@ import styles from './llm-select.scss';
 
 import { DropDownList } from 'commonComponents/drop-down-list';
 import { LLM_API_SERVICES, LLMApiServiceId, NoticeType } from 'src/consts/const';
-import { useSettingsTabState } from 'src/contexts/settings-tab-provider';
+import { useAppData } from 'src/contexts/app-data-provider';
 import { useToast } from 'src/contexts/toast-provider';
 
 export function LLMSelect() {
-  const { currentLLM, setCurrentLLM } = useSettingsTabState();
+  const { currentLLM, setCurrentLLM } = useAppData();
   const { addToast } = useToast();
 
   const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
