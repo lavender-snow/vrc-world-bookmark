@@ -5,6 +5,9 @@ import { App } from './app';
 
 jest.mock('classnames', () => (...args: any[]) => args.filter(Boolean).join(' '));
 
+jest.mock('./recommend/recommend', () => ({
+  Recommend: () => <div data-testid="recommend">Recommend</div>,
+}));
 jest.mock('./bookmark-list/bookmark-list', () => ({
   BookmarkList: () => <div data-testid="bookmark-list">BookmarkList</div>,
 }));
@@ -17,6 +20,9 @@ jest.mock('./settings/settings', () => ({
 
 jest.mock('src/contexts/app-data-provider', () => ({
   AppDataProvider: ({ children }: any) => <>{children}</>,
+}));
+jest.mock('src/contexts/recommend-provider', () => ({
+  RecommendProvider: ({ children }: any) => <>{children}</>,
 }));
 jest.mock('src/contexts/bookmark-list-provider', () => ({
   BookmarkListProvider: ({ children }: any) => <>{children}</>,
