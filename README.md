@@ -30,6 +30,36 @@ VRChatのワールドブックマークアプリです。
 
 データはPC上の`%APPDATA%\vrc-world-bookmark`配下に保存されます。
 
+# 画面
+
+## おすすめ画面
+
+### LLM検索
+
+![LLM検索](public/images/featured_llm_sample.webp)
+
+### ランダム検索
+
+![ランダム検索](public/images/featured_random_sample.webp)
+
+## ワールド一覧画面
+
+![ワールド一覧](public/images/world_list_sample.webp)
+
+## ワールド情報登録画面
+
+![ワールド情報登録](public/images/data_entry_sample.webp)
+
+## 設定画面
+
+### 一般
+
+![一般設定画面](public/images/settings_general_sample.webp)
+
+### LLM
+
+![LLM設定画面](public/images/settings_llm_sample.webp)
+
 ## 実装を見送った機能
 
 - インバイト機能
