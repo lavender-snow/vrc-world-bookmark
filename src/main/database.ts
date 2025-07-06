@@ -350,8 +350,12 @@ export function deleteWorldInfo(worldId: string) {
 
   if (result.changes > 0) {
     console.log(`World info deleted: ${worldId}`);
+
+    return true;
   } else {
     console.error(`World info delete failed: ${worldId}`);
+
+    return false;
   }
 }
 
