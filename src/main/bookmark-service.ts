@@ -28,20 +28,24 @@ import { shuffleArray } from 'src/utils/util';
 export async function upsertWorldBookmark(worldId: string) {
   try {
     const world = await fetchWorldInfo(worldId);
-
     addOrUpdateWorldInfo(world);
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
-      deleteWorldInfo(worldId);
+      const isExist = deleteWorldInfo(worldId);
+      if (!isExist) {
+        return {
+          error: 'ワールドIDが誤っている、もしくは削除されています',
+        };
+      }
     } else if (error instanceof VRChatServerError) {
       console.error('VRChat server error:', error);
       return {
-        error: `VRChat server error: ${error.message}`,
+        error: `VRChatのサーバーにエラーが発生しています。 ${error.message}`,
       };
     } else {
       console.error(`Error fetching world info for ${worldId}:`, error);
       return {
-        error: `Error fetching world info: ${error.message}`,
+        error: `ワールド情報取得時にエラーが発生しています。 ${error.message}`,
       };
     }
   }
