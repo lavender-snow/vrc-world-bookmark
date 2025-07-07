@@ -21,6 +21,7 @@ jest.mock('src/contexts/app-data-provider', () => ({
       { id: 2, name: 'Completed', name_jp: '完了' },
       { id: 3, name: 'Hidden', name_jp: '非表示' },
     ],
+    setLastUpdatedWorldInfo: jest.fn(),
   }),
 }));
 jest.mock('src/contexts/toast-provider', () => ({

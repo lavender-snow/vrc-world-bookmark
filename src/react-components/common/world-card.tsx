@@ -40,11 +40,16 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
   const [visitStatusId, setVisitStatusId] = useState<number>(worldInfo.visitStatusId);
   const { addToast } = useToast();
   const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
-  const { genres, visitStatuses } = useAppData();
+  const { genres, visitStatuses, setLastUpdatedWorldInfo } = useAppData();
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
     addToast('ワールド名をコピーしました', NoticeType.success);
+  }
+
+  function updateWorldInfo(newWorldInfo: VRChatWorldInfo) {
+    setVRChatWorldInfo(newWorldInfo);
+    setLastUpdatedWorldInfo(newWorldInfo);
   }
 
   async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
@@ -52,13 +57,15 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
       await window.dbAPI.updateWorldBookmark(options);
 
       if (options.note) {
-        setVRChatWorldInfo({ ...worldInfo, note: options.note });
+        const newWorldInfo = { ...worldInfo, note: options.note };
+        updateWorldInfo(newWorldInfo);
 
         addToast('メモを更新しました', NoticeType.success);
       }
 
       if(options.visitStatusId) {
-        setVRChatWorldInfo({ ...worldInfo, visitStatusId: options.visitStatusId });
+        const newWorldInfo = { ...worldInfo, visitStatusId: options.visitStatusId };
+        updateWorldInfo(newWorldInfo);
 
         addToast('訪問状況を更新しました', NoticeType.success);
       }
@@ -79,7 +86,8 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
     try {
       await window.dbAPI.updateWorldGenres(options);
 
-      setVRChatWorldInfo({ ...worldInfo, genreIds: options.genreIds });
+      const newWorldInfo = { ...worldInfo, genreIds: options.genreIds };
+      updateWorldInfo(newWorldInfo);
 
       addToast('ジャンル設定を更新しました', NoticeType.success);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAppData } from './app-data-provider';
 
@@ -36,7 +36,7 @@ type BookmarkListContextValue = {
 const BookmarkListContext = createContext<BookmarkListContextValue>(undefined);
 
 export function BookmarkListProvider({ children }: { children: React.ReactNode }) {
-  const { visitStatuses } = useAppData();
+  const { visitStatuses, lastUpdatedWorldInfo } = useAppData();
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(DEFAULT_RESULT_PER_PAGE);
@@ -53,6 +53,16 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [filterVisible, setFilterVisible] = useState(true);
   const [viewType, setViewType] = useState<ViewType>(VIEW_TYPES.list);
   const [listViewSelectedWorld, setListViewSelectedWorld] = useState<VRChatWorldInfo | null>(null);
+
+  useEffect(() => {
+    if (
+      lastUpdatedWorldInfo &&
+      lastUpdatedWorldInfo.id === listViewSelectedWorld?.id &&
+      JSON.stringify(lastUpdatedWorldInfo) !== JSON.stringify(listViewSelectedWorld)
+    ) {
+      setListViewSelectedWorld(lastUpdatedWorldInfo);
+    }
+  }, [lastUpdatedWorldInfo]);
 
   return (
     <BookmarkListContext.Provider value={{

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { useAppData } from './app-data-provider';
 import { useToast } from './toast-provider';
 
 import { NoticeType, RECOMMEND_TYPE, RecommendType } from 'src/consts/const';
@@ -26,6 +27,7 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   const [requestMessage, setRequestMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [reason, setReason] = useState<string | null>(null);
+  const { lastUpdatedWorldInfo } = useAppData();
   const { addToast } = useToast();
 
   async function getRecommendWorld() {
@@ -81,6 +83,16 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (
+      lastUpdatedWorldInfo &&
+      lastUpdatedWorldInfo.id === vrchatWorldInfo?.id &&
+      JSON.stringify(lastUpdatedWorldInfo) !== JSON.stringify(vrchatWorldInfo)
+    ) {
+      setVRChatWorldInfo(lastUpdatedWorldInfo);
+    }
+  }, [lastUpdatedWorldInfo]);
 
   return (
     <RecommendContext.Provider value={{ vrchatWorldInfo, setVRChatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason }}>
