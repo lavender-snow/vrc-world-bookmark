@@ -38,7 +38,7 @@ VRChatのワールドブックマークアプリです。
 # 使い方
 
 1. [Release](https://github.com/lavender-snow/vrc-world-bookmark/releases)から最新バージョンのzipファイルをダウンロードし、展開します。
-2. VRCWorldBookmark.exeを起動します。
+2. vrc-world-bookmark.exeを起動します。
 3. ワールド情報登録にVRChatのワールドURLまたはワールドIDを貼り付け、`ワールド情報登録`ボタンを押下します。
 4. 情報が登録され、ワールド一覧で管理されるようになります。
 

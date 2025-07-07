@@ -1,6 +1,6 @@
 {
   "name": "vrc-world-bookmark",
-  "productName": "VRCWorldBookmark",
+  "productName": "vrc-world-bookmark",
   "version": "0.2.1",
   "description": "VRChat World Bookmark is a tool for VRChat users to bookmark and manage their favorite worlds.",
   "main": ".webpack/main",
