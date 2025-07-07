@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 import { LLM_API_SERVICE_ID, llmApiService } from 'src/consts/const';
+import { VRChatWorldInfo } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 
 type AppData = {
@@ -10,6 +11,8 @@ type AppData = {
   setCurrentLLM?: React.Dispatch<React.SetStateAction<llmApiService>>;
   llmEnabled?: boolean;
   setLLMEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
+  lastUpdatedWorldInfo?: VRChatWorldInfo | null;
+  setLastUpdatedWorldInfo?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
 };
 
 const AppDataContext = createContext<AppData>({});
@@ -20,6 +23,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [currentLLM, setCurrentLLM] = useState<llmApiService>(LLM_API_SERVICE_ID.openai);
   const [llmEnabled, setLLMEnabled] = useState(false);
+  const [lastUpdatedWorldInfo, setLastUpdatedWorldInfo] = useState<VRChatWorldInfo | null>(null);
 
   useEffect(() => {
     async function fetchAppData() {
@@ -64,7 +68,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AppDataContext.Provider value={{ genres, visitStatuses, currentLLM, setCurrentLLM, llmEnabled, setLLMEnabled }}>
+    <AppDataContext.Provider value={{ genres, visitStatuses, currentLLM, setCurrentLLM, llmEnabled, setLLMEnabled, lastUpdatedWorldInfo, setLastUpdatedWorldInfo }}>
       {children}
     </AppDataContext.Provider>
   );

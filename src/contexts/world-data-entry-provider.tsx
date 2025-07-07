@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+
+import { useAppData } from './app-data-provider';
 
 import type { VRChatWorldInfo } from 'src/types/renderer';
 
@@ -14,6 +16,17 @@ const WorldDataEntryContext = createContext<WorldDataEntryContextValue>(undefine
 export function WorldDataEntryProvider({ children }: { children: React.ReactNode }) {
   const [worldIdOrUrl, setWorldIdOrUrl] = useState<string>('');
   const [vrchatWorldInfo, setVRChatWorldInfo] = useState<VRChatWorldInfo | null>(null);
+  const { lastUpdatedWorldInfo } = useAppData();
+
+  useEffect(() => {
+    if (
+      lastUpdatedWorldInfo &&
+      lastUpdatedWorldInfo.id === vrchatWorldInfo?.id &&
+      JSON.stringify(lastUpdatedWorldInfo) !== JSON.stringify(vrchatWorldInfo)
+    ) {
+      setVRChatWorldInfo(lastUpdatedWorldInfo);
+    }
+  }, [lastUpdatedWorldInfo]);
 
   return (
     <WorldDataEntryContext.Provider value={{

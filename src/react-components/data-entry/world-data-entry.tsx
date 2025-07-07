@@ -93,7 +93,7 @@ export function WorldDataEntry() {
         </div>
         <div className={classNames(styles.searchResult)}>
           {vrchatWorldInfo && (
-            <WorldCard worldInfo={vrchatWorldInfo} />
+            <WorldCard worldInfo={vrchatWorldInfo} setVRChatWorldInfo={setVRChatWorldInfo}/>
           )}
         </div>
       </motion.div>
