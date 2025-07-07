@@ -38,6 +38,7 @@ jest.mock('./world-tags', () => ({
   ),
 }));
 
+const mockSetVRChatWorldInfo = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -45,7 +46,7 @@ beforeEach(() => {
 
 describe('WorldCard', () => {
   it('ワールド名・作者・説明などが表示される', () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     expect(screen.getByText(mockWorldInfo.name)).toBeInTheDocument();
     expect(screen.getByText(`by ${mockWorldInfo.authorName}`)).toBeInTheDocument();
     expect(screen.getByText(mockWorldInfo.description)).toBeInTheDocument();
@@ -60,7 +61,7 @@ describe('WorldCard', () => {
   });
 
   it('ワールド名クリックでクリップボードにコピーされる', () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const clipboardButton = screen.getByLabelText('ワールド名をコピー');
     fireEvent.click(clipboardButton);
 
@@ -68,7 +69,7 @@ describe('WorldCard', () => {
   });
 
   it('メモを編集してフォーカスを外すとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const textarea = screen.getByPlaceholderText('ワールドの補足情報を入力');
     fireEvent.change(textarea, { target: { value: '新しいメモ' } });
     fireEvent.blur(textarea);
@@ -76,33 +77,42 @@ describe('WorldCard', () => {
       expect(window.dbAPI.updateWorldBookmark).toHaveBeenCalledWith(
         expect.objectContaining({ note: '新しいメモ' }),
       );
+      expect(mockSetVRChatWorldInfo).toHaveBeenCalledWith(
+        expect.objectContaining({ note: '新しいメモ' }),
+      );
     });
   });
 
   it('ジャンルチェックボックスをクリックするとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const genreCheckbox = screen.getByLabelText('高品質');
     fireEvent.click(genreCheckbox);
     await waitFor(() => {
       expect(window.dbAPI.updateWorldGenres).toHaveBeenCalledWith(
         expect.objectContaining({ genreIds: [0, 1] }),
       );
+      expect(mockSetVRChatWorldInfo).toHaveBeenCalledWith(
+        expect.objectContaining({ genreIds: [0, 1] }),
+      );
     });
   });
 
   it('訪問状況を変更するとAPIが呼ばれる', async () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const select = screen.getByRole('combobox');
     fireEvent.change(select, { target: { value: '1' } });
     await waitFor(() => {
       expect(window.dbAPI.updateWorldBookmark).toHaveBeenCalledWith(
         expect.objectContaining({ visitStatusId: 1 }),
       );
+      expect(mockSetVRChatWorldInfo).toHaveBeenCalledWith(
+        expect.objectContaining({ visitStatusId: 1 }),
+      );
     });
   });
 
   it('タグが表示される', () => {
-    render(<WorldCard worldInfo={mockWorldInfo} />);
+    render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     expect(screen.getByText('["system_approved"]')).toBeInTheDocument();
   });
 });

@@ -7,6 +7,7 @@ import { VRChatWorldInfo } from 'src/types/renderer';
 
 type RecommendContextValue = {
   vrchatWorldInfo?: VRChatWorldInfo | null;
+  setVRChatWorldInfo?: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>>;
   getRecommendWorld?: () => Promise<void>;
   getLLMRecommendWorld?: () => Promise<void>;
   recommendType?: RecommendType;
@@ -82,7 +83,7 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <RecommendContext.Provider value={{ vrchatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason }}>
+    <RecommendContext.Provider value={{ vrchatWorldInfo, setVRChatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason }}>
       {children}
     </RecommendContext.Provider>
   );

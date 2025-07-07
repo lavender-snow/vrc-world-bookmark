@@ -111,6 +111,15 @@ export function BookmarkList() {
     return pages;
   }
 
+  function updateBookmarkList(worldInfo: VRChatWorldInfo) {
+    setBookmarkList(bookmarkList.map((world) => {
+      if (world.id === worldInfo.id) {
+        return worldInfo;
+      }
+      return world;
+    }));
+  }
+
   return (
     <AnimatePresence mode='wait'>
       { listViewSelectedWorld ? (
@@ -121,7 +130,7 @@ export function BookmarkList() {
           exit={{ opacity: 0, x: 40 }}
           transition={{ duration: 0.3 }}
         >
-          <BookmarkListDetail worldInfo={listViewSelectedWorld}/>
+          <BookmarkListDetail worldInfo={listViewSelectedWorld} updateBookmarkList={updateBookmarkList}/>
         </motion.div>
       ) : (
         <motion.div
@@ -249,7 +258,7 @@ export function BookmarkList() {
           {viewType === VIEW_TYPES.grid && (
             <div className={styles.worldCardList}>
               {bookmarkList && bookmarkList.map((worldInfo) => (
-                <WorldCard key={worldInfo.id} worldInfo={worldInfo} />
+                <WorldCard key={worldInfo.id} worldInfo={worldInfo} setVRChatWorldInfo={updateBookmarkList}/>
               ))}
             </div>
           )}

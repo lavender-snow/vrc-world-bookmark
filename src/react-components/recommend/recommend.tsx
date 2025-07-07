@@ -12,7 +12,7 @@ import { useAppData } from 'src/contexts/app-data-provider';
 import { useRecommendState } from 'src/contexts/recommend-provider';
 
 export function Recommend() {
-  const { vrchatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason } = useRecommendState();
+  const { vrchatWorldInfo, setVRChatWorldInfo, getRecommendWorld, getLLMRecommendWorld, recommendType, setRecommendType, requestMessage, setRequestMessage, loading, reason } = useRecommendState();
   const { llmEnabled } = useAppData();
 
   const onGetWorldClick = async () => {
@@ -89,7 +89,7 @@ export function Recommend() {
         </div>
         <div>
           {vrchatWorldInfo && (
-            <WorldCard worldInfo={vrchatWorldInfo} />
+            <WorldCard worldInfo={vrchatWorldInfo} setVRChatWorldInfo={setVRChatWorldInfo} />
           )}
         </div>
       </motion.div>

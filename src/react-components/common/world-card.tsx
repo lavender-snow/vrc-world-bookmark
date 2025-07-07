@@ -33,7 +33,7 @@ function ThumbnailArea({ thumbnailImageUrl, worldName, releaseStatus }: {thumbna
   );
 }
 
-export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
+export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChatWorldInfo, setVRChatWorldInfo: React.Dispatch<React.SetStateAction<VRChatWorldInfo | null>> }) {
   const [selectedGenreIds, setSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [debouncedSelectedGenreIds, setDebouncedSelectedGenreIds] = useState<number[]>(worldInfo.genreIds);
   const [worldNote, setWorldNote] = useState<string>(worldInfo.note);
@@ -52,10 +52,14 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
       await window.dbAPI.updateWorldBookmark(options);
 
       if (options.note) {
+        setVRChatWorldInfo({ ...worldInfo, note: options.note });
+
         addToast('メモを更新しました', NoticeType.success);
       }
 
       if(options.visitStatusId) {
+        setVRChatWorldInfo({ ...worldInfo, visitStatusId: options.visitStatusId });
+
         addToast('訪問状況を更新しました', NoticeType.success);
       }
     } catch (error) {
@@ -74,6 +78,9 @@ export function WorldCard({ worldInfo }: { worldInfo: VRChatWorldInfo }) {
   async function handleUpdateWorldGenres(options: UpdateWorldGenresOptions) {
     try {
       await window.dbAPI.updateWorldGenres(options);
+
+      setVRChatWorldInfo({ ...worldInfo, genreIds: options.genreIds });
+
       addToast('ジャンル設定を更新しました', NoticeType.success);
     } catch (error) {
       console.error('Failed to update world genres:', error);
