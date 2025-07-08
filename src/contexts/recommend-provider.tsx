@@ -37,7 +37,7 @@ export function RecommendProvider({ children }: { children: React.ReactNode }) {
 
       if (response.error) {
         setVRChatWorldInfo(null);
-        addToast(response.error, NoticeType.info);
+        addToast(response.error, NoticeType.error);
       } else {
         setVRChatWorldInfo(response.data.VRChatWorldInfo);
         setReason(response.data.reason || null);
