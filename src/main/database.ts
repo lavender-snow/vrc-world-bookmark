@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import Database from 'better-sqlite3';
 
-import { GENRE } from 'src/consts/const';
+import { GENRE, UPSERT_RESULT, UpsertResult } from 'src/consts/const';
 import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
@@ -167,7 +167,7 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
   }
 }
 
-export function addOrUpdateWorldInfo(world: VRChatWorld) {
+export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult | null {
   const params = {
     id: world.id,
     authorId: world.authorId,
@@ -290,11 +290,15 @@ export function addOrUpdateWorldInfo(world: VRChatWorld) {
 
     const exists = db.prepare('SELECT 1 FROM bookmarks WHERE world_id = ?;').get(world.id);
 
-    if (!exists) {
+    if (exists) {
+      return UPSERT_RESULT.update;
+    } else {
       addBookmark(world.id, world.tags);
+      return UPSERT_RESULT.insert;
     }
   } else {
     console.error(`World info upsert failed: ${world.id}`);
+    return null;
   }
 };
 

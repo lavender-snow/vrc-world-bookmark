@@ -106,4 +106,10 @@ export const LLM_API_SERVICES = [
     value: 'Amazon Bedrock',
   },
 ] as const;
-export type llmApiService = typeof LLM_API_SERVICES[number]['id'];;
+export type LLMApiService = typeof LLM_API_SERVICES[number]['id'];
+
+export const UPSERT_RESULT = {
+  insert: 'insert',
+  update: 'update',
+} as const;
+export type UpsertResult = typeof UPSERT_RESULT[keyof typeof UPSERT_RESULT];

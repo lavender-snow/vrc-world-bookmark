@@ -1,6 +1,8 @@
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from './renderer.d.ts';
 import { World } from './vrchat.d.ts';
 
+import type { Genre, VisitStatus, UpdateWorldBookmarkResult, BookmarkListOptions } from 'src/consts/const';
+
 export interface RecommendResult {
   VRChatWorldInfo: VRChatWorldInfo;
   reason: string;
@@ -14,7 +16,7 @@ declare global {
     dbAPI: {
       getGenres: () => Promise<Genre[]>;
       getVisitStatuses: () => Promise<VisitStatus[]>;
-      addOrUpdateWorldInfo: (worldId: string) => Promise<{ data?: VRChatWorldInfo, error?: string }>;
+      addOrUpdateWorldInfo: (worldId: string) => Promise<{ data?: VRChatWorldInfo, upsertResult: UpdateWorldBookmarkResult, error?: string }>;
       getWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
       updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
       updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<void>;
