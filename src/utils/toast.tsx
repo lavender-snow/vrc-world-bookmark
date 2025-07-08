@@ -19,16 +19,17 @@ function Icon({ noticeType }: { noticeType: NoticeType }) {
   return icons[noticeType];
 }
 
+const MIN_VISIBLE_DURATION_SEC = 2;
 const SECONDS_PER_CHARACTER = 0.08;
-const FADEIN = 0.4;
-const FADEOUT = 0.6;
+const FADEIN_SEC = 0.4;
+const FADEOUT_SEC = 0.6;
 
 export function Toast({ message, onClose, noticeType = NoticeType.info }: { message: string, onClose: () => void, noticeType?: NoticeType }) {
   if (!message) return null;
 
-  const visible = Math.max(2, message.length * SECONDS_PER_CHARACTER);
+  const visible = Math.max(MIN_VISIBLE_DURATION_SEC, message.length * SECONDS_PER_CHARACTER);
 
-  const animation = `fadein ${FADEIN}s, fadeout ${FADEOUT}s ${FADEIN + visible}s forwards`;
+  const animation = `fadein ${FADEIN_SEC}s, fadeout ${FADEOUT_SEC}s ${FADEIN_SEC + visible}s forwards`;
 
   return (
     <div
