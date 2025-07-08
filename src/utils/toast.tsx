@@ -20,15 +20,15 @@ function Icon({ noticeType }: { noticeType: NoticeType }) {
 }
 
 const SECONDS_PER_CHARACTER = 0.08;
-const fadein = 0.4;
-const fadeout = 0.6;
+const FADEIN = 0.4;
+const FADEOUT = 0.6;
 
 export function Toast({ message, onClose, noticeType = NoticeType.info }: { message: string, onClose: () => void, noticeType?: NoticeType }) {
   if (!message) return null;
 
   const visible = Math.max(2, message.length * SECONDS_PER_CHARACTER);
 
-  const animation = `fadein ${fadein}s, fadeout ${fadeout}s ${fadein + visible}s forwards`;
+  const animation = `fadein ${FADEIN}s, fadeout ${FADEOUT}s ${FADEIN + visible}s forwards`;
 
   return (
     <div
