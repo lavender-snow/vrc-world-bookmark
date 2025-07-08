@@ -1,14 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
-import { LLM_API_SERVICE_ID, llmApiService } from 'src/consts/const';
+import { LLM_API_SERVICE_ID, LLMApiService } from 'src/consts/const';
 import { VRChatWorldInfo } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 
 type AppData = {
   genres?: Genre[];
   visitStatuses?: VisitStatus[];
-  currentLLM?: llmApiService;
-  setCurrentLLM?: React.Dispatch<React.SetStateAction<llmApiService>>;
+  currentLLM?: LLMApiService;
+  setCurrentLLM?: React.Dispatch<React.SetStateAction<LLMApiService>>;
   llmEnabled?: boolean;
   setLLMEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
   lastUpdatedWorldInfo?: VRChatWorldInfo | null;
@@ -21,7 +21,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [visitStatuses, setVisitStatuses] = useState<VisitStatus[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentLLM, setCurrentLLM] = useState<llmApiService>(LLM_API_SERVICE_ID.openai);
+  const [currentLLM, setCurrentLLM] = useState<LLMApiService>(LLM_API_SERVICE_ID.openai);
   const [llmEnabled, setLLMEnabled] = useState(false);
   const [lastUpdatedWorldInfo, setLastUpdatedWorldInfo] = useState<VRChatWorldInfo | null>(null);
 
@@ -35,7 +35,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
       setVisitStatuses(visitStatuses);
 
       const service = await window.credentialStore.loadKey('currentLLM');
-      setCurrentLLM(service as llmApiService);
+      setCurrentLLM(service as LLMApiService);
 
       let enabled = false;
       if (service === LLM_API_SERVICE_ID.openai) {
