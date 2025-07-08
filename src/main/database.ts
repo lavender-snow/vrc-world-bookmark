@@ -167,7 +167,7 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
   }
 }
 
-export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult {
+export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult | null {
   const params = {
     id: world.id,
     authorId: world.authorId,
@@ -298,7 +298,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult {
     }
   } else {
     console.error(`World info upsert failed: ${world.id}`);
-    return UPSERT_RESULT.failed;
+    return null;
   }
 };
 

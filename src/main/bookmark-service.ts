@@ -26,7 +26,7 @@ import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenres
 import { shuffleArray } from 'src/utils/util';
 
 export async function upsertWorldBookmark(worldId: string) {
-  let upsertResult: UpsertResult = null;
+  let upsertResult: UpsertResult | null = null;
 
   try {
     const world = await fetchWorldInfo(worldId);

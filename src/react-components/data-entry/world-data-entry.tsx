@@ -45,7 +45,7 @@ export function WorldDataEntry() {
 
       if (response.error) {
         addToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`, NoticeType.error);
-      } else if (response.data) {
+      } else if (response.data && response.upsertResult) {
         if (response.upsertResult === UPSERT_RESULT.insert) {
           addToast('新しいワールド情報を登録しました。', NoticeType.success);
         } else if (response.upsertResult === UPSERT_RESULT.update) {
