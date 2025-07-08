@@ -20,15 +20,17 @@ import { getLLMRecommendWorld as getRecommendWorldForBedrock } from './llm/bedro
 import { getLLMRecommendWorld as getRecommendWorldForOpenAI } from './llm/openai/conversation';
 import { fetchWorldInfo } from './vrchat-api';
 
-import { ORDERABLE_COLUMNS, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
+import { ORDERABLE_COLUMNS, SORT_ORDERS_ID, UpsertResult, VISITS_STATUS } from 'src/consts/const';
 import { VRChatServerError, WorldNotFoundError } from 'src/errors/vrchat-errors';
 import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
 import { shuffleArray } from 'src/utils/util';
 
 export async function upsertWorldBookmark(worldId: string) {
+  let upsertResult: UpsertResult = null;
+
   try {
     const world = await fetchWorldInfo(worldId);
-    addOrUpdateWorldInfo(world);
+    upsertResult = addOrUpdateWorldInfo(world);
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
       const isExist = deleteWorldInfo(worldId);
@@ -50,7 +52,7 @@ export async function upsertWorldBookmark(worldId: string) {
     }
   }
 
-  return { data: getWorldInfo(worldId) };
+  return { data: getWorldInfo(worldId), upsertResult };
 }
 
 function registerIpcHandlersForDatabase() {

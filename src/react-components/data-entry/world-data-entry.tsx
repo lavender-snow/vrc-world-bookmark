@@ -7,7 +7,7 @@ import styles from './world-data-entry.scss';
 import { Button } from 'commonComponents/button';
 import { InputText } from 'commonComponents/input-text';
 import { WorldCard } from 'commonComponents/world-card';
-import { NoticeType } from 'src/consts/const';
+import { NoticeType, UPSERT_RESULT } from 'src/consts/const';
 import { useToast } from 'src/contexts/toast-provider';
 import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';
 import { debounce, getWorldId } from 'src/utils/util';
@@ -46,7 +46,11 @@ export function WorldDataEntry() {
       if (response.error) {
         addToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`, NoticeType.error);
       } else if (response.data) {
-        addToast('ワールド情報を取得しました。', NoticeType.success);
+        if (response.upsertResult === UPSERT_RESULT.insert) {
+          addToast('新しいワールド情報を登録しました。', NoticeType.success);
+        } else if (response.upsertResult === UPSERT_RESULT.update) {
+          addToast('既存のワールド情報を更新しました。', NoticeType.info);
+        }
         setVRChatWorldInfo(response.data);
       } else {
         addToast('予期せぬエラーが発生しました。', NoticeType.error);
