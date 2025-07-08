@@ -65,7 +65,7 @@ export async function getLLMRecommendWorld(userRequest: string): Promise<Recomme
   const getWorldListRequestResult = getBookmarkList(selectQueryBase) as WorldRecommendationResult[] | undefined;
 
   if (!Array.isArray(getWorldListRequestResult) || getWorldListRequestResult.length === 0) {
-    throw new ToolInvocationError(`No world found for the given criteria. sql: ${selectQueryBase}`);
+    throw new ToolInvocationError('登録されているデータからおすすめとなるワールドが取得できませんでした。');
   }
 
   messages.push({
