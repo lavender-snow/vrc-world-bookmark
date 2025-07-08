@@ -35,7 +35,9 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
       setVisitStatuses(visitStatuses);
 
       const service = await window.credentialStore.loadKey('currentLLM');
-      setCurrentLLM(service as LLMApiService);
+      if (service.length > 0) {
+        setCurrentLLM(service as LLMApiService); // 値が取得できた場合にのみセット
+      }
 
       let enabled = false;
       if (service === LLM_API_SERVICE_ID.openai) {
