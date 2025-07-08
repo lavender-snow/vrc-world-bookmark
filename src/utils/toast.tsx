@@ -19,15 +19,26 @@ function Icon({ noticeType }: { noticeType: NoticeType }) {
   return icons[noticeType];
 }
 
+const fadein = 0.4;
+const fadeout = 0.6;
+
 export function Toast({ message, onClose, noticeType = NoticeType.info }: { message: string, onClose: () => void, noticeType?: NoticeType }) {
   if (!message) return null;
 
+  const visible = Math.max(2, message.length * 0.08);
+
+  const animation = `fadein ${fadein}s, fadeout ${fadeout}s ${fadein + visible}s forwards`;
+
   return (
-    <div className={classNames(styles.toast, styles[noticeType])} onAnimationEnd={(e) => {
-      if (e.animationName.includes('fadeout')) {
-        onClose();
-      }
-    }}>
+    <div
+      className={classNames(styles.toast, styles[noticeType])}
+      style={{ animation }}
+      onAnimationEnd={(e) => {
+        if (e.animationName.includes('fadeout')) {
+          onClose();
+        }
+      }}
+    >
       <Icon noticeType={noticeType} />
       <span>{message}</span>
     </div>
