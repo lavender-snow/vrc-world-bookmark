@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { WorldDataEntry } from './world-data-entry';
 
 import '@testing-library/jest-dom';
+import { UPSERT_RESULT } from 'src/consts/const';
 import { useWorldDataEntryState } from 'src/contexts/world-data-entry-provider';
 
 const WORLD_ID = 'wrld_15fe33f1-937e-4e93-8a40-902fb9552a11';
@@ -87,18 +88,34 @@ describe('WorldDataEntry', () => {
     expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeEnabled();
   });
 
-  it('ボタン押下でAPIが呼ばれ、成功時にトーストとsetVRChatWorldInfoが呼ばれる', async () => {
+  it('ボタン押下でAPIが呼ばれ、新規登録トーストとsetVRChatWorldInfoが呼ばれる', async () => {
     // const setVRChatWorldInfo = jest.fn();
     const state = useWorldDataEntryState();
     state.worldIdOrUrl = WORLD_ID;
-    window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockResolvedValue({ data: { id: WORLD_ID, name: WORLD_NAME } });
+    window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockResolvedValue({ data: { id: WORLD_ID, name: WORLD_NAME }, upsertResult: UPSERT_RESULT.insert });
 
     render(<WorldDataEntry />);
     fireEvent.click(screen.getByRole('button', { name: 'ワールド情報登録' }));
 
     await waitFor(() => {
       expect(window.dbAPI.addOrUpdateWorldInfo).toHaveBeenCalledWith(WORLD_ID);
-      expect(addToast).toHaveBeenCalledWith('ワールド情報を取得しました。', expect.anything());
+      expect(addToast).toHaveBeenCalledWith('新しいワールド情報を登録しました。', expect.anything());
+      expect(state.setVRChatWorldInfo).toHaveBeenCalledWith({ id: WORLD_ID, name: WORLD_NAME });
+    });
+  });
+
+  it('ボタン押下でAPIが呼ばれ、情報更新トーストとsetVRChatWorldInfoが呼ばれる', async () => {
+    // const setVRChatWorldInfo = jest.fn();
+    const state = useWorldDataEntryState();
+    state.worldIdOrUrl = WORLD_ID;
+    window.dbAPI.addOrUpdateWorldInfo = jest.fn().mockResolvedValue({ data: { id: WORLD_ID, name: WORLD_NAME }, upsertResult: UPSERT_RESULT.update });
+
+    render(<WorldDataEntry />);
+    fireEvent.click(screen.getByRole('button', { name: 'ワールド情報登録' }));
+
+    await waitFor(() => {
+      expect(window.dbAPI.addOrUpdateWorldInfo).toHaveBeenCalledWith(WORLD_ID);
+      expect(addToast).toHaveBeenCalledWith('既存のワールド情報を更新しました。', expect.anything());
       expect(state.setVRChatWorldInfo).toHaveBeenCalledWith({ id: WORLD_ID, name: WORLD_NAME });
     });
   });
