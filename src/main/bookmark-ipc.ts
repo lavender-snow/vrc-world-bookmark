@@ -24,11 +24,11 @@ function registerIpcHandlersForDatabase() {
   });
 
   ipcMain.handle('update_world_bookmark', async (_event, options: UpdateWorldBookmarkOptions) => {
-    updateWorldBookmark(options);
+    return updateWorldBookmark(options);
   });
 
   ipcMain.handle('update_world_genres', async (_event, options: UpdateWorldGenresOptions) => {
-    updateWorldGenres(options);
+    return updateWorldGenres(options);
   });
 
   ipcMain.handle('get_bookmark_list', async (_event, options: BookmarkListOptions) => {

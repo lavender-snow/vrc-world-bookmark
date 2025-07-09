@@ -18,8 +18,8 @@ declare global {
       getVisitStatuses: () => Promise<VisitStatus[]>;
       addOrUpdateWorldInfo: (worldId: string) => Promise<{ data?: VRChatWorldInfo, upsertResult: UpdateWorldBookmarkResult, error?: string }>;
       getWorldInfo: (worldId: string) => Promise<VRChatWorldInfo>;
-      updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<void>;
-      updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<void>;
+      updateWorldBookmark: (options?: UpdateWorldBookmarkOptions) => Promise<boolean>;
+      updateWorldGenres: (options: UpdateWorldGenresOptions) => Promise<boolean>;
       getBookmarkList: (options?: BookmarkListOptions) => Promise<{bookmarkList: VRChatWorldInfo[], totalCount: number}>;
       getWorldIdsToUpdate: () => Promise<string[]>;
       getRandomRecommendedWorld: () => Promise<{ data?: RecommendResult, error?: string}>;

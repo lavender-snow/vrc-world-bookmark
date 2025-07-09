@@ -54,20 +54,24 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
 
   async function handleUpdateWorldBookmark(options: UpdateWorldBookmarkOptions) {
     try {
-      await window.dbAPI.updateWorldBookmark(options);
+      const result = await window.dbAPI.updateWorldBookmark(options);
 
-      if (options.note) {
-        const newWorldInfo = { ...worldInfo, note: options.note };
-        updateWorldInfo(newWorldInfo);
+      if (result) {
+        if (options.note) {
+          const newWorldInfo = { ...worldInfo, note: options.note };
+          updateWorldInfo(newWorldInfo);
 
-        addToast('メモを更新しました', NoticeType.success);
-      }
+          addToast('メモを更新しました', NoticeType.success);
+        }
 
-      if(options.visitStatusId) {
-        const newWorldInfo = { ...worldInfo, visitStatusId: options.visitStatusId };
-        updateWorldInfo(newWorldInfo);
+        if(options.visitStatusId) {
+          const newWorldInfo = { ...worldInfo, visitStatusId: options.visitStatusId };
+          updateWorldInfo(newWorldInfo);
 
-        addToast('訪問状況を更新しました', NoticeType.success);
+          addToast('訪問状況を更新しました', NoticeType.success);
+        }
+      } else {
+        throw new Error('ブックマークの更新に失敗しました');
       }
     } catch (error) {
       console.error('Failed to update world bookmark:', error);
@@ -84,12 +88,16 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
 
   async function handleUpdateWorldGenres(options: UpdateWorldGenresOptions) {
     try {
-      await window.dbAPI.updateWorldGenres(options);
+      const result = await window.dbAPI.updateWorldGenres(options);
 
-      const newWorldInfo = { ...worldInfo, genreIds: options.genreIds };
-      updateWorldInfo(newWorldInfo);
+      if (result) {
+        const newWorldInfo = { ...worldInfo, genreIds: options.genreIds };
+        updateWorldInfo(newWorldInfo);
 
-      addToast('ジャンル設定を更新しました', NoticeType.success);
+        addToast('ジャンル設定を更新しました', NoticeType.success);
+      } else {
+        throw new Error('ジャンルの更新に失敗しました');
+      }
     } catch (error) {
       console.error('Failed to update world genres:', error);
       addToast('ジャンル設定の更新に失敗しました', NoticeType.error);
