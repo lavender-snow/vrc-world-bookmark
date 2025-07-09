@@ -83,7 +83,7 @@ describe('WorldDataEntry', () => {
     await waitFor(() => {
       expect(screen.getByText(/無効なワールドIDまたはURL/)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeDisabled();
-    }, { timeout: 600 });
+    });
   });
 
   it('有効なID入力時はボタンが有効', async () => {
@@ -97,7 +97,7 @@ describe('WorldDataEntry', () => {
     await waitFor(() => {
       expect(screen.queryByText(/無効なワールドIDまたはURL/)).not.toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeEnabled();
-    }, { timeout: 600 });
+    });
   });
 
   it('ボタン押下でAPIが呼ばれ、新規登録トーストとsetVRChatWorldInfoが呼ばれる', async () => {
