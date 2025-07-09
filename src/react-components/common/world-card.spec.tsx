@@ -72,6 +72,7 @@ describe('WorldCard', () => {
   it('メモを編集してフォーカスを外すとAPIが呼ばれる', async () => {
     render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const textarea = screen.getByPlaceholderText('ワールドの補足情報を入力');
+    window.dbAPI.updateWorldBookmark = jest.fn().mockResolvedValue(true);
     fireEvent.change(textarea, { target: { value: '新しいメモ' } });
     fireEvent.blur(textarea);
     await waitFor(() => {
@@ -87,6 +88,7 @@ describe('WorldCard', () => {
   it('ジャンルチェックボックスをクリックするとAPIが呼ばれる', async () => {
     render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const genreCheckbox = screen.getByLabelText('高品質');
+    window.dbAPI.updateWorldGenres = jest.fn().mockResolvedValue(true);
     fireEvent.click(genreCheckbox);
     await waitFor(() => {
       expect(window.dbAPI.updateWorldGenres).toHaveBeenCalledWith(
@@ -101,6 +103,7 @@ describe('WorldCard', () => {
   it('訪問状況を変更するとAPIが呼ばれる', async () => {
     render(<WorldCard worldInfo={mockWorldInfo} setVRChatWorldInfo={mockSetVRChatWorldInfo} />);
     const select = screen.getByRole('combobox');
+    window.dbAPI.updateWorldBookmark = jest.fn().mockResolvedValue(true);
     fireEvent.change(select, { target: { value: '1' } });
     await waitFor(() => {
       expect(window.dbAPI.updateWorldBookmark).toHaveBeenCalledWith(
