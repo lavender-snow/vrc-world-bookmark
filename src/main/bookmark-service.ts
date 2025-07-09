@@ -24,8 +24,12 @@ export async function upsertWorldBookmark(worldId: string) {
     return { data: getWorldInfo(worldId), upsertResult };
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
-      const isExist = deleteWorldInfo(worldId);
-      if (!isExist) {
+      const hasBookmarkExist = deleteWorldInfo(worldId);
+      if (hasBookmarkExist) {
+        return {
+          error: '該当ワールドはVRChatから削除されています。',
+        };
+      } else {
         return {
           error: 'ワールドIDが誤っている、もしくは削除されています',
         };
