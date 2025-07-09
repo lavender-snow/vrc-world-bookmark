@@ -65,7 +65,7 @@ export function WorldDataEntry() {
     }
   }
 
-  const validInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl;
+  const validInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl === true;
   const invalidInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl === false;
 
   return (
