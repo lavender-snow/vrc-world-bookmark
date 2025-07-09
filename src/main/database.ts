@@ -122,7 +122,15 @@ function addWorldGenres(worldId: string, genreIds: number[]) {
     params[`genreId${i}`] = id;
   });
 
-  db.prepare(`INSERT INTO world_genres (world_id, genre_id) VALUES ${values.join(', ')};`).run(params);
+  const result = db.prepare(`INSERT INTO world_genres (world_id, genre_id) VALUES ${values.join(', ')};`).run(params);
+
+  if (result.changes > 0) {
+    console.log(`Genres added for world: ${worldId}`);
+    return true;
+  } else {
+    console.warn(`No genres added for world: ${worldId}`);
+    return false;
+  }
 }
 
 function addBookmark(worldId: string, worldTags: string[]) {
@@ -140,7 +148,7 @@ export function updateWorldGenres(options: UpdateWorldGenresOptions) {
 
   db.prepare('DELETE FROM world_genres WHERE world_id = @worldId;').run({ worldId });
 
-  addWorldGenres(worldId, genreIds);
+  return addWorldGenres(worldId, genreIds);
 }
 
 export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
@@ -161,9 +169,21 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
       params.visitStatusId = options.visitStatusId;
     }
 
-    db.prepare(`UPDATE bookmarks SET ${setClauses.join(', ')}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+    const result = db.prepare(`UPDATE bookmarks SET ${setClauses.join(', ')}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+
+    if (result.changes > 0) {
+      console.log(`Bookmark updated for world: ${options.worldId}`);
+      return true;
+
+    } else {
+      console.warn(`No changes made to bookmark for world: ${options.worldId}`);
+
+      return false;
+    }
   } else {
     console.warn('No fields to update in bookmark for world:', options.worldId);
+
+    return false;
   }
 }
 

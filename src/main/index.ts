@@ -3,8 +3,8 @@ import { app, BrowserWindow, shell } from 'electron';
 import electronSquirrelStartup from 'electron-squirrel-startup';
 
 import './vrchat-api';
-import './database';
-import { initializeApp } from './bookmark-service';
+import { registerIpcHandler } from './bookmark-ipc';
+import { initDB, runMigrations } from './database';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -75,10 +75,8 @@ app.on('activate', () => {
 });
 
 app.whenReady().then(() => {
-  initializeApp();
+  initDB();
+  runMigrations();
+  registerIpcHandler();
   createWindow();
 });
-
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
