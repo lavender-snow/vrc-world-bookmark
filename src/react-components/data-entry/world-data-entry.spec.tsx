@@ -72,20 +72,32 @@ describe('WorldDataEntry', () => {
     expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeInTheDocument();
   });
 
-  it('無効なID入力時にエラーメッセージが表示される', () => {
+  it('無効なID入力時にエラーメッセージが表示される', async () => {
     const state = useWorldDataEntryState();
     state.worldIdOrUrl = 'invalid';
     render(<WorldDataEntry />);
-    expect(screen.getByText(/無効なワールドIDまたはURL/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeDisabled();
+    const inputText = screen.getByPlaceholderText('World ID or World URL');
+    fireEvent.change(inputText, { target: { value: 'invalid' } });
+    fireEvent.blur(inputText);
+
+    await waitFor(() => {
+      expect(screen.getByText(/無効なワールドIDまたはURL/)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeDisabled();
+    });
   });
 
-  it('有効なID入力時はボタンが有効', () => {
+  it('有効なID入力時はボタンが有効', async () => {
     const state = useWorldDataEntryState();
     state.worldIdOrUrl = WORLD_ID;
     render(<WorldDataEntry />);
-    expect(screen.queryByText(/無効なワールドIDまたはURL/)).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeEnabled();
+    const inputText = screen.getByPlaceholderText('World ID or World URL');
+    fireEvent.change(inputText, { target: { value: WORLD_ID } });
+    fireEvent.blur(inputText);
+
+    await waitFor(() => {
+      expect(screen.queryByText(/無効なワールドIDまたはURL/)).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'ワールド情報登録' })).toBeEnabled();
+    });
   });
 
   it('ボタン押下でAPIが呼ばれ、新規登録トーストとsetVRChatWorldInfoが呼ばれる', async () => {
