@@ -15,10 +15,15 @@ import { debounce, getWorldId } from 'src/utils/util';
 export function WorldDataEntry() {
   const { addToast } = useToast();
   const { worldIdOrUrl, setWorldIdOrUrl, vrchatWorldInfo, setVRChatWorldInfo }= useWorldDataEntryState();
-  const [isWorldIdOrUrl, setIsWorldIdOrUrl] = useState<boolean>(getWorldId(worldIdOrUrl) !== null);
+  const [isWorldIdOrUrl, setIsWorldIdOrUrl] = useState<boolean | null>(null);
 
   const debouncedSetIsWorldIdOrUrl = useCallback(
     debounce((value: string) => {
+      if (value.length === 0) {
+        setIsWorldIdOrUrl(null);
+        return;
+      }
+
       setIsWorldIdOrUrl(getWorldId(value) !== null);
     }, 500),
     [],
@@ -61,7 +66,7 @@ export function WorldDataEntry() {
   }
 
   const validInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl;
-  const invalidInput = worldIdOrUrl.length > 0 && !isWorldIdOrUrl;
+  const invalidInput = worldIdOrUrl.length > 0 && isWorldIdOrUrl === false;
 
   return (
     <AnimatePresence mode='wait'>
