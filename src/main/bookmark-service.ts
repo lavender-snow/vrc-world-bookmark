@@ -11,7 +11,7 @@ import { getLLMRecommendWorld as getRecommendWorldForBedrock } from './llm/bedro
 import { getLLMRecommendWorld as getRecommendWorldForOpenAI } from './llm/openai/conversation';
 import { fetchWorldInfo } from './vrchat-api';
 
-import { ORDERABLE_COLUMNS, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
+import { LOGIC_MODES, ORDERABLE_COLUMNS, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
 import { VRChatServerError, WorldNotFoundError } from 'src/errors/vrchat-errors';
 import type { BookmarkListOptions, VRChatWorldInfo } from 'src/types/renderer';
 import { shuffleArray } from 'src/utils/util';
@@ -51,26 +51,54 @@ export async function upsertWorldBookmark(worldId: string) {
 function buildBookmarkListWhereClauses(options: BookmarkListOptions, params: Record<string, string | number>): string[] {
   const whereClauses: string[] = [];
 
-  if (options.selectedGenres.length > 0) {
-    const genreFilterCondition = options.genreFilterMode === 'and'
-      ? 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length
-      : '';
+  const hasGenre = options.selectedGenres.length > 0;
+  const hasUncategorized = options.selectedUncategorized === true;
 
-    whereClauses.push(`
-    world.id IN (
-        SELECT world_id
-        FROM world_genres
-        WHERE genre_id IN (
-          ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
+  if (options.genreFilterMode === LOGIC_MODES.or) {
+    const genreSubQuery = [];
+
+    if (hasGenre) {
+      genreSubQuery.push(`
+        world.id IN (
+          SELECT world_id
+          FROM world_genres
+          WHERE genre_id IN (${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')})
         )
-        ${genreFilterCondition}
-    )
-  `);
-    options.selectedGenres.forEach((id, i) => {
-      params[`genreId${i}`] = id;
-    });
-  } else {
-    whereClauses.push('NOT EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
+      `);
+
+      options.selectedGenres.forEach((id, i) => {
+        params[`genreId${i}`] = id;
+      });
+    }
+
+    if (hasUncategorized) {
+      genreSubQuery.push('NOT EXISTS (SELECT 1 FROM world_genres wg WHERE world.id = wg.world_id)');
+    }
+
+    whereClauses.push(`(${genreSubQuery.join(' OR ')})`);
+  } else if (options.genreFilterMode === LOGIC_MODES.and) {
+    if (hasGenre && hasUncategorized) {
+      // AND検索でジャンルが選択されていて、かつ「未分類」も選択されている状態はありえないため、常にfalseになる条件を追加
+      whereClauses.push('1 = 0');
+    } else if (hasGenre && !hasUncategorized) {
+      const genreFilterCondition = 'GROUP BY world_id HAVING COUNT(DISTINCT genre_id) = ' + options.selectedGenres.length;
+
+      whereClauses.push(`
+        world.id IN (
+          SELECT world_id
+          FROM world_genres
+          WHERE genre_id IN (
+            ${options.selectedGenres.map((_, i) => `@genreId${i}`).join(',')}
+          )
+          ${genreFilterCondition}
+        )
+      `);
+      options.selectedGenres.forEach((id, i) => {
+        params[`genreId${i}`] = id;
+      });
+    } else if (!hasGenre && hasUncategorized) {
+      whereClauses.push('NOT EXISTS (SELECT world.id FROM world_genres wg WHERE world.id = wg.world_id)');
+    }
   }
 
   if (options.selectedVisitStatuses.length > 0) {

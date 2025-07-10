@@ -27,6 +27,7 @@ export function BookmarkList() {
     limit, setLimit,
     selectedGenres, setSelectedGenres,
     genreFilterMode, setGenreFilterMode,
+    selectedUncategorized, setSelectedUncategorized,
     selectedVisitStatuses, setSelectedVisitStatuses,
     searchTerm, setSearchTerm,
     debouncedTerm, setDebouncedTerm,
@@ -47,6 +48,7 @@ export function BookmarkList() {
     const options: BookmarkListOptions = {
       page,
       limit,
+      selectedUncategorized,
       selectedGenres,
       genreFilterMode,
       selectedVisitStatuses,
@@ -61,14 +63,25 @@ export function BookmarkList() {
 
   useEffect(() => {
     getBookmarkList();
-  }, [page, limit, selectedGenres, genreFilterMode, selectedVisitStatuses, debouncedTerm, orderBy, sortOrder]);
+  }, [page, limit, selectedUncategorized, selectedGenres, genreFilterMode, selectedVisitStatuses, debouncedTerm, orderBy, sortOrder]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [page]);
 
   function onFilterModeChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setGenreFilterMode(e.target.value as LogicMode);
+    const nextMode = e.target.value as LogicMode;
+    setGenreFilterMode(nextMode);
+
+    // 未分類が選択されている状態でAND検索に切り替えた場合は選択されているジャンルをクリアする
+    if (
+      nextMode === LOGIC_MODES.and &&
+      selectedUncategorized &&
+      selectedGenres.length > 0
+    ) {
+      setSelectedGenres([]);
+      setSelectedUncategorized(false);
+    }
     setPage(1);
   }
 
@@ -148,6 +161,20 @@ export function BookmarkList() {
                   <div className={styles.filterItemRow}>
                     <div className={styles.filterItem}>
                       <strong>ジャンル</strong>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={selectedUncategorized}
+                          onChange={e => {
+                            if (genreFilterMode === LOGIC_MODES.and && e.target.checked) {
+                              setSelectedGenres([]);
+                            }
+                            setSelectedUncategorized(e.target.checked);
+                            setPage(1);
+                          }}
+                        />
+                        未分類
+                      </label>
                       <CheckboxGroup
                         options={genres}
                         selected={selectedGenres}

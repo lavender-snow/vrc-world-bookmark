@@ -15,6 +15,8 @@ type BookmarkListContextValue = {
   setSelectedGenres?: React.Dispatch<React.SetStateAction<GenreType[]>>;
   genreFilterMode?: 'and' | 'or';
   setGenreFilterMode?: React.Dispatch<React.SetStateAction<'and' | 'or'>>;
+  selectedUncategorized?: boolean;
+  setSelectedUncategorized?: React.Dispatch<React.SetStateAction<boolean>>;
   selectedVisitStatuses?: number[];
   setSelectedVisitStatuses?: React.Dispatch<React.SetStateAction<number[]>>;
   searchTerm?: string;
@@ -40,6 +42,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(DEFAULT_RESULT_PER_PAGE);
+  const [selectedUncategorized, setSelectedUncategorized] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<GenreType[]>([GENRE.high_quality]);
   const [genreFilterMode, setGenreFilterMode] = useState<'and' | 'or'>('and');
   const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>(visitStatuses
@@ -68,6 +71,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
     <BookmarkListContext.Provider value={{
       page, setPage,
       limit, setLimit,
+      selectedUncategorized, setSelectedUncategorized,
       selectedGenres, setSelectedGenres,
       genreFilterMode, setGenreFilterMode,
       selectedVisitStatuses, setSelectedVisitStatuses,

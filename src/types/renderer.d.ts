@@ -39,6 +39,7 @@ export interface orderByColumn {
 export interface BookmarkListOptions {
   page?: number;
   limit?: number;
+  selectedUncategorized?: boolean;
   selectedGenres: number[];
   genreFilterMode: LogicMode;
   selectedVisitStatuses: number[];
