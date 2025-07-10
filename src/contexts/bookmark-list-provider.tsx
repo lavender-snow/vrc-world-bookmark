@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAppData } from './app-data-provider';
 
-import { DEFAULT_RESULT_PER_PAGE, GENRE, GenreType, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
-import { VRChatWorldInfo } from 'src/types/renderer';
+import { DEFAULT_RESULT_PER_PAGE, GENRE, GenreType, LOGIC_MODES, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
+import { LogicMode, VRChatWorldInfo } from 'src/types/renderer';
 
 
 type BookmarkListContextValue = {
@@ -13,8 +13,8 @@ type BookmarkListContextValue = {
   setLimit?: React.Dispatch<React.SetStateAction<number>>;
   selectedGenres?: GenreType[];
   setSelectedGenres?: React.Dispatch<React.SetStateAction<GenreType[]>>;
-  genreFilterMode?: 'and' | 'or';
-  setGenreFilterMode?: React.Dispatch<React.SetStateAction<'and' | 'or'>>;
+  genreFilterMode?: LogicMode;
+  setGenreFilterMode?: React.Dispatch<React.SetStateAction<LogicMode>>;
   selectedUncategorized?: boolean;
   setSelectedUncategorized?: React.Dispatch<React.SetStateAction<boolean>>;
   selectedVisitStatuses?: number[];
@@ -42,13 +42,10 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(DEFAULT_RESULT_PER_PAGE);
-  const [selectedUncategorized, setSelectedUncategorized] = useState(false);
-  const [selectedGenres, setSelectedGenres] = useState<GenreType[]>([GENRE.high_quality]);
-  const [genreFilterMode, setGenreFilterMode] = useState<'and' | 'or'>('and');
-  const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>(visitStatuses
-    .filter(v => v.name === 'Unvisited' || v.name === 'InProgress')
-    .map(v => v.id),
-  );
+  const [selectedUncategorized, setSelectedUncategorized] = useState(true);
+  const [selectedGenres, setSelectedGenres] = useState<GenreType[]>([]);
+  const [genreFilterMode, setGenreFilterMode] = useState<LogicMode>(LOGIC_MODES.or);
+  const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedTerm, setDebouncedTerm] = useState('');
   const [orderBy, setOrderBy] = useState<OrderableColumnKey>('bookmark.created_at');
