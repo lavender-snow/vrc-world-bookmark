@@ -47,7 +47,7 @@ export function WorldUpdateProgress() {
 
 
   return (
-    <>
+    <div>
       <span>
         24時間以上前に取得したワールドデータを対象に最新情報へ更新します。VRChatサーバーへの負荷軽減のため1件ごとに1秒待機します。
       </span>
@@ -66,6 +66,6 @@ export function WorldUpdateProgress() {
         </div>
         <Button onClick={handleUpdate} disabled={worldInfoIsUpdating} className={styles.updateButton}>更新</Button>
       </div>
-    </>
+    </div>
   );
 }

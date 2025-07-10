@@ -113,3 +113,10 @@ export const UPSERT_RESULT = {
   update: 'update',
 } as const;
 export type UpsertResult = typeof UPSERT_RESULT[keyof typeof UPSERT_RESULT];
+
+
+export const BOOKMARK_LIST_INIT_MODE_ID = {
+  default: 'default',
+  discovery: 'discovery',
+} as const;
+export type BookmarkListInitModeId = typeof BOOKMARK_LIST_INIT_MODE_ID[keyof typeof BOOKMARK_LIST_INIT_MODE_ID];

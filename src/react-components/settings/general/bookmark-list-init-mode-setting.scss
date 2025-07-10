@@ -1,0 +1,14 @@
+@use 'assets/styles/theme.scss';
+
+:local(.modeSetting) {
+  display: flex;
+  gap: 8px;
+}
+
+:local(.modeWrapper) {
+  border: theme.$base-border theme.$light-gray;
+  border-radius: 8px;
+  padding: 8px;
+  flex: 1;
+  cursor: pointer;
+}
