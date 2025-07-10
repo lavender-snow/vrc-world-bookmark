@@ -1,3 +1,5 @@
+import { BookmarkListInitModeSetting } from './bookmark-list-init-mode-setting';
+import styles from './general-settings.scss';
 import { WorldUpdateProgress } from './world-update-progress';
 
 import { ReactComponent as ToolboxIcon } from 'assets/images/MdiToolboxOutline.svg';
@@ -8,11 +10,18 @@ export function GeneralSettings() {
   return (
     <>
       <SettingsHeader Icon={ToolboxIcon} title="一般" />
-      <SettingItem
-        title="ワールドデータ更新"
-      >
-        <WorldUpdateProgress />
-      </SettingItem>
+      <div className={styles.settings}>
+        <SettingItem
+          title="ワールド一覧画面 モード設定"
+        >
+          <BookmarkListInitModeSetting />
+        </SettingItem>
+        <SettingItem
+          title="ワールドデータ更新"
+        >
+          <WorldUpdateProgress />
+        </SettingItem>
+      </div>
     </>
   );
 }

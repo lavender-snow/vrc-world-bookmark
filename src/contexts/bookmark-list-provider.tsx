@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAppData } from './app-data-provider';
 
-import { DEFAULT_RESULT_PER_PAGE, GENRE, GenreType, LOGIC_MODES, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
+import { BOOKMARK_LIST_INIT_MODE_ID, DEFAULT_RESULT_PER_PAGE, GENRE, GenreType, LOGIC_MODES, OrderableColumnKey, SortOrder, VIEW_TYPES, ViewType } from 'src/consts/const';
 import { LogicMode, VRChatWorldInfo } from 'src/types/renderer';
 
 
@@ -53,6 +53,23 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
   const [filterVisible, setFilterVisible] = useState(true);
   const [viewType, setViewType] = useState<ViewType>(VIEW_TYPES.list);
   const [listViewSelectedWorld, setListViewSelectedWorld] = useState<VRChatWorldInfo | null>(null);
+
+  useEffect(() => {
+    async function loadSettings() {
+      const bookmarkListInitModeValue = await window.credentialStore.loadKey('bookmarkListInitMode');
+
+      if (bookmarkListInitModeValue === BOOKMARK_LIST_INIT_MODE_ID.discovery) {
+        setSelectedUncategorized(false);
+        setSelectedGenres([GENRE.high_quality]);
+        setSelectedVisitStatuses(visitStatuses
+          .filter(v => v.name === 'Unvisited' || v.name === 'InProgress')
+          .map(v => v.id),
+        );
+      }
+    }
+
+    loadSettings();
+  });
 
   useEffect(() => {
     if (

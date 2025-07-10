@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import { SETTINGS_CATEGORY_ID, SettingsCategoryId, WORLD_UPDATE_INFO_STATUS, WorldUpdateInfoStatusType } from 'src/consts/const';
+import { useToast } from './toast-provider';
+
+import { BOOKMARK_LIST_INIT_MODE_ID, BookmarkListInitModeId, NoticeType, SETTINGS_CATEGORY_ID, SettingsCategoryId, WORLD_UPDATE_INFO_STATUS, WorldUpdateInfoStatusType } from 'src/consts/const';
 
 type SettingsTabContextValue = {
   activeCategory?: SettingsCategoryId;
@@ -13,6 +15,8 @@ type SettingsTabContextValue = {
   setWorldInfoIsUpdating?: React.Dispatch<React.SetStateAction<boolean>>;
   worldInfoUpdateStatus?: WorldUpdateInfoStatusType;
   setWorldInfoUpdateStatus?: React.Dispatch<React.SetStateAction<WorldUpdateInfoStatusType>>;
+  bookmarkListInitMode?: BookmarkListInitModeId;
+  onChangeBookmarkListInitMode?: (newMode: BookmarkListInitModeId) => void;
 };
 
 const SettingsTabContext = createContext<SettingsTabContextValue>(undefined);
@@ -23,6 +27,26 @@ export function SettingsTabProvider({ children }: { children: React.ReactNode })
   const [processedCount, setProcessedCount] = useState<number>(0);
   const [worldInfoIsUpdating, setWorldInfoIsUpdating] = useState<boolean>(false);
   const [worldInfoUpdateStatus, setWorldInfoUpdateStatus] = useState<WorldUpdateInfoStatusType>(WORLD_UPDATE_INFO_STATUS.idle);
+  const [bookmarkListInitMode, setBookmarkListInitMode] = useState<BookmarkListInitModeId>(BOOKMARK_LIST_INIT_MODE_ID.default);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    async function loadSettings() {
+      const bookmarkListInitModeValue = await window.credentialStore.loadKey('bookmarkListInitMode');
+      if (bookmarkListInitModeValue) {
+        setBookmarkListInitMode(bookmarkListInitModeValue as BookmarkListInitModeId); // 値が取得できた場合にのみセット
+      }
+    }
+
+    loadSettings();
+  }, []);
+
+  const onChangeBookmarkListInitMode = async (newMode: BookmarkListInitModeId) => {
+    setBookmarkListInitMode(newMode);
+    await window.credentialStore.saveKey('bookmarkListInitMode', newMode);
+
+    addToast('ワールド一覧画面の初期表示モードを変更しました。', NoticeType.success);
+  };
 
   return (
     <SettingsTabContext.Provider value={{
@@ -31,6 +55,7 @@ export function SettingsTabProvider({ children }: { children: React.ReactNode })
       processedCount, setProcessedCount,
       worldInfoIsUpdating, setWorldInfoIsUpdating,
       worldInfoUpdateStatus, setWorldInfoUpdateStatus,
+      bookmarkListInitMode, onChangeBookmarkListInitMode,
     }}>
       {children}
     </SettingsTabContext.Provider>
