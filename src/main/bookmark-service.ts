@@ -46,8 +46,6 @@ export async function upsertWorldBookmark(worldId: string) {
       };
     }
   }
-
-  return { error: '予期しないエラーが発生しました。' };
 }
 
 function buildBookmarkListWhereClauses(options: BookmarkListOptions, params: Record<string, string | number>): string[] {
