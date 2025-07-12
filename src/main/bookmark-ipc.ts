@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
 
-import { searchBookmarkList, searchLLMRecommendWorld, searchRandomRecommendedWorld, upsertWorldBookmark } from './bookmark-service';
+import { searchBookmarkList, searchLLMRecommendWorld, searchRandomRecommendedWorld, updateWorldGenres, upsertWorldBookmark } from './bookmark-service';
 import { loadKey, saveKey } from './credential-store';
-import { getGenres, getVisitStatuses, getWorldIdsToUpdate, getWorldInfo, updateWorldBookmark, updateWorldGenres } from './database';
+import { getGenres, getVisitStatuses, getWorldIdsToUpdate, getWorldInfo, updateWorldBookmark } from './database';
 
 import { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 

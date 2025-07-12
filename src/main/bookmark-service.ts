@@ -7,7 +7,9 @@ import {
   SelectQueryBase,
   getBookmark,
   existsWorldInfo,
-  addBookmark,
+  insertBookmark,
+  insertWorldGenres,
+  deleteWorldGenres,
 } from './database';
 import { getLLMRecommendWorld as getRecommendWorldForBedrock } from './llm/bedrock/conversation';
 import { getLLMRecommendWorld as getRecommendWorldForOpenAI } from './llm/openai/conversation';
@@ -15,8 +17,22 @@ import { fetchWorldInfo } from './vrchat-api';
 
 import { LOGIC_MODES, ORDERABLE_COLUMNS, SORT_ORDERS_ID, UPSERT_RESULT, VISITS_STATUS } from 'src/consts/const';
 import { VRChatServerError, WorldNotFoundError } from 'src/errors/vrchat-errors';
-import type { BookmarkListOptions, VRChatWorldInfo } from 'src/types/renderer';
-import { shuffleArray } from 'src/utils/util';
+import type { BookmarkListOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
+import { parseWorldTagsToGenreIds, shuffleArray } from 'src/utils/util';
+
+export function addBookmark(worldId: string, worldTags: string[]) {
+  insertBookmark(worldId);
+
+  const genreIds = parseWorldTagsToGenreIds(worldTags);
+  insertWorldGenres(worldId, genreIds);
+}
+
+export function updateWorldGenres(options: UpdateWorldGenresOptions) {
+  const { worldId, genreIds } = options;
+  deleteWorldGenres(worldId);
+
+  return insertWorldGenres(worldId, genreIds);
+}
 
 export async function upsertWorldBookmark(worldId: string) {
   try {

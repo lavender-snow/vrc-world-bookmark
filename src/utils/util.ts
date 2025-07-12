@@ -1,3 +1,5 @@
+import { GENRE } from 'src/consts/const';
+
 // VRChatのワールドURLかワールドIDかを判定したうえでワールドIDを返す関数
 // URLの例
 // wrld_xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -54,6 +56,30 @@ export function checkTag(tag: string) {
     isGame,
     isAdmin,
   };
+}
+
+export function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
+  const genreIds = [];
+  const lowerTags = worldTags.map(tag => tag.toLowerCase());
+
+  if (lowerTags.includes('author_tag_horror')) {
+    genreIds.push(GENRE.horror);
+  }
+
+  const gameTags = ['author_tag_game', 'author_tag_riddle'];
+  if (lowerTags.some(tag => gameTags.includes(tag))) {
+    genreIds.push(GENRE.game);
+  }
+
+  if (lowerTags.findIndex(tag => tag.startsWith('admin_')) >= 0) {
+    genreIds.push(GENRE.high_quality);
+  }
+
+  if (lowerTags.includes('author_tag_chill')) {
+    genreIds.push(GENRE.chill);
+  }
+
+  return genreIds;
 }
 
 // 配列をシャッフルする関数

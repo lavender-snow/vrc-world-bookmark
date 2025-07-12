@@ -4,8 +4,7 @@ import * as path from 'path';
 
 import Database from 'better-sqlite3';
 
-import { GENRE } from 'src/consts/const';
-import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
+import type { VRChatWorldInfo, UpdateWorldBookmarkOptions } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
 
@@ -87,31 +86,13 @@ export function getVisitStatuses(): VisitStatus[] {
   return result;
 }
 
-function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
-  const genreIds = [];
-  const lowerTags = worldTags.map(tag => tag.toLowerCase());
-
-  if (lowerTags.includes('author_tag_horror')) {
-    genreIds.push(GENRE.horror);
-  }
-
-  const gameTags = ['author_tag_game', 'author_tag_riddle'];
-  if (lowerTags.some(tag => gameTags.includes(tag))) {
-    genreIds.push(GENRE.game);
-  }
-
-  if (lowerTags.findIndex(tag => tag.startsWith('admin_')) >= 0) {
-    genreIds.push(GENRE.high_quality);
-  }
-
-  if (lowerTags.includes('author_tag_chill')) {
-    genreIds.push(GENRE.chill);
-  }
-
-  return genreIds;
+export function insertBookmark(worldId: string) {
+  db.prepare(`
+    INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', datetime('now'), datetime('now'));
+  `).run({ worldId });
 }
 
-function addWorldGenres(worldId: string, genreIds: number[]) {
+export function insertWorldGenres(worldId: string, genreIds: number[]) {
   const values: string[] = [];
   const params: Record<string, string | number> = { worldId };
 
@@ -133,22 +114,8 @@ function addWorldGenres(worldId: string, genreIds: number[]) {
   }
 }
 
-export function addBookmark(worldId: string, worldTags: string[]) {
-  db.prepare(`
-    INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', datetime('now'), datetime('now'));
-  `).run({ worldId });
-
-  const genreIds = parseWorldTagsToGenreIds(worldTags);
-
-  addWorldGenres(worldId, genreIds);
-}
-
-export function updateWorldGenres(options: UpdateWorldGenresOptions) {
-  const { worldId, genreIds } = options;
-
+export function deleteWorldGenres(worldId: string) {
   db.prepare('DELETE FROM world_genres WHERE world_id = @worldId;').run({ worldId });
-
-  return addWorldGenres(worldId, genreIds);
 }
 
 export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
