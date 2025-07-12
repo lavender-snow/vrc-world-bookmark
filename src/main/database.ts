@@ -273,7 +273,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld): number {
     .run(params);
 
   return result.changes;
-};
+}
 
 export function existsWorldInfo(worldId: string): boolean {
   const exists = db.prepare('SELECT 1 FROM bookmarks WHERE world_id = ?;').get(worldId);
