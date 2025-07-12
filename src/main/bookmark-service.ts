@@ -6,12 +6,14 @@ import {
   getBookmarkList,
   SelectQueryBase,
   getBookmark,
+  existsWorldInfo,
+  addBookmark,
 } from './database';
 import { getLLMRecommendWorld as getRecommendWorldForBedrock } from './llm/bedrock/conversation';
 import { getLLMRecommendWorld as getRecommendWorldForOpenAI } from './llm/openai/conversation';
 import { fetchWorldInfo } from './vrchat-api';
 
-import { LOGIC_MODES, ORDERABLE_COLUMNS, SORT_ORDERS_ID, VISITS_STATUS } from 'src/consts/const';
+import { LOGIC_MODES, ORDERABLE_COLUMNS, SORT_ORDERS_ID, UPSERT_RESULT, VISITS_STATUS } from 'src/consts/const';
 import { VRChatServerError, WorldNotFoundError } from 'src/errors/vrchat-errors';
 import type { BookmarkListOptions, VRChatWorldInfo } from 'src/types/renderer';
 import { shuffleArray } from 'src/utils/util';
@@ -19,9 +21,23 @@ import { shuffleArray } from 'src/utils/util';
 export async function upsertWorldBookmark(worldId: string) {
   try {
     const world = await fetchWorldInfo(worldId);
-    const upsertResult = addOrUpdateWorldInfo(world);
+    const resultChanges = addOrUpdateWorldInfo(world);
 
-    return { data: getWorldInfo(worldId), upsertResult };
+    if (resultChanges > 0) {
+      console.log(`World info upsert: ${world.id}`);
+
+      const exists = existsWorldInfo(world.id);
+      const upsertResult = exists ? UPSERT_RESULT.update : UPSERT_RESULT.insert;
+
+      if (!exists) {
+        addBookmark(world.id, world.tags);
+      }
+
+      return { data: getWorldInfo(worldId), upsertResult };
+    } else {
+      console.error(`World info upsert failed: ${world.id}`);
+      return { data: getWorldInfo(worldId), upsertResult: null };
+    }
   } catch (error) {
     if (error instanceof WorldNotFoundError) {
       const hasBookmarkExist = deleteWorldInfo(worldId);

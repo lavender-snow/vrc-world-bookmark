@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import Database from 'better-sqlite3';
 
-import { GENRE, UPSERT_RESULT, UpsertResult } from 'src/consts/const';
+import { GENRE } from 'src/consts/const';
 import type { VRChatWorldInfo, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from 'src/types/renderer';
 import type { Genre, VisitStatus } from 'src/types/table';
 import type { VRChatWorld } from 'src/types/vrchat';
@@ -133,7 +133,7 @@ function addWorldGenres(worldId: string, genreIds: number[]) {
   }
 }
 
-function addBookmark(worldId: string, worldTags: string[]) {
+export function addBookmark(worldId: string, worldTags: string[]) {
   db.prepare(`
     INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', datetime('now'), datetime('now'));
   `).run({ worldId });
@@ -187,7 +187,7 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
   }
 }
 
-export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult | null {
+export function addOrUpdateWorldInfo(world: VRChatWorld): number {
   const params = {
     id: world.id,
     authorId: world.authorId,
@@ -305,22 +305,19 @@ export function addOrUpdateWorldInfo(world: VRChatWorld): UpsertResult | null {
     updated_at = datetime('now');`)
     .run(params);
 
-  if (result.changes > 0) {
-    console.log(`World info upsert: ${world.id}`);
-
-    const exists = db.prepare('SELECT 1 FROM bookmarks WHERE world_id = ?;').get(world.id);
-
-    if (exists) {
-      return UPSERT_RESULT.update;
-    } else {
-      addBookmark(world.id, world.tags);
-      return UPSERT_RESULT.insert;
-    }
-  } else {
-    console.error(`World info upsert failed: ${world.id}`);
-    return null;
-  }
+  return result.changes;
 };
+
+export function existsWorldInfo(worldId: string): boolean {
+  const exists = db.prepare('SELECT 1 FROM bookmarks WHERE world_id = ?;').get(worldId);
+
+  if (exists) {
+    return true;
+  } else {
+    console.warn(`World info does not exist: ${worldId}`);
+    return false;
+  }
+}
 
 export function getWorldInfo(worldId: string): VRChatWorldInfo | null {
   const selectSql = `
