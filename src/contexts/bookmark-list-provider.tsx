@@ -69,7 +69,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
     }
 
     loadSettings();
-  });
+  }, []);
 
   useEffect(() => {
     if (
