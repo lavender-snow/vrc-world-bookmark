@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, Menu, MenuItem, MenuItemConstructorOptions } from 'electron';
 
 import electronSquirrelStartup from 'electron-squirrel-startup';
 
@@ -24,6 +24,33 @@ const createWindow = (): void => {
     },
     autoHideMenuBar: true,
     title: 'VRChat World Bookmark',
+  });
+
+  mainWindow.webContents.on('context-menu', (_event, params) => {
+    const isEditable = params.isEditable;
+
+    const template: (MenuItem | MenuItemConstructorOptions)[] = isEditable
+      ? [
+        { label: '元に戻す', role: 'undo' },
+        { label: 'やり直す', role: 'redo' },
+        { type: 'separator' },
+        { label: 'カット', role: 'cut' },
+        { label: 'コピー', role: 'copy' },
+        { label: '貼り付け', role: 'paste' },
+        { label: '全選択', role: 'selectAll' },
+      ] : [
+        {
+          label: 'リロード',
+          click: () => {
+            mainWindow.webContents.reload();
+          },
+        },
+        { type: 'separator' },
+        { role: 'copy' },
+      ];
+
+    const menu = Menu.buildFromTemplate(template);
+    menu.popup({ window: mainWindow });
   });
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
