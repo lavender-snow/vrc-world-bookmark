@@ -14,18 +14,7 @@ if (electronSquirrelStartup) {
   app.quit();
 }
 
-const createWindow = (): void => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    height: 930,
-    width: 900,
-    webPreferences: {
-      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-    },
-    autoHideMenuBar: true,
-    title: 'VRChat World Bookmark',
-  });
-
+function setupContextMenu(mainWindow: BrowserWindow): void {
   mainWindow.webContents.on('context-menu', (_event, params) => {
     const isEditable = params.isEditable;
 
@@ -52,7 +41,16 @@ const createWindow = (): void => {
     const menu = Menu.buildFromTemplate(template);
     menu.popup({ window: mainWindow });
   });
+}
 
+function setupWindowOpenHandler(mainWindow: BrowserWindow): void {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {{
+    shell.openExternal(url);
+    return { action: 'deny' };
+  }});
+}
+
+function setupContentSecurityPolicy(mainWindow: BrowserWindow): void {
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
       responseHeaders: {
@@ -70,18 +68,26 @@ const createWindow = (): void => {
       },
     });
   });
+}
+
+function createWindow(): void {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    height: 930,
+    width: 900,
+    webPreferences: {
+      preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+    },
+    autoHideMenuBar: true,
+    title: 'VRChat World Bookmark',
+  });
+
+  setupContextMenu(mainWindow);
+  setupContentSecurityPolicy(mainWindow);
+  setupWindowOpenHandler(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('http')) {
-      shell.openExternal(url);
-      return { action: 'deny' };
-    }
-
-    return { action: 'allow' };
-  });
 };
 
 // Quit when all windows are closed, except on macOS. There, it's common
