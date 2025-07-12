@@ -71,7 +71,7 @@ export function parseWorldTagsToGenreIds(worldTags: string[]): number[] {
     genreIds.push(GENRE.game);
   }
 
-  if (lowerTags.findIndex(tag => tag.startsWith('admin_')) >= 0) {
+  if (lowerTags.some(tag => tag.startsWith('admin_'))) {
     genreIds.push(GENRE.high_quality);
   }
 
