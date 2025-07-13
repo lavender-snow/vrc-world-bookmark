@@ -283,7 +283,7 @@ export function searchRandomRecommendedWorld() {
 
   const result = getBookmarkList(selectQueryBase) as (VRChatWorldInfo & { tags: string, genreIds: string}[]) | undefined;
 
-  if (!result) {
+  if (!result || result.length === 0) {
     return { error: '登録されているデータからおすすめとなるワールドが取得できませんでした。' };
   }
 
