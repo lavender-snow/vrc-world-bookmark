@@ -5,7 +5,6 @@ import {
   getWorldInfo,
   getBookmarkList,
   SelectQueryBase,
-  getBookmark,
   existsWorldInfo,
   insertBookmark,
   insertWorldGenres,
@@ -271,8 +270,8 @@ export function searchRandomRecommendedWorld() {
   const shuffledColumns = shuffleArray(candidateColumns);
   const orderByClauses = shuffledColumns.map(columnName => `${columnName} ${SORT_ORDERS_ID.desc}`);
 
-  const offset = Math.floor(Math.random() * 5);
-  const paginationClauses = ['LIMIT 1', `OFFSET ${offset}`];
+  const RECOMMEND_WORLD_LIMIT = 5;
+  const paginationClauses = [`LIMIT ${RECOMMEND_WORLD_LIMIT}`];
 
   const selectQueryBase: SelectQueryBase = {
     select: selectSql,
@@ -282,11 +281,13 @@ export function searchRandomRecommendedWorld() {
     pagination: paginationClauses,
   };
 
-  const result = getBookmark(selectQueryBase) as (VRChatWorldInfo & { tags: string, genreIds: string}) | undefined;
+  const result = getBookmarkList(selectQueryBase) as (VRChatWorldInfo & { tags: string, genreIds: string}[]) | undefined;
 
-  if (!result) {
+  if (!result || result.length === 0) {
     return { error: '登録されているデータからおすすめとなるワールドが取得できませんでした。' };
   }
+
+  const offset = Math.floor(Math.random() * result.length);
 
   const primaryOrderByColumn = shuffledColumns[0];
   const columnNames = {
@@ -299,11 +300,13 @@ export function searchRandomRecommendedWorld() {
     `${columnNames[primaryOrderByColumn as keyof typeof columnNames]}が上位のワールドから選定しました。` :
     '';
 
+  const recommendedWorld = result[offset];
+
   return {
     data: {
-      VRChatWorldInfo: { ...result,
-        tags: result.tags ? JSON.parse(result.tags) as string[] : [],
-        genreIds: result.genreIds ? result.genreIds.split(',').map(id => parseInt(id, 10)) : [],
+      VRChatWorldInfo: { ...recommendedWorld,
+        tags: recommendedWorld.tags ? JSON.parse(recommendedWorld.tags) as string[] : [],
+        genreIds: recommendedWorld.genreIds ? recommendedWorld.genreIds.split(',').map(id => parseInt(id, 10)) : [],
       },
       reason,
     },
