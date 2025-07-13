@@ -42,7 +42,7 @@ export function BookmarkListProvider({ children }: { children: React.ReactNode }
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(DEFAULT_RESULT_PER_PAGE);
-  const [selectedUncategorized, setSelectedUncategorized] = useState(true);
+  const [selectedUncategorized, setSelectedUncategorized] = useState(false);
   const [selectedGenres, setSelectedGenres] = useState<GenreType[]>([]);
   const [genreFilterMode, setGenreFilterMode] = useState<LogicMode>(LOGIC_MODES.or);
   const [selectedVisitStatuses, setSelectedVisitStatuses] = useState<number[]>([]);
