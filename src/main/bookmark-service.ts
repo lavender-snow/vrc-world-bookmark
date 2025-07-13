@@ -107,7 +107,9 @@ function buildBookmarkListWhereClauses(options: BookmarkListOptions, params: Rec
       genreSubQuery.push('NOT EXISTS (SELECT 1 FROM world_genres wg WHERE world.id = wg.world_id)');
     }
 
-    whereClauses.push(`(${genreSubQuery.join(' OR ')})`);
+    if (genreSubQuery.length > 0) {
+      whereClauses.push(`(${genreSubQuery.join(' OR ')})`);
+    }
   } else if (options.genreFilterMode === LOGIC_MODES.and) {
     if (hasGenre && hasUncategorized) {
       // AND検索でジャンルが選択されていて、かつ「未分類」も選択されている状態はありえないため、常にfalseになる条件を追加
