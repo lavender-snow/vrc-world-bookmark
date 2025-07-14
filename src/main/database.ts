@@ -38,7 +38,7 @@ export function runMigrations() {
     if (!already) {
       const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, file), 'utf-8');
       db.exec(sql);
-      db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, datetime('now'));").run(file);
+      db.prepare("INSERT INTO migrations (filename, applied_at) VALUES (?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));").run(file);
       console.log(`Migration executed: ${file}`);
     }
   });
@@ -88,7 +88,7 @@ export function getVisitStatuses(): VisitStatus[] {
 
 export function insertBookmark(worldId: string) {
   db.prepare(`
-    INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', datetime('now'), datetime('now'));
+    INSERT INTO bookmarks (world_id, visited, note, created_at, updated_at) VALUES (@worldId, 0, '', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'), strftime('%Y-%m-%dT%H:%M:%SZ', 'now'));
   `).run({ worldId });
 }
 
@@ -136,7 +136,7 @@ export function updateWorldBookmark(options: UpdateWorldBookmarkOptions) {
       params.visitStatusId = options.visitStatusId;
     }
 
-    const result = db.prepare(`UPDATE bookmarks SET ${setClauses.join(', ')}, updated_at = datetime('now') WHERE world_id = @worldId;`).run(params);
+    const result = db.prepare(`UPDATE bookmarks SET ${setClauses.join(', ')}, updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE world_id = @worldId;`).run(params);
 
     if (result.changes > 0) {
       console.log(`Bookmark updated for world: ${options.worldId}`);
@@ -245,8 +245,8 @@ export function addOrUpdateWorldInfo(world: VRChatWorld): number {
     @urlList,
     @version,
     @visits,
-    datetime('now'),
-    datetime('now'),
+    strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
+    strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
     null
   )
   ON CONFLICT(id) DO UPDATE SET
@@ -269,7 +269,7 @@ export function addOrUpdateWorldInfo(world: VRChatWorld): number {
     url_list_cached = @urlList,
     version_cached = @version,
     visits_cached = @visits,
-    updated_at = datetime('now');`)
+    updated_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now');`)
     .run(params);
 
   return result.changes;
@@ -301,6 +301,7 @@ export function getWorldInfo(worldId: string): VRChatWorldInfo | null {
     world.thumbnail_image_url_cached AS thumbnailImageUrl,
     world.world_updated_at_cached AS updatedAt,
     world.visits_cached AS visits,
+    world.updated_at AS recordUpdatedAt,
     world.deleted_at AS deletedAt,
     GROUP_CONCAT(wg.genre_id) AS genreIds,
     bookmark.note,
@@ -334,7 +335,7 @@ export function getWorldInfo(worldId: string): VRChatWorldInfo | null {
 }
 
 export function deleteWorldInfo(worldId: string) {
-  const result = db.prepare("UPDATE vrchat_worlds SET deleted_at = datetime('now') WHERE id = ?;").run(worldId);
+  const result = db.prepare("UPDATE vrchat_worlds SET deleted_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now') WHERE id = ?;").run(worldId);
 
   if (result.changes > 0) {
     console.log(`World info deleted: ${worldId}`);

@@ -40,6 +40,7 @@
   height: 24px;
   vertical-align: center;
   animation: rotate 1.5s linear infinite;
+  stroke: theme.$black;
 }
 
 @keyframes rotate {

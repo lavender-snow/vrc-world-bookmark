@@ -91,3 +91,12 @@ export function shuffleArray<T>(array: T[]): T[] {
   }
   return arr;
 }
+
+// 指定した日時と現在時刻の差を計算する関数
+export function elapsedSeconds(date: string | Date | number): number {
+  const target = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
+  const now = Date.now();
+  const diffSeconds = (now - target.getTime()) / 1000;
+
+  return diffSeconds;
+}

@@ -11,7 +11,10 @@
 }
 
 :local(.world-title) {
-  svg {
+  display: flex;
+  flex-direction: row;
+
+  & svg {
     vertical-align: middle;
     width: 24px;
     height: 24px;
@@ -21,6 +24,30 @@
 
     &:hover {
       fill: theme.$icon-hover-blue;
+    }
+  }
+}
+
+:local(.world-title-text) {
+  flex: 1 1 0
+}
+
+:local(.info-update) {
+  display: flex;
+  margin-top: 8px;
+
+  & svg {
+    stroke: theme.$black;
+
+    &:hover {
+      stroke: theme.$icon-hover-blue;
+    }
+  }
+
+  &:local(.disabled) {
+    & svg {
+      cursor: not-allowed;
+      stroke: theme.$icon-gray;
     }
   }
 }
