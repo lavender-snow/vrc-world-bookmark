@@ -196,7 +196,7 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
             <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={'ワールド名をコピー'}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
           </h2>
         </div>
-        <div className={classNames(styles.infoUpdate)} onClick={() => handleWorldInfoUpdate(worldInfo.id)} title={'ワールドデータ更新' }><UpdateIcon /></div>
+        <div className={classNames(styles.infoUpdate, worldInfoIsUpdating && styles.disabled)} onClick={() => handleWorldInfoUpdate(worldInfo.id)} title={'ワールドデータ更新' }><UpdateIcon /></div>
       </div>
       <div className={styles.worldInfoArea}>
         <ThumbnailArea thumbnailImageUrl={worldInfo.thumbnailImageUrl} worldName={worldInfo.name} releaseStatus={worldInfo.releaseStatus}/>
