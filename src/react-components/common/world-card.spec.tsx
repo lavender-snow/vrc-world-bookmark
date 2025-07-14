@@ -54,8 +54,8 @@ describe('WorldCard', () => {
     expect(screen.getByText(mockWorldInfo.favorites)).toBeInTheDocument();
     expect(screen.getByText(mockWorldInfo.visits.toLocaleString())).toBeInTheDocument();
     expect(screen.getByText(mockWorldInfo.capacity)).toBeInTheDocument();
-    expect(screen.getByText(new Date(mockWorldInfo.createdAt).toLocaleDateString())).toBeInTheDocument();
-    expect(screen.getByText(new Date(mockWorldInfo.updatedAt).toLocaleDateString())).toBeInTheDocument();
+    expect(screen.getByText(new Date(mockWorldInfo.createdAt).toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' }))).toBeInTheDocument();
+    expect(screen.getByText(new Date(mockWorldInfo.updatedAt).toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' }))).toBeInTheDocument();
     expect(screen.getByText(mockWorldInfo.note)).toBeInTheDocument();
     expect(screen.getByLabelText('チル')).toBeInTheDocument();
     expect(screen.getByText('完了')).toBeInTheDocument();
