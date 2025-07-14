@@ -159,7 +159,7 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
         addToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`, NoticeType.error);
       } else if (response.data && response.upsertResult === UPSERT_RESULT.update) {
         addToast('ワールド情報を更新しました。', NoticeType.success);
-        setVRChatWorldInfo(response.data);
+        updateWorldInfo(response.data);
       } else {
         addToast('予期せぬエラーが発生しました。', NoticeType.error);
       }
