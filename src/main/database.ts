@@ -301,6 +301,7 @@ export function getWorldInfo(worldId: string): VRChatWorldInfo | null {
     world.thumbnail_image_url_cached AS thumbnailImageUrl,
     world.world_updated_at_cached AS updatedAt,
     world.visits_cached AS visits,
+    world.updated_at AS recordUpdatedAt,
     world.deleted_at AS deletedAt,
     GROUP_CONCAT(wg.genre_id) AS genreIds,
     bookmark.note,

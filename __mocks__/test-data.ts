@@ -14,6 +14,7 @@ export const mockWorldInfo: VRChatWorldInfo = {
   thumbnailImageUrl: 'https://api.vrchat.cloud/api/1/image/file_c68c3996-25d5-4d81-afd3-6c30645391d2/5/256',
   updatedAt: '2021-05-26T05:37:15.578Z',
   visits: 6590,
+  recordUpdatedAt: '2023-10-01T12:00:00.000Z',
   deletedAt: null,
   genreIds: [0],
   note: 'マイワールド',

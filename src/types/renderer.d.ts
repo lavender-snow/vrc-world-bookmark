@@ -12,6 +12,7 @@ export interface VRChatWorldInfo {
   thumbnailImageUrl: string;
   updatedAt: string;
   visits: number;
+  recordUpdatedAt: string;
   deletedAt: string | null;
   genreIds: number[];
   note: string;
