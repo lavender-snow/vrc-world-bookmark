@@ -8,10 +8,15 @@ import { VRChatWorldInfo } from 'src/types/renderer';
 export function BookmarkListDetail({ worldInfo, updateBookmarkList } : {worldInfo: VRChatWorldInfo, updateBookmarkList: (worldInfo: VRChatWorldInfo) => void }) {
   const { setListViewSelectedWorld } = useBookmarkListState();
 
+  const setVRChatWorldInfo = (newWorldInfo: VRChatWorldInfo) => {
+    updateBookmarkList(newWorldInfo);
+    setListViewSelectedWorld(newWorldInfo);
+  };
+
   return (
     <>
       <div className={styles.backButton} onClick={() => setListViewSelectedWorld(null)}><LeftArrowIcon /></div>
-      <WorldCard worldInfo={worldInfo} setVRChatWorldInfo={updateBookmarkList} />
+      <WorldCard worldInfo={worldInfo} setVRChatWorldInfo={setVRChatWorldInfo} />
     </>
   );
 }

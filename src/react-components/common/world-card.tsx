@@ -7,11 +7,12 @@ import styles from './world-card.scss';
 import { WorldTags } from './world-tags';
 
 import { ReactComponent as ClipboardIcon } from 'assets/images/MdiClipboardTextOutline.svg';
-import { NoticeType } from 'src/consts/const';
+import { ReactComponent as UpdateIcon } from 'assets/images/MynauiRefresh.svg';
+import { NoticeType, UPSERT_RESULT } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useToast } from 'src/contexts/toast-provider';
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
-import { debounce, writeClipboard } from 'src/utils/util';
+import { debounce, elapsedSeconds, writeClipboard } from 'src/utils/util';
 
 function WorldProperty({ name, value }: { name: string, value: string | number }) {
   return (
@@ -41,6 +42,7 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
   const { addToast } = useToast();
   const [lastSaveNote, setLastSavedNote] = useState<string>(worldInfo.note);
   const { genres, visitStatuses, setLastUpdatedWorldInfo } = useAppData();
+  const [worldInfoIsUpdating, setWorldInfoIsUpdating] = useState<boolean>(false);
 
   function onClipboardClick() {
     writeClipboard(worldInfo.name);
@@ -134,6 +136,40 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
     handleUpdateWorldBookmark({ worldId: worldInfo.id, visitStatusId: visitStatusId });
   }
 
+  async function handleWorldInfoUpdate(worldId: string) {
+    if (worldInfoIsUpdating) return;
+
+    const diffSeconds = elapsedSeconds(worldInfo.recordUpdatedAt);
+
+    const WORLD_INFO_UPDATE_INTERVAL_SECONDS = 300;
+
+    if (diffSeconds <= WORLD_INFO_UPDATE_INTERVAL_SECONDS) {
+      const remainingSeconds = WORLD_INFO_UPDATE_INTERVAL_SECONDS - diffSeconds;
+      const minutes = Math.floor(remainingSeconds / 60);
+      const seconds = Math.floor(remainingSeconds % 60);
+      addToast(`前回の更新から5分経過していないため中止しました。${minutes}分${seconds}秒後に更新可能となります。`, NoticeType.warning);
+      return;
+    }
+
+    try {
+      setWorldInfoIsUpdating(true);
+      const response = await window.dbAPI.addOrUpdateWorldInfo(worldId);
+
+      if (response.error) {
+        addToast(`ワールド情報の取得に失敗しました。エラー: ${response.error}`, NoticeType.error);
+      } else if (response.data && response.upsertResult === UPSERT_RESULT.update) {
+        addToast('ワールド情報を更新しました。', NoticeType.success);
+        setVRChatWorldInfo(response.data);
+      } else {
+        addToast('予期せぬエラーが発生しました。', NoticeType.error);
+      }
+    } catch (e) {
+      console.error(`Failed to update world ${worldId}:`, e);
+    } finally {
+      setWorldInfoIsUpdating(false);
+    }
+  }
+
   function onNoteBlur() {
     if (worldNote === lastSaveNote) return;
 
@@ -155,9 +191,12 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
   return (
     <div className={classNames(styles.worldCard)}>
       <div className={styles.worldTitle}>
-        <h2>
-          <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={'ワールド名をコピー'}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
-        </h2>
+        <div className={styles.worldTitleText}>
+          <h2>
+            <a href={`https://vrchat.com/home/world/${worldInfo.id}`} target="_blank" rel="noopener noreferrer">{worldInfo.name}</a><span onClick={() => { onClipboardClick(); }} aria-label={'ワールド名をコピー'}><ClipboardIcon /></span><small>by {worldInfo.authorName}</small>
+          </h2>
+        </div>
+        <div className={classNames(styles.infoUpdate)} onClick={() => handleWorldInfoUpdate(worldInfo.id)} title={'ワールドデータ更新' }><UpdateIcon /></div>
       </div>
       <div className={styles.worldInfoArea}>
         <ThumbnailArea thumbnailImageUrl={worldInfo.thumbnailImageUrl} worldName={worldInfo.name} releaseStatus={worldInfo.releaseStatus}/>
@@ -166,8 +205,8 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
             <WorldProperty name="お気に入り" value={worldInfo.favorites.toLocaleString()} />
             <WorldProperty name="訪問" value={worldInfo.visits.toLocaleString()} />
             <WorldProperty name="定員" value={worldInfo.capacity} />
-            <WorldProperty name="作成日" value={new Date(worldInfo.createdAt).toLocaleDateString()} />
-            <WorldProperty name="更新日" value={new Date(worldInfo.updatedAt).toLocaleDateString()} />
+            <WorldProperty name="作成日" value={new Date(worldInfo.createdAt).toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })} />
+            <WorldProperty name="更新日" value={new Date(worldInfo.updatedAt).toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' })} />
             <WorldProperty name="説明" value={worldInfo.description} />
           </div>
           <WorldTags tags={worldInfo.tags} />
