@@ -106,7 +106,7 @@ export function WorldDataEntry() {
                 正しいワールドIDまたはURLです。
               </span>
             ) : (
-              <span>
+              <span className={styles.defaultMessage}>
                 ワールドIDまたはURLを入力してください。
               </span>
             )}

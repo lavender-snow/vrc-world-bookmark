@@ -37,6 +37,10 @@
   color: theme.$error;
 }
 
+:local(.default-message) {
+  color: theme.$gray;
+}
+
 :local(.search-input-text) {
   flex: 1;
 }
