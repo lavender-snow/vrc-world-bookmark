@@ -35,7 +35,7 @@ function setupContextMenu(mainWindow: BrowserWindow): void {
           },
         },
         { type: 'separator' },
-        { role: 'copy' },
+        { label: 'コピー', role: 'copy' },
       ];
 
     const menu = Menu.buildFromTemplate(template);
