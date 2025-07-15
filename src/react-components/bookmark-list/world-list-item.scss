@@ -8,6 +8,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  box-shadow: theme.$border-shadow;
 
   & div {
     display: flex;

@@ -10,6 +10,11 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 16px 20px;
+  box-sizing: content-box;
+  border: theme.$base-border theme.$light-gray;
+  border-radius: 8px;
+  box-shadow: theme.$border-shadow-light;
 }
 
 :local(.search-input) {
@@ -22,6 +27,10 @@
   margin-left: 12px;
   font-size: 0.8rem;
   min-height: 1.2rem;
+}
+
+:local(.valid-message) {
+  color: theme.$success;
 }
 
 :local(.invalid-message) {
