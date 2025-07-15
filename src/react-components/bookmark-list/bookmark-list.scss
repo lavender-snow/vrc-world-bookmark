@@ -79,6 +79,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 15px;
+  box-shadow: theme.$border-shadow-light;
 
   &:hover:not(:disabled) {
     background: theme.$page-button-hover;
