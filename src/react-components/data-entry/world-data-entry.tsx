@@ -97,7 +97,19 @@ export function WorldDataEntry() {
             </Button>
           </div>
           <div className={styles.searchInputMessage}>
-            {invalidInput && <span className={styles.invalidMessage}>無効なワールドIDまたはURLです。正しい形式で入力してください。</span>}
+            {invalidInput ? (
+              <span className={styles.invalidMessage}>
+                無効なワールドIDまたはURLです。正しい形式で入力してください。
+              </span>
+            ) : validInput ? (
+              <span className={styles.validMessage}>
+                正しいワールドIDまたはURLです。
+              </span>
+            ) : (
+              <span className={styles.defaultMessage}>
+                ワールドIDまたはURLを入力してください。
+              </span>
+            )}
           </div>
         </div>
         <div className={classNames(styles.searchResult)}>

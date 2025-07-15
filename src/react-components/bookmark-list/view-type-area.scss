@@ -8,12 +8,12 @@
 :local(.view-type-wrap) {
   display: flex;
   align-items: center;
-
   font-size: 0.8em;
 
   & div {
     padding: 4px 8px;
     border: theme.$base-border theme.$light-gray;
+    box-shadow: theme.$border-shadow-light;
   }
 
   & div:first-child {

@@ -37,7 +37,13 @@ $view-button-active-bg: #c0c0c0;
 $shadow: #00000033;
 
 $category-menu-bg: #efefef;
-$category-menu-border: #e5e5e5;
+$category-menu-border: #c5c5c5;
 $category-menu-active-bg: #dfdfdf;
 
 $base-border: 1px solid;
+
+$border-shadow: 0px 3px 3px 0px #0000001f,
+  0px 1px 3px 0px #0000002f,
+  0px 1px 1px 0px #0000003f;
+
+$border-shadow-light: 0 3px 3px 0 $shadow;

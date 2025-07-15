@@ -5,6 +5,7 @@
   border: theme.$base-border theme.$light-gray;
   border-radius: 8px;
   min-height: 400px;
+  box-shadow: theme.$border-shadow;
 
   &>div {
     padding: 16px 24px;

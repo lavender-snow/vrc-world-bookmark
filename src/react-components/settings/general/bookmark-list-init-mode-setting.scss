@@ -10,5 +10,10 @@
   border-radius: 8px;
   padding: 8px;
   flex: 1;
+  box-shadow: theme.$border-shadow-light;
   cursor: pointer;
+
+  &:hover {
+    border: theme.$base-border theme.$light-blue;
+  }
 }
