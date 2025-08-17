@@ -66,7 +66,7 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
           addToast('メモを更新しました', NoticeType.success);
         }
 
-        if(options.visitStatusId) {
+        if(options.visitStatusId !== undefined && options.visitStatusId !== null) {
           const newWorldInfo = { ...worldInfo, visitStatusId: options.visitStatusId };
           updateWorldInfo(newWorldInfo);
 
