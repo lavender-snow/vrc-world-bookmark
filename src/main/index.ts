@@ -86,6 +86,21 @@ function createWindow(): void {
   setupContentSecurityPolicy(mainWindow);
   setupWindowOpenHandler(mainWindow);
 
+  const template: MenuItemConstructorOptions[] = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Disable Close Window',
+          accelerator: 'CmdOrCtrl+W',
+          click: () => {}, // Ctrl + Wによりウィンドウを閉じる操作を無効化
+        },
+      ],
+    },
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 };
