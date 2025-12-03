@@ -50,6 +50,18 @@ function setupWindowOpenHandler(mainWindow: BrowserWindow): void {
   }});
 }
 
+function setupKeyboardShortcuts(mainWindow: BrowserWindow): void {
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (
+      (input.control || input.meta) &&
+      input.key.toLowerCase() === 'w' &&
+      !input.alt && !input.shift
+    ) {
+      event.preventDefault();
+    }
+  });
+}
+
 function setupContentSecurityPolicy(mainWindow: BrowserWindow): void {
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
     callback({
@@ -85,16 +97,7 @@ function createWindow(): void {
   setupContextMenu(mainWindow);
   setupContentSecurityPolicy(mainWindow);
   setupWindowOpenHandler(mainWindow);
-
-  mainWindow.webContents.on('before-input-event', (event, input) => {
-    if (
-      (input.control || input.meta) &&
-      input.key.toLowerCase() === 'w' &&
-      !input.alt && !input.shift
-    ) {
-      event.preventDefault();
-    }
-  });
+  setupKeyboardShortcuts(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
