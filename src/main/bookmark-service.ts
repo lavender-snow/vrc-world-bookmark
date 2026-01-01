@@ -30,6 +30,10 @@ export function updateWorldGenres(options: UpdateWorldGenresOptions) {
   const { worldId, genreIds } = options;
   deleteWorldGenres(worldId);
 
+  if (genreIds.length === 0) {
+    return true;
+  }
+
   return insertWorldGenres(worldId, genreIds);
 }
 
