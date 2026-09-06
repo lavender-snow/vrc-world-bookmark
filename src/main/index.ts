@@ -8,6 +8,8 @@ import { registerIpcHandler } from './bookmark-ipc';
 import { initDB, runMigrations } from './database';
 import { VRChatAuthService } from './vrchat/auth-service';
 import { VRChatClient } from './vrchat/client';
+import { registerInstanceIpc } from './vrchat/instance-ipc';
+import { VRChatInstanceService } from './vrchat/instance-service';
 import { registerAuthIpc } from './vrchat/ipc';
 import { EncryptedSessionStore } from './vrchat/session-store';
 
@@ -149,6 +151,7 @@ if (!gotTheLock) {
       new EncryptedSessionStore(path.join(app.getPath('userData'), 'vrchat-session.dat')),
     );
     registerAuthIpc(auth, () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
+    registerInstanceIpc(new VRChatInstanceService(auth), () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
     void auth.restoreSession();
     createWindow();
   });

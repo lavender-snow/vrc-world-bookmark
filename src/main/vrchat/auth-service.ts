@@ -1,4 +1,4 @@
-import type { SessionClient } from './client';
+import type { RequestOptions, SessionClient } from './client';
 import { parseAuthResponse, parseTwoFactorVerification, twoFactorVerifyPath } from './contracts';
 import { publicAuthError, VRChatApiError } from './errors';
 import type { SessionStore } from './session-store';
@@ -12,6 +12,37 @@ export class VRChatAuthService {
   private generation = 0;
   private blockedUntil = 0;
   private twoFactorVerified = false;
+  private sessionEpoch = 0;
+
+  getSessionKey(): string | undefined {
+    return this.state.status === 'authenticated' ? `${this.sessionEpoch}:${this.state.user.id}` : undefined;
+  }
+
+  async requestAuthenticated(path: string, options: RequestOptions): Promise<unknown> {
+    if (this.active) throw new VRChatApiError('busy');
+    const key = this.getSessionKey();
+    if (!key) throw new VRChatApiError('unauthorized');
+    this.checkCooldown();
+    const client = this.client;
+    try {
+      const response = await client.request(path, options);
+      if (this.getSessionKey() !== key) throw new VRChatApiError('cancelled');
+      try {
+        this.state.persistence = this.store.save(client.exportCookies()) ? 'saved' : 'memory';
+      } catch { this.state.persistence = 'memory'; }
+      if (this.state.persistence === 'memory') this.state.error = { code: 'storage' };
+      return response;
+    } catch (error) {
+      if (this.getSessionKey() !== key) throw new VRChatApiError('cancelled');
+      if (error instanceof VRChatApiError && error.code === 'unauthorized') {
+        this.sessionEpoch++;
+        this.state = { status: 'expired', persistence: 'none' };
+        this.client = this.createClient();
+        try { this.store.clear(); } catch { this.state.error = { code: 'storage' }; }
+      }
+      throw error;
+    }
+  }
 
   constructor(private readonly createClient: () => SessionClient, private readonly store: SessionStore) {
     this.client = createClient();
@@ -107,6 +138,7 @@ export class VRChatAuthService {
       this.checkCooldown();
       // Failure to remove the old account's session must prevent switching accounts.
       this.store.clear();
+      this.sessionEpoch++;
       this.client = this.createClient();
       this.twoFactorVerified = false;
       this.state = { status: 'loggingIn', persistence: 'none' };
@@ -147,6 +179,7 @@ export class VRChatAuthService {
     this.active?.abort();
     this.active = undefined;
     this.generation++;
+    this.sessionEpoch++;
     this.client = this.createClient();
     this.twoFactorVerified = false;
     this.state = { status: 'signedOut', persistence: 'none' };

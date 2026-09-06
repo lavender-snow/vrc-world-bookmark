@@ -11,6 +11,7 @@ import { ReactComponent as UpdateIcon } from 'assets/images/MynauiRefresh.svg';
 import { NoticeType, UPSERT_RESULT } from 'src/consts/const';
 import { useAppData } from 'src/contexts/app-data-provider';
 import { useToast } from 'src/contexts/toast-provider';
+import { InstanceCreator } from 'src/react-components/instance/instance-creator';
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from 'src/types/renderer';
 import { debounce, elapsedSeconds, writeClipboard } from 'src/utils/util';
 
@@ -230,10 +231,8 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
           <DropDownList options={visitStatusesNames} currentValue={visitStatusId?.toString()} onChange={onVisitStatusChange} />
         </div>
 
-        {/* TODO: インバイト機能はクリエイターガイドラインに反するため実装を見送りました。適切な方法で行えるようになった場合に実装します。
-        <Button className={styles.inviteButton} onClick={() => { }} disabled={true}><MailSendIcon width={20} height={20} />Invite</Button>
-        */}
       </div>
+      {!worldInfo.deletedAt && <InstanceCreator key={worldInfo.id} worldId={worldInfo.id} worldName={worldInfo.name} />}
     </div >
   );
 }

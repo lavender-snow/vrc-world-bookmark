@@ -1,3 +1,7 @@
+import type { CreateInstanceOptions, InstanceRegion } from 'src/types/vrchat-instance';
+
+export type { CreateInstanceOptions, InstanceAccess, InstanceRegion } from 'src/types/vrchat-instance';
+
 /** API boundary validation. Never include response bodies or credentials in errors. */
 export class VRChatContractError extends Error {
   constructor(field: string) {
@@ -7,8 +11,6 @@ export class VRChatContractError extends Error {
 }
 
 export type TwoFactorMethod = 'totp' | 'emailOtp';
-export type InstanceAccess = 'public' | 'friendsPlus' | 'friends' | 'invitePlus' | 'invite';
-export type InstanceRegion = 'jp' | 'us' | 'use' | 'eu';
 
 export interface AuthUser {
   id: string;
@@ -18,12 +20,6 @@ export interface AuthUser {
 export type AuthResponse =
   | { kind: 'authenticated'; user: AuthUser }
   | { kind: 'twoFactorRequired'; methods: string[] };
-
-export interface CreateInstanceOptions {
-  worldId: string;
-  access: InstanceAccess;
-  region: InstanceRegion;
-}
 
 export interface CreateInstanceRequest {
   worldId: string;

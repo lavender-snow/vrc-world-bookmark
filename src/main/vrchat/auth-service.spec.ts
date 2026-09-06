@@ -18,6 +18,35 @@ function setup() {
 }
 
 describe('VRChat authentication service', () => {
+  it('requires authentication for instance operations and expires a rejected session', async () => {
+    const { factory, store } = setup();
+    const client = factory();
+    const service = new VRChatAuthService(() => client, store);
+    await expect(service.requestAuthenticated('/instances', { method: 'POST' })).rejects.toMatchObject({ code: 'unauthorized' });
+    client.request.mockResolvedValueOnce(user).mockRejectedValueOnce(new VRChatApiError('unauthorized'));
+    await service.login(credentials);
+    await expect(service.requestAuthenticated('/instances', { method: 'POST' })).rejects.toMatchObject({ code: 'unauthorized' });
+    expect(service.getState().status).toBe('expired');
+    expect(service.getSessionKey()).toBeUndefined();
+    expect(store.clear).toHaveBeenCalledTimes(2);
+  });
+
+  it('rejects an authenticated response arriving after logout without saving its cookies', async () => {
+    const { factory, store } = setup();
+    const client = factory();
+    const service = new VRChatAuthService(() => client, store);
+    client.request.mockResolvedValueOnce(user);
+    await service.login(credentials);
+    store.save.mockClear();
+    let finish: (value: unknown) => void;
+    client.request.mockReturnValueOnce(new Promise(resolve => { finish = resolve; })).mockResolvedValueOnce({});
+    const pending = service.requestAuthenticated('/instances', { method: 'POST' });
+    await service.logout();
+    finish({ location: 'private' });
+    await expect(pending).rejects.toMatchObject({ code: 'cancelled' });
+    expect(store.save).not.toHaveBeenCalled();
+  });
+
   it('does not make a network request when no session is saved', async () => {
     const { service, clients } = setup();
     expect(await service.restoreSession()).toMatchObject({ ok: true, state: { status: 'signedOut' } });
