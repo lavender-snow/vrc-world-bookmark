@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 
 import { searchBookmarkList, searchLLMRecommendWorld, searchRandomRecommendedWorld, updateWorldGenres, upsertWorldBookmark } from './bookmark-service';
+import { assertRendererCredentialKey } from './credential-access';
 import { loadKey, saveKey } from './credential-store';
 import { getGenres, getVisitStatuses, getWorldIdsToUpdate, getWorldInfo, updateWorldBookmark } from './database';
 
@@ -50,14 +51,18 @@ function registerIpcHandlersForDatabase() {
 
 function registerIpcHandlersForCredentialStore() {
   ipcMain.handle('save_key', (_event, key: string, value: string) => {
+    assertRendererCredentialKey(key);
+    if (typeof value !== 'string') throw new Error('Invalid credential value');
     saveKey(key, value);
   });
 
   ipcMain.handle('load_key', (_event, key: string) => {
+    assertRendererCredentialKey(key);
     return loadKey(key);
   });
 
   ipcMain.handle('is_key_saved', (_event, key: string) => {
+    assertRendererCredentialKey(key);
     const value = loadKey(key);
     return !!value; // キーが存在する場合trueを返す
   });

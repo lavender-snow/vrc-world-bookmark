@@ -1,10 +1,15 @@
 import { app, BrowserWindow, shell, Menu, MenuItem, MenuItemConstructorOptions } from 'electron';
+import path from 'node:path';
 
 import electronSquirrelStartup from 'electron-squirrel-startup';
 
 import './vrchat-api';
 import { registerIpcHandler } from './bookmark-ipc';
 import { initDB, runMigrations } from './database';
+import { VRChatAuthService } from './vrchat/auth-service';
+import { VRChatClient } from './vrchat/client';
+import { registerAuthIpc } from './vrchat/ipc';
+import { EncryptedSessionStore } from './vrchat/session-store';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -15,6 +20,7 @@ if (electronSquirrelStartup) {
 }
 
 const gotTheLock = app.requestSingleInstanceLock();
+let authWindow: BrowserWindow | undefined;
 
 if (!gotTheLock) {
   app.quit();
@@ -106,6 +112,7 @@ if (!gotTheLock) {
       autoHideMenuBar: true,
       title: 'VRChat World Bookmark',
     });
+    authWindow = mainWindow;
 
     setupContextMenu(mainWindow);
     setupContentSecurityPolicy(mainWindow);
@@ -137,6 +144,12 @@ if (!gotTheLock) {
     initDB();
     runMigrations();
     registerIpcHandler();
+    const auth = new VRChatAuthService(
+      () => new VRChatClient(`${app.getName()}/${app.getVersion()} https://github.com/lavender-snow/vrc-world-bookmark`),
+      new EncryptedSessionStore(path.join(app.getPath('userData'), 'vrchat-session.dat')),
+    );
+    registerAuthIpc(auth, () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
+    void auth.restoreSession();
     createWindow();
   });
 }

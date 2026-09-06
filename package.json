@@ -68,10 +68,14 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.835.0",
     "@types/react-dom": "^19.1.5",
-    "better-sqlite3": "^11.10.0",
+    "better-sqlite3": "^12.11.1",
     "electron-squirrel-startup": "^1.0.1",
     "framer-motion": "^12.17.0",
     "openai": "^5.8.2",
-    "react": "^19.1.0"
+    "react": "^19.1.0",
+    "tough-cookie": "^6.0.0"
+  },
+  "volta": {
+    "node": "24.18.0"
   }
 }

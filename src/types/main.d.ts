@@ -1,4 +1,5 @@
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from './renderer.d.ts';
+import type { VRChatAuthAPI } from './vrchat-auth';
 import { World } from './vrchat.d.ts';
 
 import type { Genre, VisitStatus, UpdateWorldBookmarkResult, BookmarkListOptions } from 'src/consts/const';
@@ -10,6 +11,7 @@ export interface RecommendResult {
 
 declare global {
   interface Window {
+    vrchatAuth: VRChatAuthAPI;
     vrchatAPI: {
       fetchWorldInfo: (worldId: string) => Promise<World>;
     },

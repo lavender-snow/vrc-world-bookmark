@@ -11,6 +11,7 @@ global.AnimationEvent = class AnimationEvent extends Event {
 };
 
 beforeAll(() => {
+  if (typeof window === 'undefined') return;
   global.window.dbAPI = {
     updateWorldBookmark: jest.fn().mockResolvedValue(undefined),
     updateWorldGenres: jest.fn().mockResolvedValue(undefined),

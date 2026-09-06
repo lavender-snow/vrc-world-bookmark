@@ -1,6 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from './types/renderer';
+import type { LoginInput, TwoFactorInput, VRChatAuthAPI } from './types/vrchat-auth';
+
+const vrchatAuth: VRChatAuthAPI = {
+  getAuthState: () => ipcRenderer.invoke('vrchat_auth_state'),
+  restoreSession: () => ipcRenderer.invoke('vrchat_auth_restore'),
+  login: (input: LoginInput) => ipcRenderer.invoke('vrchat_auth_login', input),
+  verifyTwoFactor: (input: TwoFactorInput) => ipcRenderer.invoke('vrchat_auth_verify', input),
+  logout: () => ipcRenderer.invoke('vrchat_auth_logout'),
+};
+contextBridge.exposeInMainWorld('vrchatAuth', vrchatAuth);
 
 contextBridge.exposeInMainWorld('vrchatAPI', {
   fetchWorldInfo: (worldId: string) => ipcRenderer.invoke('fetch_world_info', worldId),
