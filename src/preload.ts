@@ -3,6 +3,13 @@ import { contextBridge, ipcRenderer } from 'electron';
 import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from './types/renderer';
 import type { LoginInput, TwoFactorInput, VRChatAuthAPI } from './types/vrchat-auth';
 import type { VRChatInstanceAPI } from './types/vrchat-instance';
+import type { VRChatInviteAPI } from './types/vrchat-invite';
+
+const vrchatInvites: VRChatInviteAPI = {
+  listFriends: input => ipcRenderer.invoke('vrchat_friends_list', input),
+  send: input => ipcRenderer.invoke('vrchat_invite_send', input),
+};
+contextBridge.exposeInMainWorld('vrchatInvites', vrchatInvites);
 
 const vrchatInstances: VRChatInstanceAPI = {
   getState: worldId => ipcRenderer.invoke('vrchat_instance_state', worldId),

@@ -1,9 +1,11 @@
 import type { VRChatAuthService } from './auth-service';
-import { buildCreateInstanceRequest, parseInstanceReference, VRChatContractError } from './contracts';
+import { buildCreateInstanceRequest, buildSelfInvitePath, parseInstanceReference, parseInviteResponse, VRChatContractError } from './contracts';
 import type { InstanceReference } from './contracts';
 import { publicAuthError, VRChatApiError } from './errors';
+import type { VRChatFriendsService } from './friends-service';
 
 import type { CreateInstanceOptions, InstanceState } from 'src/types/vrchat-instance';
+import type { InviteInput, InviteStatus } from 'src/types/vrchat-invite';
 
 export class VRChatInstanceService {
   private sessionKey?: string;
@@ -11,7 +13,7 @@ export class VRChatInstanceService {
   // Private location/nonce stay in main for subsequent invite operations.
   private references = new Map<string, InstanceReference>();
 
-  constructor(private readonly auth: VRChatAuthService) {}
+  constructor(private readonly auth: VRChatAuthService, private readonly friends?: VRChatFriendsService) {}
 
   private syncSession(): void {
     const key = this.auth.getSessionKey();
@@ -36,10 +38,50 @@ export class VRChatInstanceService {
 
   reset(worldId: string): InstanceState {
     const state = this.getState(worldId);
-    if (state.status === 'creating') return state;
+    if (state.status === 'creating' || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending')) return state;
     this.states.delete(worldId);
     this.references.delete(worldId);
     return this.getState(worldId);
+  }
+
+  async invite(input: InviteInput): Promise<InstanceState> {
+    this.validateWorld(input?.worldId);
+    if (typeof input.receiverId !== 'string' || (input.resend !== undefined && typeof input.resend !== 'boolean')) throw new VRChatApiError('invalidInput');
+    const state = this.getState(input.worldId);
+    const reference = this.references.get(input.worldId);
+    const account = this.auth.getState();
+    if (account.status !== 'authenticated' || state.status !== 'created' || !reference) throw new VRChatApiError('unauthorized');
+    const self = input.receiverId === 'self';
+    const friend = self ? undefined : this.friends?.getKnownFriend(input.receiverId);
+    if (!self && !friend) throw new VRChatApiError('invalidInput');
+    const receiverId = self ? account.user.id : friend.id;
+    const receiverName = self ? '自分' : friend.displayName;
+    const previous = state.invites?.[input.receiverId];
+    if (Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') ||
+      (previous && ['sent', 'unknown'].includes(previous.status) && !input.resend)) return state;
+    const session = this.sessionKey;
+    const setInvite = (invite: InviteStatus) => {
+      const current = this.states.get(input.worldId);
+      this.states.set(input.worldId, { ...current, invites: { ...current.invites, [input.receiverId]: invite } });
+    };
+    setInvite({ status: 'sending', receiverName });
+    try {
+      const response = await this.auth.requestAuthenticated(self ? buildSelfInvitePath(reference) : `/invite/${encodeURIComponent(receiverId)}`, {
+        method: 'POST', retry: false,
+        ...(self ? {} : { body: { instanceId: reference.location } }),
+      });
+      this.syncSession();
+      if (session !== this.sessionKey) return this.getState(input.worldId);
+      parseInviteResponse(response, receiverId);
+      setInvite({ status: 'sent', receiverName });
+    } catch (error) {
+      this.syncSession();
+      if (session !== this.sessionKey) return this.getState(input.worldId);
+      const safeError = publicAuthError(error);
+      const unknown = ['network', 'timeout', 'server', 'invalidResponse', 'unexpected'].includes(safeError.code);
+      setInvite({ status: unknown ? 'unknown' : 'failed', receiverName, error: safeError });
+    }
+    return this.getState(input.worldId);
   }
 
   async create(options: CreateInstanceOptions): Promise<InstanceState> {

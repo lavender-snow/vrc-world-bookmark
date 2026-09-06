@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 import styles from './instance-creator.scss';
+import { InviteControls } from './invite-controls';
 
 import type { InstanceAccess, InstanceRegion, InstanceState } from 'src/types/vrchat-instance';
 
@@ -100,6 +101,8 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
         <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}</p>
         <p>作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
       </div>}
+      {state.status === 'created' && <InviteControls key={state.createdAt} state={state} busy={busy}
+        onSend={(receiverId, resend) => { void perform(() => window.vrchatInvites.send({ worldId, receiverId, resend })); }} />}
       {state.status === 'unknown' && <p role="alert">作成結果が不明です。インスタンスが作成されている可能性があります。再作成すると重複する場合があります。</p>}
       {state.status === 'failed' && <p role="alert">{
         state.error?.code === 'rateLimited' ? 'アクセスが集中しています。時間を置いて再試行してください。' :
@@ -109,7 +112,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
       }</p>}
       {needsReset ? <>
         {state.status === 'unknown' && <label><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />重複して作成される可能性を確認しました</label>}
-        <button type="button" disabled={creating || (state.status === 'unknown' && !acknowledged)} onClick={() => {
+        <button type="button" disabled={creating || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') || (state.status === 'unknown' && !acknowledged)} onClick={() => {
           setAcknowledged(false);
           void perform(() => window.vrchatInstances.reset(worldId));
         }}>別のインスタンスの作成に進む</button>

@@ -8,8 +8,10 @@ import { registerIpcHandler } from './bookmark-ipc';
 import { initDB, runMigrations } from './database';
 import { VRChatAuthService } from './vrchat/auth-service';
 import { VRChatClient } from './vrchat/client';
+import { VRChatFriendsService } from './vrchat/friends-service';
 import { registerInstanceIpc } from './vrchat/instance-ipc';
 import { VRChatInstanceService } from './vrchat/instance-service';
+import { registerInviteIpc } from './vrchat/invite-ipc';
 import { registerAuthIpc } from './vrchat/ipc';
 import { EncryptedSessionStore } from './vrchat/session-store';
 
@@ -151,7 +153,10 @@ if (!gotTheLock) {
       new EncryptedSessionStore(path.join(app.getPath('userData'), 'vrchat-session.dat')),
     );
     registerAuthIpc(auth, () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
-    registerInstanceIpc(new VRChatInstanceService(auth), () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
+    const friends = new VRChatFriendsService(auth);
+    const instances = new VRChatInstanceService(auth, friends);
+    registerInstanceIpc(instances, () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
+    registerInviteIpc(instances, friends, () => authWindow, MAIN_WINDOW_WEBPACK_ENTRY);
     void auth.restoreSession();
     createWindow();
   });

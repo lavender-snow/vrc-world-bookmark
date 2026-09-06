@@ -1,4 +1,5 @@
 import type { AuthError } from './vrchat-auth';
+import type { InviteStatus } from './vrchat-invite';
 
 export type InstanceAccess = 'public' | 'friendsPlus' | 'friends' | 'invitePlus' | 'invite';
 export type InstanceRegion = 'jp' | 'us' | 'use' | 'eu';
@@ -9,6 +10,7 @@ export type InstanceState = {
   options?: CreateInstanceOptions;
   createdAt?: string;
   error?: AuthError;
+  invites?: Record<string, InviteStatus>;
 };
 export interface VRChatInstanceAPI {
   getState(worldId: string): Promise<InstanceState>;
