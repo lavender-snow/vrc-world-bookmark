@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 import { Settings } from './settings';
@@ -22,6 +22,15 @@ jest.mock('src/contexts/toast-provider', () => ({
 }));
 
 describe('Settings', () => {
+  it('VRChatカテゴリからログイン画面を開ける', async () => {
+    window.vrchatAuth = {
+      getAuthState: jest.fn().mockResolvedValue({ status: 'signedOut', persistence: 'none' }),
+      restoreSession: jest.fn(), login: jest.fn(), verifyTwoFactor: jest.fn(), logout: jest.fn(),
+    };
+    render(<SettingsTabProvider><Settings /></SettingsTabProvider>);
+    fireEvent.click(screen.getByText('VRChat'));
+    expect(await screen.findByLabelText('ユーザー名')).toBeInTheDocument();
+  });
   it('設定画面が正しくレンダリングされる', () => {
     render(
       <SettingsTabProvider>

@@ -1,4 +1,5 @@
 import { ReactComponent as BrainIcon } from 'assets/images/HugeiconsAiBrain03.svg';
+import { ReactComponent as GameIcon } from 'assets/images/IonGameControllerOutline.svg';
 import { ReactComponent as ToolboxIcon } from 'assets/images/MdiToolboxOutline.svg';
 import type { LogicMode } from 'src/types/renderer';
 
@@ -80,6 +81,7 @@ export type RecommendType = typeof RECOMMEND_TYPE[number]['id'];
 export const SETTINGS_CATEGORY_ID = {
   general: 'general',
   llm: 'llm',
+  vrchat: 'vrchat',
 } as const;
 export type SettingsCategoryId = typeof SETTINGS_CATEGORY_ID[keyof typeof SETTINGS_CATEGORY_ID];
 
@@ -87,6 +89,7 @@ export type SettingsCategoryId = typeof SETTINGS_CATEGORY_ID[keyof typeof SETTIN
 export const SETTINGS_CATEGORY = [
   { id: SETTINGS_CATEGORY_ID.general, value: '一般', icon: ToolboxIcon },
   { id: SETTINGS_CATEGORY_ID.llm, value: 'LLM', icon: BrainIcon },
+  { id: SETTINGS_CATEGORY_ID.vrchat, value: 'VRChat', icon: GameIcon },
 ] as const;
 export type SettingsCategory = typeof SETTINGS_CATEGORY[number]['id'];
 

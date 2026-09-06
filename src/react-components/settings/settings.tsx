@@ -4,6 +4,7 @@ import { GeneralSettings } from './general/general-settings';
 import { LLMSettings } from './llm/llm-settings';
 import { SettingsCategoryMenu } from './settings-category-menu';
 import styles from './settings.scss';
+import { VRChatSettings } from './vrchat/vrchat-settings';
 
 import { SETTINGS_CATEGORY_ID } from 'src/consts/const';
 import { useSettingsTabState } from 'src/contexts/settings-tab-provider';
@@ -24,6 +25,7 @@ export function Settings() {
         <div className={styles.settingsContent}>
           { activeCategory === SETTINGS_CATEGORY_ID.general && <GeneralSettings /> }
           { activeCategory === SETTINGS_CATEGORY_ID.llm && <LLMSettings /> }
+          { activeCategory === SETTINGS_CATEGORY_ID.vrchat && <VRChatSettings /> }
         </div>
       </motion.div>
     </AnimatePresence>
