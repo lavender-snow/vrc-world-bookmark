@@ -71,3 +71,10 @@
   fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
   [role='alert'] { color: #a01927; }
 }
+
+:local(.self-invite) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  input { margin: 0; }
+}

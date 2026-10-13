@@ -83,3 +83,79 @@ it('rejects invalid input before sending and handles a definite permission failu
   auth.requestAuthenticated.mockRejectedValue(new VRChatApiError('forbidden'));
   expect(await service.create(options)).toMatchObject({ status: 'failed', error: { code: 'forbidden' } });
 });
+
+it('invites self once after creation and prevents reset or duplicates while sending', async () => {
+  const { service, auth } = setup();
+  let finishCreate: (value: unknown) => void;
+  let finishInvite: (value: unknown) => void;
+  auth.requestAuthenticated
+    .mockReturnValueOnce(new Promise(resolve => { finishCreate = resolve; }))
+    .mockReturnValueOnce(new Promise(resolve => { finishInvite = resolve; }));
+  const pending = service.create({ ...options, inviteSelf: true });
+  await Promise.resolve();
+  expect(service.getState(worldId).status).toBe('creating');
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(1);
+  expect(auth.requestAuthenticated).toHaveBeenLastCalledWith('/instances', expect.anything());
+  finishCreate(response);
+  await Promise.resolve();
+  expect(service.getState(worldId)).toMatchObject({ status: 'created', invites: { self: { status: 'sending' } } });
+  expect(service.reset(worldId)).toMatchObject({ status: 'created', invites: { self: { status: 'sending' } } });
+  await service.create({ ...options, inviteSelf: true });
+  await service.invite({ worldId, receiverId: 'self' });
+  expect(auth.requestAuthenticated).toHaveBeenNthCalledWith(2,
+    `/invite/myself/to/${worldId}:${encodeURIComponent(response.instanceId)}`, { method: 'POST', retry: false });
+  finishInvite({ id: 'notification', type: 'invite', receiverUserId: userId });
+  expect(await pending).toMatchObject({ status: 'created', invites: { self: { status: 'sent' } } });
+  await service.create({ ...options, inviteSelf: true });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(2);
+});
+
+it.each(['forbidden', 'timeout'] as const)('preserves creation when automatic invitation fails with %s', async code => {
+  const { service, auth } = setup();
+  auth.requestAuthenticated.mockResolvedValueOnce(response).mockRejectedValueOnce(new VRChatApiError(code));
+  const state = await service.create({ ...options, inviteSelf: true });
+  expect(state).toMatchObject({ status: 'created', options, invites: { self: { status: code === 'timeout' ? 'unknown' : 'failed', error: { code } } } });
+  expect(service.getState(worldId)).toEqual(state);
+  await service.create({ ...options, inviteSelf: true });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(2);
+});
+
+it.each(['forbidden', 'timeout'] as const)('does not invite after creation fails with %s', async code => {
+  const { service, auth } = setup();
+  auth.requestAuthenticated.mockRejectedValue(new VRChatApiError(code));
+  await service.create({ ...options, inviteSelf: true });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(1);
+});
+
+it('does not invite when disabled and rejects non-boolean invite options', async () => {
+  const { service, auth } = setup();
+  expect(await service.create({ ...options, inviteSelf: 'true' as any })).toMatchObject({ status: 'failed', error: { code: 'invalidInput' } });
+  expect(auth.requestAuthenticated).not.toHaveBeenCalled();
+  await service.create({ ...options, inviteSelf: false });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(1);
+});
+
+it('does not invite in a new session after creation completes in an old session', async () => {
+  const { service, auth } = setup();
+  let finish: (value: unknown) => void;
+  auth.requestAuthenticated.mockReturnValue(new Promise(resolve => { finish = resolve; }));
+  const pending = service.create({ ...options, inviteSelf: true });
+  auth.getSessionKey.mockReturnValue(`2:${userId}`);
+  finish(response);
+  expect(await pending).toMatchObject({ status: 'idle' });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(1);
+});
+
+it('discards an automatic invitation result when the session changes during sending', async () => {
+  const { service, auth } = setup();
+  let finishInvite: (value: unknown) => void;
+  auth.requestAuthenticated.mockResolvedValueOnce(response)
+    .mockReturnValueOnce(new Promise(resolve => { finishInvite = resolve; }));
+  const pending = service.create({ ...options, inviteSelf: true });
+  await Promise.resolve();
+  expect(service.getState(worldId).invites.self.status).toBe('sending');
+  auth.getSessionKey.mockReturnValue(`2:${userId}`);
+  finishInvite({ id: 'notification', type: 'invite', receiverUserId: userId });
+  expect(await pending).toMatchObject({ status: 'idle' });
+  expect(auth.requestAuthenticated).toHaveBeenCalledTimes(2);
+});

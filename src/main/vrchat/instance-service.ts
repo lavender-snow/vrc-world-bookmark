@@ -91,7 +91,10 @@ export class VRChatInstanceService {
     const authState = this.auth.getState();
     if (authState.status !== 'authenticated') return { loggedIn: false, status: 'idle', error: { code: 'unauthorized' } };
     let request;
-    try { request = buildCreateInstanceRequest(options, authState.user.id); }
+    try {
+      if (options.inviteSelf !== undefined && typeof options.inviteSelf !== 'boolean') throw new VRChatApiError('invalidInput');
+      request = buildCreateInstanceRequest(options, authState.user.id);
+    }
     catch {
       const failed: InstanceState = { loggedIn: true, status: 'failed', error: { code: 'invalidInput' } };
       this.states.set(options.worldId, failed);
@@ -113,6 +116,10 @@ export class VRChatInstanceService {
       const safeError = publicAuthError(error);
       const uncertain = error instanceof VRChatContractError || ['network', 'timeout', 'server', 'invalidResponse', 'unexpected'].includes(safeError.code);
       this.states.set(options.worldId, { loggedIn: true, status: uncertain ? 'unknown' : 'failed', options: safeOptions, error: safeError });
+    }
+    // Keep invitation failures separate from creation, and continue even if the modal closes.
+    if (options.inviteSelf && this.getState(options.worldId).status === 'created') {
+      return this.invite({ worldId: options.worldId, receiverId: 'self' });
     }
     return this.getState(options.worldId);
   }

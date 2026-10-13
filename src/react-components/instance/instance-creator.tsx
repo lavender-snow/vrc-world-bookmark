@@ -44,6 +44,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
   const [state, setState] = useState<InstanceState | null>(null);
   const [access, setAccess] = useState<InstanceAccess>('invitePlus');
   const [region, setRegion] = useState<InstanceRegion>('jp');
+  const [inviteSelf, setInviteSelf] = useState(true);
   const [busy, setBusy] = useState(false);
   const [communicationError, setCommunicationError] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
@@ -119,7 +120,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
       </> : <form onSubmit={event => {
         event.preventDefault();
         if (creating || communicationError) return;
-        void perform(() => window.vrchatInstances.create({ worldId, access, region }));
+        void perform(() => window.vrchatInstances.create({ worldId, access, region, inviteSelf }));
       }}>
         <fieldset disabled={creating || communicationError}>
           <label htmlFor={`${id}-access`}>公開範囲</label>
@@ -130,6 +131,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
           <select id={`${id}-region`} value={region} onChange={event => setRegion(event.target.value as InstanceRegion)}>
             {Object.entries(regionNames).map(([value, name]) => <option key={value} value={value}>{name}</option>)}
           </select>
+          <label className={styles.selfInvite}><input type="checkbox" checked={inviteSelf} onChange={event => setInviteSelf(event.target.checked)} />作成後に自分を招待する</label>
           <button type="submit" disabled={creating || communicationError}>{creating ? '作成中…' : 'この設定で作成'}</button>
         </fieldset>
       </form>}
