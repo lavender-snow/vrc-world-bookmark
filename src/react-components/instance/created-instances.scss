@@ -1,0 +1,54 @@
+@use 'assets/styles/theme.scss';
+@use 'sass:color';
+
+:local(.list) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  h2, h3, p { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+  > p { color: theme.$gray; }
+  button, select, input[type='search'] {
+    font: inherit;
+    padding: 8px 12px;
+    border: 1px solid theme.$gray;
+    border-radius: 4px;
+    background: theme.$white;
+    color: theme.$black;
+  }
+  button {
+    cursor: pointer;
+    background: theme.$light-blue;
+    border-color: theme.$light-blue;
+    color: theme.$white;
+    &:hover:not(:disabled) { background: color.adjust(theme.$light-blue, $lightness: -10%); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+  button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible {
+    outline: 2px solid theme.$light-blue;
+    outline-offset: 2px;
+  }
+  [role='alert'] { color: #a01927; }
+}
+
+:local(.card) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid theme.$light-gray;
+  border-radius: 8px;
+  background: theme.$white;
+  summary { cursor: pointer; padding: 8px 0; }
+  section { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding-top: 12px; }
+  section > div { display: flex; gap: 8px; }
+}
+
+:local(.close-button) { align-self: flex-start; }
+
+:local(.confirm) {
+  padding: 12px;
+  border: 1px solid theme.$gray;
+  border-radius: 4px;
+  p { margin-bottom: 8px; }
+  button + button { margin-left: 8px; }
+}

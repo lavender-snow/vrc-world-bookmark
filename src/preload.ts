@@ -15,6 +15,8 @@ const vrchatInstances: VRChatInstanceAPI = {
   getState: worldId => ipcRenderer.invoke('vrchat_instance_state', worldId),
   create: options => ipcRenderer.invoke('vrchat_instance_create', options),
   reset: worldId => ipcRenderer.invoke('vrchat_instance_reset', worldId),
+  list: () => ipcRenderer.invoke('vrchat_instance_list'),
+  close: input => ipcRenderer.invoke('vrchat_instance_close', input),
 };
 contextBridge.exposeInMainWorld('vrchatInstances', vrchatInstances);
 

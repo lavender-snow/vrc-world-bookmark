@@ -5,7 +5,7 @@ import { VRChatApiError } from './errors';
 const API_BASE = 'https://api.vrchat.cloud/api/1';
 
 export interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT';
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   body?: unknown;
   authorization?: string;
   retry?: boolean;

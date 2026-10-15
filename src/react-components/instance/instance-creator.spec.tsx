@@ -22,6 +22,8 @@ beforeEach(() => {
     getState: jest.fn().mockResolvedValue(idle),
     create: jest.fn().mockResolvedValue(created),
     reset: jest.fn().mockResolvedValue(idle),
+    list: jest.fn().mockResolvedValue({ loggedIn: true, instances: [] }),
+    close: jest.fn().mockResolvedValue({ loggedIn: true, instances: [] }),
   };
   window.vrchatInstances = api;
 });
@@ -40,7 +42,7 @@ it('uses Invite+/Japan defaults with English region names and submits selected o
   fireEvent.change(screen.getByLabelText('リージョン'), { target: { value: 'eu' } });
   fireEvent.click(screen.getByRole('button', { name: 'この設定で作成' }));
   await screen.findByText('インスタンスを作成しました。');
-  expect(api.create).toHaveBeenCalledWith({ worldId, access: 'friendsPlus', region: 'eu', inviteSelf: true });
+  expect(api.create).toHaveBeenCalledWith({ worldId, worldName: 'テストワールド', access: 'friendsPlus', region: 'eu', inviteSelf: true });
   expect(screen.queryByRole('button', { name: 'この設定で作成' })).not.toBeInTheDocument();
 });
 
@@ -49,7 +51,7 @@ it('allows creating without an automatic self invite', async () => {
   fireEvent.click(await screen.findByRole('checkbox', { name: '作成後に自分を招待する' }));
   fireEvent.click(screen.getByRole('button', { name: 'この設定で作成' }));
   await screen.findByText('インスタンスを作成しました。');
-  expect(api.create).toHaveBeenCalledWith({ worldId, access: 'invitePlus', region: 'jp', inviteSelf: false });
+  expect(api.create).toHaveBeenCalledWith({ worldId, worldName: 'テストワールド', access: 'invitePlus', region: 'jp', inviteSelf: false });
 });
 
 it('shows the automatic self invite result returned by main', async () => {

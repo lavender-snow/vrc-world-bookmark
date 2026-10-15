@@ -9,7 +9,7 @@ export interface InviteStatus {
   receiverName: string;
   error?: AuthError;
 }
-export interface InviteInput { worldId: string; receiverId: string; resend?: boolean }
+export interface InviteInput { worldId: string; receiverId: string; resend?: boolean; instanceKey?: string }
 export interface VRChatInviteAPI {
   listFriends(input: FriendPageInput): Promise<FriendPage>;
   send(input: InviteInput): Promise<InstanceState>;

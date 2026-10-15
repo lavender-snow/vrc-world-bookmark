@@ -17,6 +17,7 @@ jest.mock('./data-entry/world-data-entry', () => ({
 jest.mock('./settings/settings', () => ({
   Settings: () => <div data-testid="settings">Settings</div>,
 }));
+jest.mock('./instance/created-instances', () => ({ CreatedInstances: () => <div data-testid="created-instances">CreatedInstances</div> }));
 
 jest.mock('src/contexts/app-data-provider', () => ({
   AppDataProvider: ({ children }: any) => <>{children}</>,
@@ -44,6 +45,12 @@ jest.mock('src/contexts/world-data-entry-provider', () => ({
 }));
 
 describe('App', () => {
+  it('「マイインスタンス」タブをクリックすると一覧が表示される', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'マイインスタンス' }));
+    expect(screen.getByTestId('created-instances')).toBeInTheDocument();
+    expect(screen.getByTestId('icon-instances')).toBeInTheDocument();
+  });
   it('初期表示で「おすすめ」タブがアクティブ', async () => {
     render(<App />);
     await waitFor(() => {

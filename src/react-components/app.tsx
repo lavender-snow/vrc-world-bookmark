@@ -4,11 +4,13 @@ import { useState } from 'react';
 import styles from './app.scss';
 import { BookmarkList } from './bookmark-list/bookmark-list';
 import { WorldDataEntry } from './data-entry/world-data-entry';
+import { CreatedInstances } from './instance/created-instances';
 import { Recommend } from './recommend/recommend';
 import { Settings } from './settings/settings';
 
 import { ReactComponent as ThumbsUpIcon } from 'assets/images/AkarIconsThumbsUp.svg';
 import { ReactComponent as BookmarkIcon } from 'assets/images/MaterialSymbolsBookmarkAddOutline.svg';
+import { ReactComponent as InstancesIcon } from 'assets/images/MaterialSymbolsListAltOutline.svg';
 import { ReactComponent as SettingsIcon } from 'assets/images/MaterialSymbolsSettingsRounded.svg';
 import { ReactComponent as EarthIcon } from 'assets/images/MdiEarth.svg';
 import { AppDataProvider } from 'src/contexts/app-data-provider';
@@ -22,6 +24,7 @@ const TAB_KEYS = {
   recommend: 'recommend',
   register: 'register',
   list: 'list',
+  instances: 'instances',
   settings: 'settings',
 };
 
@@ -35,6 +38,11 @@ const TABS = [
     key: TAB_KEYS.list,
     label: 'ワールド一覧',
     icon: EarthIcon,
+  },
+  {
+    key: TAB_KEYS.instances,
+    label: 'マイインスタンス',
+    icon: InstancesIcon,
   },
   {
     key: TAB_KEYS.register,
@@ -76,6 +84,7 @@ export function App(): React.ReactNode {
             <BookmarkListProvider>
               {activeTab === TAB_KEYS.list && <BookmarkList />}
             </BookmarkListProvider>
+            {activeTab === TAB_KEYS.instances && <CreatedInstances />}
             <WorldDataEntryProvider>
               {activeTab === TAB_KEYS.register && <WorldDataEntry />}
             </WorldDataEntryProvider>

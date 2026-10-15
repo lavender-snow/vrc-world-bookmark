@@ -8,13 +8,15 @@ import type { VRChatInstanceService } from './instance-service';
 jest.mock('electron', () => ({ ipcMain: { handle: jest.fn() } }));
 
 it('rejects every instance operation when there is no trusted window', () => {
-  const service = { create: jest.fn(), reset: jest.fn(), getState: jest.fn() };
+  const service = { create: jest.fn(), reset: jest.fn(), getState: jest.fn(), list: jest.fn(), close: jest.fn() };
   registerInstanceIpc(service as unknown as VRChatInstanceService, () => undefined, 'file:///app/index.html');
-  expect(ipcMain.handle).toHaveBeenCalledTimes(3);
+  expect(ipcMain.handle).toHaveBeenCalledTimes(5);
   for (const [, handler] of jest.mocked(ipcMain.handle).mock.calls) {
     expect(() => handler({} as IpcMainInvokeEvent)).toThrow('Unauthorized IPC sender');
   }
   expect(service.create).not.toHaveBeenCalled();
   expect(service.reset).not.toHaveBeenCalled();
   expect(service.getState).not.toHaveBeenCalled();
+  expect(service.list).not.toHaveBeenCalled();
+  expect(service.close).not.toHaveBeenCalled();
 });

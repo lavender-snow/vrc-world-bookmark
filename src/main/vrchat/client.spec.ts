@@ -30,10 +30,10 @@ describe('VRChat HTTP client', () => {
     expect(fetcher.mock.calls[3][1].headers.Cookie).not.toContain('auth=secret');
   });
 
-  it.each(['POST', 'PUT'])('never retries %s on server failures', async method => {
+  it.each(['POST', 'PUT', 'DELETE'])('never retries %s on server failures', async method => {
     const fetcher = jest.fn().mockResolvedValue(json({ private: 'secret' }, 500));
     const client = new VRChatClient('test/1', fetcher);
-    await expect(client.request('/instances', { method: method as 'POST' | 'PUT' })).rejects.toMatchObject({ code: 'server' });
+    await expect(client.request('/instances', { method: method as 'POST' | 'PUT' | 'DELETE' })).rejects.toMatchObject({ code: 'server' });
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
 

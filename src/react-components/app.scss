@@ -3,6 +3,7 @@
 :local(.tab-header) {
   display: flex;
   height: 55px;
+  overflow-x: auto;
   margin-bottom: 4px;
   background: theme.$header-bg;
 
@@ -13,6 +14,10 @@
 
 :local(.tab-header-item) {
   flex: 1;
+  flex-shrink: 0;
+  gap: 4px;
+  white-space: nowrap;
+  svg { flex-shrink: 0; }
   justify-content: center;
   display: flex;
   align-items: center;

@@ -99,6 +99,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
     {state?.loggedIn && <>
       {state.status === 'created' && <div role="status">
         <p>インスタンスを作成しました。</p>
+        {state.closeStatus === 'closed' && <p>このインスタンスは閉鎖済みです。</p>}
         <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}</p>
         <p>作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
       </div>}
@@ -113,14 +114,14 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
       }</p>}
       {needsReset ? <>
         {state.status === 'unknown' && <label><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />重複して作成される可能性を確認しました</label>}
-        <button type="button" disabled={creating || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') || (state.status === 'unknown' && !acknowledged)} onClick={() => {
+        <button type="button" disabled={creating || state.closeStatus === 'closing' || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') || (state.status === 'unknown' && !acknowledged)} onClick={() => {
           setAcknowledged(false);
           void perform(() => window.vrchatInstances.reset(worldId));
         }}>別のインスタンスの作成に進む</button>
       </> : <form onSubmit={event => {
         event.preventDefault();
         if (creating || communicationError) return;
-        void perform(() => window.vrchatInstances.create({ worldId, access, region, inviteSelf }));
+        void perform(() => window.vrchatInstances.create({ worldId, worldName, access, region, inviteSelf }));
       }}>
         <fieldset disabled={creating || communicationError}>
           <label htmlFor={`${id}-access`}>公開範囲</label>

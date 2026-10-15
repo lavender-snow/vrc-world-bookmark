@@ -37,6 +37,7 @@ export function InviteControls({ state, busy, onSend }: {
   }
 
   const invite = state.invites?.[receiver];
+  const unavailable = ['closing', 'closed', 'unknown'].includes(state.closeStatus);
   const sending = busy || Object.values(state.invites ?? {}).some(value => value.status === 'sending');
   const selected = friends.find(friend => friend.id === receiver);
   const name = receiver === 'self' ? '自分' : selected?.displayName;
@@ -75,8 +76,9 @@ export function InviteControls({ state, busy, onSend }: {
       <p role="alert">招待の送信結果が不明です。すでに届いている可能性があります。</p>
       <label><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />重複して届く可能性を確認して再送する</label>
     </>}
-    <button type="button" disabled={sending || !name || (invite?.status === 'unknown' && !acknowledged)} onClick={() => {
-      if (sending || !name) return;
+    {unavailable && <p>閉鎖中・閉鎖済み、または閉鎖結果が不明なインスタンスには招待を送信できません。</p>}
+    <button type="button" disabled={unavailable || sending || !name || (invite?.status === 'unknown' && !acknowledged)} onClick={() => {
+      if (unavailable || sending || !name) return;
       onSend(receiver, invite?.status === 'sent' || invite?.status === 'unknown'); setAcknowledged(false);
     }}>{sending ? '招待を送信中…' : invite?.status === 'sent' || invite?.status === 'unknown' || invite?.status === 'failed' ? '招待を再送する' : '招待を送信する'}</button>
   </section>;
