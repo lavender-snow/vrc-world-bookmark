@@ -11,6 +11,13 @@ const accessNames: Record<InstanceAccess, string> = {
 };
 const regionNames: Record<InstanceRegion, string> = { jp: 'Japan', us: 'US West', use: 'US East', eu: 'Europe' };
 
+function WorldThumbnail({ url, name }: { url?: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  return <div className={styles.thumbnail}>
+    {url && !failed ? <img src={url} alt={`${name}のサムネイル`} loading="lazy" onError={() => setFailed(true)} /> : <span>画像なし</span>}
+  </div>;
+}
+
 export function CreatedInstances() {
   const [list, setList] = useState<CreatedInstanceList | null>(null);
   const [error, setError] = useState(false);
@@ -60,9 +67,14 @@ export function CreatedInstances() {
     {list && !list.loggedIn && <p>「設定 → VRChat」でログインしてください。</p>}
     {list?.loggedIn && list.instances.length === 0 && <p>作成済みのインスタンスはありません。ワールド一覧から作成できます。</p>}
     {list?.instances.map(instance => <article key={instance.instanceKey} className={styles.card} aria-label={instance.options.worldName ?? instance.options.worldId}>
-      <h3>{instance.options.worldName ?? instance.options.worldId}</h3>
-      <p>{accessNames[instance.options.access]} / {regionNames[instance.options.region]}</p>
-      <p>作成日時: {new Date(instance.createdAt).toLocaleString('ja-JP')}</p>
+      <header className={styles.cardHeader}>
+        <WorldThumbnail key={instance.options.thumbnailImageUrl} url={instance.options.thumbnailImageUrl} name={instance.options.worldName ?? instance.options.worldId} />
+        <div className={styles.worldDetails}>
+          <h3>{instance.options.worldName ?? instance.options.worldId}</h3>
+          <p>{accessNames[instance.options.access]} / {regionNames[instance.options.region]}</p>
+          <p>作成日時: {new Date(instance.createdAt).toLocaleString('ja-JP')}</p>
+        </div>
+      </header>
       {instance.closeStatus === 'closing' && <p role="status">インスタンスを閉鎖しています…</p>}
       {instance.closeStatus === 'closed' && <p role="status">閉鎖済み</p>}
       {instance.closeStatus === 'failed' && <p role="alert">{

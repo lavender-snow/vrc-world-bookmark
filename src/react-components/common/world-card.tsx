@@ -232,7 +232,7 @@ export function WorldCard({ worldInfo, setVRChatWorldInfo }: { worldInfo: VRChat
         </div>
 
       </div>
-      {!worldInfo.deletedAt && <InstanceCreator key={worldInfo.id} worldId={worldInfo.id} worldName={worldInfo.name} />}
+      {!worldInfo.deletedAt && <InstanceCreator key={worldInfo.id} worldId={worldInfo.id} worldName={worldInfo.name} thumbnailImageUrl={worldInfo.thumbnailImageUrl} />}
     </div >
   );
 }

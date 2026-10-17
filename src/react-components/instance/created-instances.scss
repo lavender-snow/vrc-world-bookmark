@@ -45,6 +45,28 @@
 
 :local(.close-button) { align-self: flex-start; }
 
+:local(.card-header) { display: flex; align-items: center; gap: 16px; }
+
+:local(.thumbnail) {
+  flex: 0 0 160px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 6px;
+  background: theme.$light-gray;
+  color: theme.$gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+:local(.world-details) { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 600px) {
+  :local(.card-header) { flex-direction: column; align-items: stretch; }
+  :local(.thumbnail) { flex: none; width: 100%; }
+}
+
 :local(.confirm) {
   padding: 12px;
   border: 1px solid theme.$gray;

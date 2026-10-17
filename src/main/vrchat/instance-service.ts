@@ -192,6 +192,7 @@ export class VRChatInstanceService {
     try {
       if (options.inviteSelf !== undefined && typeof options.inviteSelf !== 'boolean') throw new VRChatApiError('invalidInput');
       if (options.worldName !== undefined && (typeof options.worldName !== 'string' || options.worldName.length > 500)) throw new VRChatApiError('invalidInput');
+      if (options.thumbnailImageUrl !== undefined && (typeof options.thumbnailImageUrl !== 'string' || options.thumbnailImageUrl.length > 4096)) throw new VRChatApiError('invalidInput');
       request = buildCreateInstanceRequest(options, authState.user.id);
     }
     catch {
@@ -200,7 +201,11 @@ export class VRChatInstanceService {
       return structuredClone(failed);
     }
     const key = this.sessionKey;
-    const safeOptions: CreateInstanceOptions = { worldId: request.worldId, access: options.access, region: request.region, ...(options.worldName !== undefined ? { worldName: options.worldName } : {}) };
+    const safeOptions: CreateInstanceOptions = {
+      worldId: request.worldId, access: options.access, region: request.region,
+      ...(options.worldName !== undefined ? { worldName: options.worldName } : {}),
+      ...(options.thumbnailImageUrl !== undefined ? { thumbnailImageUrl: options.thumbnailImageUrl } : {}),
+    };
     this.states.set(options.worldId, { loggedIn: true, status: 'creating', options: safeOptions });
     try {
       const response = await this.auth.requestAuthenticated('/instances', { method: 'POST', body: request, retry: false });

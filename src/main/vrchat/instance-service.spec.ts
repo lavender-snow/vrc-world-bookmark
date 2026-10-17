@@ -18,11 +18,13 @@ function setup() {
 
 it('creates using authenticated ownership and keeps private locations out of renderer state', async () => {
   const { service, auth } = setup();
-  const state = await service.create(options);
+  const thumbnailImageUrl = 'https://api.vrchat.cloud/api/1/file/thumbnail/1/file';
+  const state = await service.create({ ...options, thumbnailImageUrl });
   expect(auth.requestAuthenticated).toHaveBeenCalledWith('/instances', {
     method: 'POST', retry: false, body: { worldId, type: 'private', region: 'jp', ownerId: userId, canRequestInvite: false },
   });
-  expect(state).toMatchObject({ status: 'created', options });
+  expect(state).toMatchObject({ status: 'created', options: { ...options, thumbnailImageUrl } });
+  expect(service.list().instances[0].options.thumbnailImageUrl).toBe(thumbnailImageUrl);
   expect(JSON.stringify(state)).not.toContain('secret');
   expect(service.getState(worldId)).toEqual(state);
   await service.create(options);

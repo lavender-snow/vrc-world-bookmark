@@ -11,15 +11,17 @@ const accessNames: Record<InstanceAccess, string> = {
 };
 const regionNames: Record<InstanceRegion, string> = { jp: 'Japan', us: 'US West', use: 'US East', eu: 'Europe' };
 
-export function InstanceCreator({ worldId, worldName }: { worldId: string; worldName: string }) {
+type WorldDetails = { worldId: string; worldName: string; thumbnailImageUrl?: string };
+
+export function InstanceCreator({ worldId, worldName, thumbnailImageUrl }: WorldDetails) {
   const [opened, setOpened] = useState(false);
   return <section className={styles.creator}>
     <button type="button" aria-haspopup="dialog" aria-expanded={opened} onClick={() => setOpened(true)}>インスタンスを作成</button>
-    {opened && <CreationModal key={worldId} worldId={worldId} worldName={worldName} onClose={() => setOpened(false)} />}
+    {opened && <CreationModal key={worldId} worldId={worldId} worldName={worldName} thumbnailImageUrl={thumbnailImageUrl} onClose={() => setOpened(false)} />}
   </section>;
 }
 
-function CreationModal({ worldId, worldName, onClose }: { worldId: string; worldName: string; onClose: () => void }) {
+function CreationModal({ worldId, worldName, thumbnailImageUrl, onClose }: WorldDetails & { onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
   useEffect(() => {
@@ -37,11 +39,11 @@ function CreationModal({ worldId, worldName, onClose }: { worldId: string; world
       <h2 id={titleId}>インスタンスを作成</h2>
       <button type="button" onClick={onClose} aria-label="作成モーダルを閉じる">閉じる</button>
     </header>
-    <CreationPanel worldId={worldId} worldName={worldName} />
+    <CreationPanel worldId={worldId} worldName={worldName} thumbnailImageUrl={thumbnailImageUrl} />
   </dialog>;
 }
 
-function CreationPanel({ worldId, worldName }: { worldId: string; worldName: string }) {
+function CreationPanel({ worldId, worldName, thumbnailImageUrl }: WorldDetails) {
   const [state, setState] = useState<InstanceState | null>(null);
   const [access, setAccess] = useState<InstanceAccess>('invitePlus');
   const [region, setRegion] = useState<InstanceRegion>('jp');
@@ -125,7 +127,7 @@ function CreationPanel({ worldId, worldName }: { worldId: string; worldName: str
       </> : <form onSubmit={event => {
         event.preventDefault();
         if (creating || communicationError) return;
-        void perform(() => window.vrchatInstances.create({ worldId, worldName, access, region, inviteSelf }));
+        void perform(() => window.vrchatInstances.create({ worldId, worldName, access, region, inviteSelf, ...(thumbnailImageUrl ? { thumbnailImageUrl } : {}) }));
       }}>
         <fieldset disabled={creating || communicationError}>
           <label htmlFor={`${id}-access`}>公開範囲</label>

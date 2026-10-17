@@ -7,7 +7,7 @@ import type { CreatedInstance, VRChatInstanceAPI } from 'src/types/vrchat-instan
 
 const first: CreatedInstance = {
   loggedIn: true, status: 'created', instanceKey: 'first', canClose: true,
-  options: { worldId: 'wrld_test', worldName: '最初のワールド', access: 'invitePlus', region: 'jp' },
+  options: { worldId: 'wrld_test', worldName: '最初のワールド', access: 'invitePlus', region: 'jp', thumbnailImageUrl: 'https://api.vrchat.cloud/api/1/file/thumbnail/1/file' },
   createdAt: '2026-10-13T00:00:00Z',
 };
 const second: CreatedInstance = { ...first, instanceKey: 'second', options: { ...first.options, worldName: '次のワールド', region: 'eu' } };
@@ -25,6 +25,10 @@ beforeEach(() => {
 it('lists creation settings and invites the selected instance even for the same world', async () => {
   render(<CreatedInstances />);
   const card = await screen.findByRole('article', { name: '最初のワールド' });
+  const thumbnail = within(card).getByRole('img', { name: '最初のワールドのサムネイル' });
+  expect(thumbnail).toHaveAttribute('src', first.options.thumbnailImageUrl);
+  fireEvent.error(thumbnail);
+  expect(within(card).getByText('画像なし')).toBeInTheDocument();
   expect(within(card).getByText('Invite+ / Japan')).toBeInTheDocument();
   expect(within(screen.getByRole('article', { name: '次のワールド' })).getByText('Invite+ / Europe')).toBeInTheDocument();
   fireEvent.click(within(card).getByText('このインスタンスへ招待'));
