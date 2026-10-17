@@ -41,7 +41,7 @@ it('uses Invite+/Japan defaults with English region names and submits selected o
   fireEvent.change(screen.getByLabelText('公開範囲'), { target: { value: 'friendsPlus' } });
   fireEvent.change(screen.getByLabelText('リージョン'), { target: { value: 'eu' } });
   fireEvent.click(screen.getByRole('button', { name: 'この設定で作成' }));
-  await screen.findByText('インスタンスを作成しました。');
+  await screen.findByText(/Invite \/ Japan\s+作成日時:/);
   expect(api.create).toHaveBeenCalledWith({ worldId, worldName: 'テストワールド', access: 'friendsPlus', region: 'eu', inviteSelf: true });
   expect(screen.queryByRole('button', { name: 'この設定で作成' })).not.toBeInTheDocument();
 });
@@ -50,7 +50,7 @@ it('allows creating without an automatic self invite', async () => {
   open();
   fireEvent.click(await screen.findByRole('checkbox', { name: '作成後に自分を招待する' }));
   fireEvent.click(screen.getByRole('button', { name: 'この設定で作成' }));
-  await screen.findByText('インスタンスを作成しました。');
+  await screen.findByText(/Invite \/ Japan\s+作成日時:/);
   expect(api.create).toHaveBeenCalledWith({ worldId, worldName: 'テストワールド', access: 'invitePlus', region: 'jp', inviteSelf: false });
 });
 
@@ -58,7 +58,7 @@ it('shows the automatic self invite result returned by main', async () => {
   api.create.mockResolvedValue({ ...created, invites: { self: { status: 'sent', receiverName: '自分' } } });
   open();
   fireEvent.click(await screen.findByRole('button', { name: 'この設定で作成' }));
-  expect(await screen.findByText('自分に招待を送信しました。')).toBeInTheDocument();
+  expect(await screen.findByText('自分への招待: 送信済み')).toBeInTheDocument();
 });
 
 it('directs signed-out users to settings without showing a creation form', async () => {
@@ -85,10 +85,10 @@ it('requires acknowledgement before resetting an unknown outcome and never autom
 it('restores creation results after closing and reopening the modal', async () => {
   api.getState.mockResolvedValue(created);
   open();
-  await screen.findByText('インスタンスを作成しました。');
+  await screen.findByText(/Invite \/ Japan\s+作成日時:/);
   fireEvent.click(screen.getByRole('button', { name: '作成モーダルを閉じる' }));
   fireEvent.click(screen.getByRole('button', { name: 'インスタンスを作成' }));
-  await screen.findByText('インスタンスを作成しました。');
+  await screen.findByText(/Invite \/ Japan\s+作成日時:/);
   expect(api.getState).toHaveBeenCalledTimes(2);
   expect(api.create).not.toHaveBeenCalled();
 });
@@ -114,6 +114,6 @@ it('disables submission while pending and retains main state on completion', asy
   fireEvent.click(await screen.findByRole('button', { name: 'この設定で作成' }));
   expect(screen.getByRole('button', { name: '作成中…' })).toBeDisabled();
   await act(async () => finish(created));
-  await screen.findByText('インスタンスを作成しました。');
+  await screen.findByText(/Invite \/ Japan\s+作成日時:/);
   expect(api.create).toHaveBeenCalledTimes(1);
 });

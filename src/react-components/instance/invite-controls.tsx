@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
+import styles from './invite-controls.scss';
+
 import type { InstanceState } from 'src/types/vrchat-instance';
 import type { FriendSummary } from 'src/types/vrchat-invite';
 
@@ -42,9 +44,18 @@ export function InviteControls({ state, busy, onSend }: {
   const selected = friends.find(friend => friend.id === receiver);
   const name = receiver === 'self' ? '自分' : selected?.displayName;
   const visible = friends.filter(friend => friend.displayName.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  const resend = invite?.status === 'sent' || invite?.status === 'unknown' || invite?.status === 'failed';
+  const statusLabel = { sending: '送信中…', sent: '送信済み', failed: '送信失敗', unknown: '結果不明' }[invite?.status] ?? '未送信';
+  const inviteRow = <div className={styles.inviteRow}>
+    <span role="status">{receiver === 'self' ? '自分への招待' : `${name ?? '未選択'}への招待`}: {statusLabel}</span>
+    <button type="button" aria-label={sending ? '招待を送信中…' : resend ? '招待を再送する' : '招待を送信する'} disabled={unavailable || sending || !name || (invite?.status === 'unknown' && !acknowledged)} onClick={() => {
+      if (unavailable || sending || !name) return;
+      onSend(receiver, invite?.status === 'sent' || invite?.status === 'unknown'); setAcknowledged(false);
+    }}>{sending ? invite?.status === 'sending' ? '送信中…' : '待機中' : resend ? '再送' : '招待する'}</button>
+  </div>;
   return <section aria-label="インスタンスへの招待">
     <h3>インスタンスへ招待</h3>
-    <p>招待先: <strong>{name ?? '選択してください'}</strong></p>
+    {receiver === 'self' && inviteRow}
     <button type="button" disabled={sending || loading} onClick={() => { void load(offline, offset); }}>{expanded ? 'フレンド一覧を更新' : 'フレンドを表示'}</button>
     {expanded && <>
       <label htmlFor={`${id}-online`}>フレンドの状態</label>
@@ -64,9 +75,9 @@ export function InviteControls({ state, busy, onSend }: {
         <button type="button" disabled={sending || loading || !hasMore} onClick={() => { void load(offline, offset + 100); }}>次へ</button>
       </div>
     </>}
+    {receiver !== 'self' && inviteRow}
     {loading && <p role="status">フレンドを読み込んでいます…</p>}
     {loadError && <p role="alert">フレンドを取得できませんでした。接続やログイン状態を確認して、一覧を更新してください。</p>}
-    {invite?.status === 'sent' && <p role="status">{invite.receiverName}に招待を送信しました。</p>}
     {invite?.status === 'failed' && <p role="alert">{
       invite.error?.code === 'rateLimited' ? 'アクセスが集中しています。時間を置いて再送してください。' :
         invite.error?.code === 'notFound' ? 'インスタンスが見つからないか、参加できません。' :
@@ -77,9 +88,5 @@ export function InviteControls({ state, busy, onSend }: {
       <label><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />重複して届く可能性を確認して再送する</label>
     </>}
     {unavailable && <p>閉鎖中・閉鎖済み、または閉鎖結果が不明なインスタンスには招待を送信できません。</p>}
-    <button type="button" disabled={unavailable || sending || !name || (invite?.status === 'unknown' && !acknowledged)} onClick={() => {
-      if (unavailable || sending || !name) return;
-      onSend(receiver, invite?.status === 'sent' || invite?.status === 'unknown'); setAcknowledged(false);
-    }}>{sending ? '招待を送信中…' : invite?.status === 'sent' || invite?.status === 'unknown' || invite?.status === 'failed' ? '招待を再送する' : '招待を送信する'}</button>
   </section>;
 }

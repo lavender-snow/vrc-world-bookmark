@@ -18,7 +18,7 @@ beforeEach(() => {
   };
 });
 
-it('shows recipients and destination and requires acknowledgement to include unknown results', async () => {
+it('shows recipients and requires acknowledgement to include unknown results', async () => {
   const send = jest.fn();
   render(<GroupInviteControls state={state} busy={false} onSend={send} onCancel={jest.fn()} />);
   await screen.findByRole('option', { name: '仲間（3人）' });
@@ -26,7 +26,6 @@ it('shows recipients and destination and requires acknowledgement to include unk
   expect(screen.queryByRole('button', { name: 'グループを選ぶ' })).not.toBeInTheDocument();
   expect(screen.getByLabelText('招待するグループ')).toHaveValue('g');
   expect(send).not.toHaveBeenCalled();
-  expect(screen.getByText('移動先')).toBeInTheDocument();
   expect(screen.getByText('Alice — 送信済み')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: '1人にまとめて招待' }));
   expect(send).toHaveBeenLastCalledWith('g', false);

@@ -101,10 +101,8 @@ function CreationPanel({ worldId, worldName, thumbnailImageUrl }: WorldDetails) 
     {state && !state.loggedIn && <p>作成するには「設定 → VRChat」でログインしてください。</p>}
     {state?.loggedIn && <>
       {state.status === 'created' && <div role="status">
-        <p>インスタンスを作成しました。</p>
         {state.closeStatus === 'closed' && <p>このインスタンスは閉鎖済みです。</p>}
-        <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}</p>
-        <p>作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
+        <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}　作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
       </div>}
       {state.status === 'created' && <InviteControls key={state.createdAt} state={state} busy={busy}
         onSend={(receiverId, resend) => { void perform(() => window.vrchatInvites.send({ worldId, receiverId, resend })); }} />}

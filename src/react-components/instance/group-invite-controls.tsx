@@ -61,7 +61,6 @@ export function GroupInviteControls({ state, busy, onSend, onCancel }: {
       </select>
     </>}
     {group && <>
-      <p>招待先: <strong>{state.options?.worldName ?? state.options?.worldId}</strong> ／ {group.name}（{group.members.length}人）</p>
       <ul>{group.members.map(member => <li key={member.id}>{member.displayName} — {statuses[state.invites?.[member.id]?.status] ?? '未送信'}</li>)}</ul>
       <p>メンバーへ順番に招待します。このインスタンスへの送信済みメンバーは除きます。</p>
       {unknown && <label><input type="checkbox" checked={retryUnknown} disabled={disabled} onChange={event => setRetryUnknown(event.target.checked)} />重複して届く可能性を確認し、結果不明のメンバーにも再送する</label>}

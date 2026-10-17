@@ -1,0 +1,9 @@
+:local(.invite-row) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+  span { overflow-wrap: anywhere; }
+  button { flex-shrink: 0; }
+}
