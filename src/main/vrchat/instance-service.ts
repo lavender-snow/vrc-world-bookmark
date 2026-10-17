@@ -5,7 +5,9 @@ import { buildCreateInstanceRequest, buildSelfInvitePath, parseInstanceReference
 import type { InstanceReference } from './contracts';
 import { publicAuthError, VRChatApiError } from './errors';
 import type { VRChatFriendsService } from './friends-service';
+import type { VRChatGroupsService } from './groups-service';
 
+import type { GroupInviteInput, GroupMember } from 'src/types/vrchat-groups';
 import type { CloseInstanceInput, CreatedInstance, CreatedInstanceList, CreateInstanceOptions, InstanceState } from 'src/types/vrchat-instance';
 import type { InviteInput, InviteStatus } from 'src/types/vrchat-invite';
 
@@ -16,7 +18,12 @@ export class VRChatInstanceService {
   private references = new Map<string, InstanceReference>();
   private created = new Map<string, { state: CreatedInstance; reference: InstanceReference }>();
 
-  constructor(private readonly auth: VRChatAuthService, private readonly friends?: VRChatFriendsService) {}
+  constructor(
+    private readonly auth: VRChatAuthService,
+    private readonly friends?: VRChatFriendsService,
+    private readonly groups?: VRChatGroupsService,
+    private readonly pause: () => Promise<void> = () => new Promise(resolve => setTimeout(resolve, 1000)),
+  ) {}
 
   private syncSession(): void {
     const key = this.auth.getSessionKey();
@@ -53,13 +60,20 @@ export class VRChatInstanceService {
 
   reset(worldId: string): InstanceState {
     const state = this.getState(worldId);
-    if (state.status === 'creating' || state.closeStatus === 'closing' || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending')) return state;
+    if (state.status === 'creating' || state.closeStatus === 'closing' || state.groupInvite?.status === 'sending' || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending')) return state;
     this.states.delete(worldId);
     this.references.delete(worldId);
     return this.getState(worldId);
   }
 
   async invite(input: InviteInput): Promise<InstanceState> {
+    this.syncSession();
+    const state = input?.instanceKey ? this.created.get(input.instanceKey)?.state : this.getState(input?.worldId);
+    if (state?.groupInvite?.status === 'sending') throw new VRChatApiError('busy');
+    return this.deliverInvite(input);
+  }
+
+  private async deliverInvite(input: InviteInput, member?: GroupMember): Promise<InstanceState> {
     this.validateWorld(input?.worldId);
     if (typeof input.receiverId !== 'string' || (input.resend !== undefined && typeof input.resend !== 'boolean')) throw new VRChatApiError('invalidInput');
     this.syncSession();
@@ -72,7 +86,7 @@ export class VRChatInstanceService {
     const account = this.auth.getState();
     if (account.status !== 'authenticated' || state.status !== 'created' || !reference) throw new VRChatApiError('unauthorized');
     const self = input.receiverId === 'self';
-    const friend = self ? undefined : this.friends?.getKnownFriend(input.receiverId);
+    const friend = self ? undefined : member ?? this.friends?.getKnownFriend(input.receiverId);
     if (!self && !friend) throw new VRChatApiError('invalidInput');
     const receiverId = self ? account.user.id : friend.id;
     const receiverName = self ? '自分' : friend.displayName;
@@ -103,6 +117,69 @@ export class VRChatInstanceService {
       setInvite({ status: unknown ? 'unknown' : 'failed', receiverName, error: safeError });
     }
     return structuredClone(this.created.get(instanceKey).state);
+  }
+
+  inviteGroup(input: GroupInviteInput): InstanceState {
+    this.validateWorld(input?.worldId);
+    this.syncSession();
+    if (typeof input.instanceKey !== 'string' || typeof input.groupId !== 'string' ||
+      (input.retryUnknown !== undefined && typeof input.retryUnknown !== 'boolean')) throw new VRChatApiError('invalidInput');
+    const entry = this.created.get(input.instanceKey);
+    if (!this.sessionKey) throw new VRChatApiError('unauthorized');
+    if (!entry || entry.state.options.worldId !== input.worldId || !this.groups ||
+      ['closing', 'closed', 'unknown'].includes(entry.state.closeStatus)) throw new VRChatApiError('invalidInput');
+    if ([...this.created.values()].some(item => item.state.groupInvite?.status === 'sending') ||
+      Object.values(entry.state.invites ?? {}).some(invite => invite.status === 'sending')) throw new VRChatApiError('busy');
+    const group = this.groups.get(input.groupId);
+    if (!group.members.length) throw new VRChatApiError('invalidInput');
+    // Snapshot recipients so editing/deleting a saved group cannot change an active send.
+    this.updateCreated({ ...entry.state, groupInvite: { groupName: group.name, members: group.members, status: 'sending' } });
+    void this.deliverGroup(input, group.members, this.sessionKey);
+    return structuredClone(entry.state);
+  }
+
+  cancelGroup(instanceKey: string): InstanceState {
+    this.syncSession();
+    const entry = typeof instanceKey === 'string' ? this.created.get(instanceKey) : undefined;
+    if (!entry) throw new VRChatApiError('invalidInput');
+    if (entry.state.groupInvite?.status === 'sending') {
+      this.updateCreated({ ...entry.state, groupInvite: { ...entry.state.groupInvite, cancelRequested: true } });
+    }
+    return structuredClone(entry.state);
+  }
+
+  private async deliverGroup(input: GroupInviteInput, members: GroupMember[], session: string): Promise<void> {
+    const current = () => {
+      this.syncSession();
+      return this.sessionKey === session ? this.created.get(input.instanceKey)?.state : undefined;
+    };
+    const finish = (status: 'completed' | 'stopped', error?: unknown) => {
+      const state = current();
+      if (state) this.updateCreated({ ...state, groupInvite: { ...state.groupInvite, status, ...(error ? { error: publicAuthError(error) } : {}) } });
+    };
+    try {
+      let sent = false;
+      for (const member of members) {
+        let state = current();
+        if (!state) return;
+        if (state.groupInvite.cancelRequested) { finish('stopped'); return; }
+        const previous = state.invites?.[member.id];
+        // Successful sends are never repeated by group retry; uncertain ones require acknowledgement.
+        if (previous?.status === 'sent' || (previous?.status === 'unknown' && !input.retryUnknown)) continue;
+        if (sent) await this.pause();
+        state = current();
+        if (!state) return;
+        if (state.groupInvite.cancelRequested) { finish('stopped'); return; }
+        const result = await this.deliverInvite({ worldId: input.worldId, instanceKey: input.instanceKey, receiverId: member.id, resend: input.retryUnknown === true }, member);
+        if (!current()) return;
+        sent = true;
+        const error = result.invites?.[member.id]?.error;
+        if (error && !['forbidden', 'invalidInput'].includes(error.code)) {
+          finish('stopped', new VRChatApiError(error.code, error.retryAfterMs)); return;
+        }
+      }
+      finish(current()?.groupInvite.cancelRequested ? 'stopped' : 'completed');
+    } catch (error) { finish('stopped', error); }
   }
 
   async create(options: CreateInstanceOptions): Promise<InstanceState> {
@@ -154,7 +231,7 @@ export class VRChatInstanceService {
     const entry = this.created.get(input.instanceKey);
     if (!entry || !entry.state.canClose || !this.sessionKey) throw new VRChatApiError('forbidden');
     const state = entry.state;
-    if (['closing', 'closed'].includes(state.closeStatus) || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') ||
+    if (state.groupInvite?.status === 'sending' || ['closing', 'closed'].includes(state.closeStatus) || Object.values(state.invites ?? {}).some(invite => invite.status === 'sending') ||
       (state.closeStatus === 'unknown' && !input.retry)) return this.list();
     const session = this.sessionKey;
     this.updateCreated({ ...state, closeStatus: 'closing', closeError: undefined });

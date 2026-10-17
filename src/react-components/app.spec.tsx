@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 import { App } from './app';
@@ -18,6 +18,7 @@ jest.mock('./settings/settings', () => ({
   Settings: () => <div data-testid="settings">Settings</div>,
 }));
 jest.mock('./instance/created-instances', () => ({ CreatedInstances: () => <div data-testid="created-instances">CreatedInstances</div> }));
+jest.mock('./instance/friend-groups', () => ({ FriendGroups: () => <div data-testid="friend-groups">FriendGroups</div> }));
 
 jest.mock('src/contexts/app-data-provider', () => ({
   AppDataProvider: ({ children }: any) => <>{children}</>,
@@ -45,6 +46,15 @@ jest.mock('src/contexts/world-data-entry-provider', () => ({
 }));
 
 describe('App', () => {
+  it('メインメニューを5項目にまとめ、マイインスタンスからグループ管理へ移動できる', () => {
+    render(<App />);
+    expect(within(screen.getByRole('navigation', { name: 'メインメニュー' })).getAllByRole('button')).toHaveLength(5);
+    fireEvent.click(screen.getByRole('button', { name: 'マイインスタンス' }));
+    fireEvent.click(screen.getByRole('button', { name: 'フレンドグループ' }));
+    expect(screen.getByTestId('friend-groups')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '作成済みインスタンス' }));
+    expect(screen.getByTestId('created-instances')).toBeInTheDocument();
+  });
   it('「マイインスタンス」タブをクリックすると一覧が表示される', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: 'マイインスタンス' }));
@@ -70,12 +80,14 @@ describe('App', () => {
     });
   });
 
-  it('「ワールド情報登録」タブをクリックするとWorldDataEntryが表示される', async () => {
+  it('ワールド登録タブから登録画面を直接開ける', async () => {
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: /ワールド情報登録/ }));
+    fireEvent.click(within(screen.getByRole('navigation', { name: 'メインメニュー' })).getByRole('button', { name: 'ワールド登録' }));
     await waitFor(() => {
       expect(screen.getByTestId('world-data-entry')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByRole('button', { name: 'ワールド一覧' }));
+    expect(screen.getByTestId('bookmark-list')).toBeInTheDocument();
   });
 
   it('「設定」タブをクリックするとSettingsが表示される', async () => {
@@ -89,6 +101,7 @@ describe('App', () => {
   it('タブのアイコンが各種表示される', async () => {
     render(<App />);
     await waitFor(() => {
+      expect(screen.getByTestId('icon-instances')).toBeInTheDocument();
       expect(screen.getByTestId('icon-register')).toBeInTheDocument();
       expect(screen.getByTestId('icon-list')).toBeInTheDocument();
       expect(screen.getByTestId('icon-settings')).toBeInTheDocument();

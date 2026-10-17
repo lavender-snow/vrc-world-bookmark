@@ -1,5 +1,6 @@
 import type { UpdateWorldBookmarkOptions, UpdateWorldGenresOptions, VRChatWorldInfo } from './renderer.d.ts';
 import type { VRChatAuthAPI } from './vrchat-auth';
+import type { VRChatGroupsAPI } from './vrchat-groups';
 import type { VRChatInstanceAPI } from './vrchat-instance';
 import type { VRChatInviteAPI } from './vrchat-invite';
 import { World } from './vrchat.d.ts';
@@ -14,6 +15,7 @@ export interface RecommendResult {
 declare global {
   interface Window {
     vrchatAuth: VRChatAuthAPI;
+    vrchatGroups: VRChatGroupsAPI;
     vrchatInstances: VRChatInstanceAPI;
     vrchatInvites: VRChatInviteAPI;
     vrchatAPI: {

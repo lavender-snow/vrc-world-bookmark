@@ -1,0 +1,31 @@
+@use 'assets/styles/theme.scss';
+
+:local(.groups) {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  h2, h3, h4, p { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
+  fieldset { display: flex; flex-direction: column; gap: 12px; border: 0; padding: 0; margin-top: 16px; }
+  form { padding: 20px; border: 1px solid theme.$light-gray; border-radius: 8px; }
+  button, input:not([type='checkbox']), select { font: inherit; padding: 8px 12px; border: 1px solid theme.$gray; border-radius: 4px; }
+  button { cursor: pointer; background: theme.$light-blue; color: theme.$white; border-color: theme.$light-blue; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid theme.$light-blue; outline-offset: 2px; }
+  [role='alert'] { color: #a01927; }
+}
+:local(.saved) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  article { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px; border: 1px solid theme.$light-gray; border-radius: 6px; }
+  strong { overflow-wrap: anywhere; }
+}
+:local(.members) {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0; list-style: none;
+  li { display: flex; align-items: center; gap: 8px; padding: 6px; border: 1px solid theme.$light-gray; border-radius: 6px; overflow-wrap: anywhere; }
+}
+:local(.choices) {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; max-height: 320px; overflow-y: auto;
+  label { display: flex; align-items: center; gap: 8px; padding: 8px; overflow-wrap: anywhere; }
+}
+:local(.actions) { display: flex; align-items: center; gap: 12px; }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import styles from './created-instances.scss';
+import { GroupInviteControls } from './group-invite-controls';
 import { InviteControls } from './invite-controls';
 
 import type { CreatedInstanceList, InstanceAccess, InstanceRegion } from 'src/types/vrchat-instance';
@@ -75,13 +76,13 @@ export function CreatedInstances() {
       </>}
       {instance.closeStatus !== 'closed' && instance.canClose && (confirmClose === instance.instanceKey ? <div className={styles.confirm}>
         <p>このインスタンスへの新規参加を停止します。</p>
-        <button type="button" disabled={busy || instance.closeStatus === 'closing' || Object.values(instance.invites ?? {}).some(invite => invite.status === 'sending') || (instance.closeStatus === 'unknown' && !acknowledged[instance.instanceKey])} onClick={() => {
+        <button type="button" disabled={busy || instance.groupInvite?.status === 'sending' || instance.closeStatus === 'closing' || Object.values(instance.invites ?? {}).some(invite => invite.status === 'sending') || (instance.closeStatus === 'unknown' && !acknowledged[instance.instanceKey])} onClick={() => {
           setConfirmClose(null);
           setAcknowledged(previous => ({ ...previous, [instance.instanceKey]: false }));
           void perform(() => window.vrchatInstances.close({ instanceKey: instance.instanceKey, retry: instance.closeStatus === 'unknown' }));
         }}>閉鎖を実行する</button>
         <button type="button" disabled={busy} onClick={() => setConfirmClose(null)}>キャンセル</button>
-      </div> : <button type="button" className={styles.closeButton} disabled={busy || instance.closeStatus === 'closing' || Object.values(instance.invites ?? {}).some(invite => invite.status === 'sending') || (instance.closeStatus === 'unknown' && !acknowledged[instance.instanceKey])} onClick={() => setConfirmClose(instance.instanceKey)}>
+      </div> : <button type="button" className={styles.closeButton} disabled={busy || instance.groupInvite?.status === 'sending' || instance.closeStatus === 'closing' || Object.values(instance.invites ?? {}).some(invite => invite.status === 'sending') || (instance.closeStatus === 'unknown' && !acknowledged[instance.instanceKey])} onClick={() => setConfirmClose(instance.instanceKey)}>
         {instance.closeStatus === 'failed' || instance.closeStatus === 'unknown' ? '閉鎖を再試行する' : 'インスタンスを閉じる'}
       </button>)}
       {!instance.canClose && <p>所有者本人のインスタンスのみ閉鎖できます。</p>}
@@ -92,6 +93,14 @@ export function CreatedInstances() {
             await window.vrchatInvites.send({ worldId: instance.options.worldId, instanceKey: instance.instanceKey, receiverId, resend });
             return window.vrchatInstances.list();
           });
+        }} />
+        <GroupInviteControls state={instance} busy={busy} onSend={(groupId, retryUnknown) => {
+          void perform(async () => {
+            await window.vrchatGroups.send({ worldId: instance.options.worldId, instanceKey: instance.instanceKey, groupId, retryUnknown });
+            return window.vrchatInstances.list();
+          });
+        }} onCancel={() => {
+          void perform(async () => { await window.vrchatGroups.cancel(instance.instanceKey); return window.vrchatInstances.list(); });
         }} />
       </details>}
     </article>)}

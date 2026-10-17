@@ -1,4 +1,5 @@
 import type { AuthError } from './vrchat-auth';
+import type { GroupInviteProgress } from './vrchat-groups';
 import type { InviteStatus } from './vrchat-invite';
 
 export type InstanceAccess = 'public' | 'friendsPlus' | 'friends' | 'invitePlus' | 'invite';
@@ -11,6 +12,7 @@ export type InstanceState = {
   createdAt?: string;
   error?: AuthError;
   invites?: Record<string, InviteStatus>;
+  groupInvite?: GroupInviteProgress;
   instanceKey?: string;
   closeStatus?: 'closing' | 'closed' | 'failed' | 'unknown';
   closeError?: AuthError;

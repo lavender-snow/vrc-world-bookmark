@@ -38,7 +38,7 @@ export function InviteControls({ state, busy, onSend }: {
 
   const invite = state.invites?.[receiver];
   const unavailable = ['closing', 'closed', 'unknown'].includes(state.closeStatus);
-  const sending = busy || Object.values(state.invites ?? {}).some(value => value.status === 'sending');
+  const sending = busy || state.groupInvite?.status === 'sending' || Object.values(state.invites ?? {}).some(value => value.status === 'sending');
   const selected = friends.find(friend => friend.id === receiver);
   const name = receiver === 'self' ? '自分' : selected?.displayName;
   const visible = friends.filter(friend => friend.displayName.toLocaleLowerCase().includes(search.toLocaleLowerCase()));

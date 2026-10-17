@@ -1,9 +1,9 @@
 @use 'assets/styles/theme.scss';
 
 :local(.tab-header) {
-  display: flex;
-  height: 55px;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-height: 55px;
   margin-bottom: 4px;
   background: theme.$header-bg;
 
@@ -13,17 +13,17 @@
 }
 
 :local(.tab-header-item) {
-  flex: 1;
-  flex-shrink: 0;
+  min-width: 0;
   gap: 4px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   svg { flex-shrink: 0; }
   justify-content: center;
   display: flex;
   align-items: center;
   border: none;
   background: transparent;
-  padding: 8px 16px;
+  padding: 8px 8px;
   cursor: pointer;
   border-bottom: 3px solid theme.$light-gray;
   font-size: 0.9rem;
@@ -32,6 +32,7 @@
   &:hover {
     color: theme.$header-hover-color;
   }
+  &:focus-visible { outline: 2px solid theme.$light-blue; outline-offset: -3px; }
 }
 
 :local(.active-tab) {
@@ -47,4 +48,28 @@
 :local(.tab-content) {
   box-sizing: content-box;
   padding: 1rem 3rem;
+}
+
+:local(.section-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  button {
+    font: inherit;
+    padding: 8px 14px;
+    border: 1px solid theme.$light-gray;
+    border-radius: 6px;
+    background: theme.$white;
+    color: theme.$black;
+    cursor: pointer;
+    &:hover { border-color: theme.$light-blue; }
+    &[aria-pressed='true'] { background: theme.$light-blue; border-color: theme.$light-blue; color: theme.$white; }
+    &:focus-visible { outline: 2px solid theme.$light-blue; outline-offset: 2px; }
+  }
+}
+
+@media (max-width: 600px) {
+  :local(.tab-header-item) { flex-direction: column; padding: 8px 4px; font-size: 0.8rem; }
+  :local(.tab-content) { padding: 1rem; }
 }

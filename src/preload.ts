@@ -2,8 +2,18 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import type { BookmarkListOptions, UpdateWorldBookmarkOptions, UpdateWorldGenresOptions } from './types/renderer';
 import type { LoginInput, TwoFactorInput, VRChatAuthAPI } from './types/vrchat-auth';
+import type { VRChatGroupsAPI } from './types/vrchat-groups';
 import type { VRChatInstanceAPI } from './types/vrchat-instance';
 import type { VRChatInviteAPI } from './types/vrchat-invite';
+
+const vrchatGroups: VRChatGroupsAPI = {
+  list: () => ipcRenderer.invoke('vrchat_groups_list'),
+  save: input => ipcRenderer.invoke('vrchat_groups_save', input),
+  remove: input => ipcRenderer.invoke('vrchat_groups_remove', input),
+  send: input => ipcRenderer.invoke('vrchat_groups_send', input),
+  cancel: instanceKey => ipcRenderer.invoke('vrchat_groups_cancel', instanceKey),
+};
+contextBridge.exposeInMainWorld('vrchatGroups', vrchatGroups);
 
 const vrchatInvites: VRChatInviteAPI = {
   listFriends: input => ipcRenderer.invoke('vrchat_friends_list', input),

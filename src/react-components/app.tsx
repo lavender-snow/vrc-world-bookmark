@@ -5,6 +5,7 @@ import styles from './app.scss';
 import { BookmarkList } from './bookmark-list/bookmark-list';
 import { WorldDataEntry } from './data-entry/world-data-entry';
 import { CreatedInstances } from './instance/created-instances';
+import { FriendGroups } from './instance/friend-groups';
 import { Recommend } from './recommend/recommend';
 import { Settings } from './settings/settings';
 
@@ -22,9 +23,9 @@ import { WorldDataEntryProvider } from 'src/contexts/world-data-entry-provider';
 
 const TAB_KEYS = {
   recommend: 'recommend',
-  register: 'register',
   list: 'list',
   instances: 'instances',
+  register: 'register',
   settings: 'settings',
 };
 
@@ -46,7 +47,7 @@ const TABS = [
   },
   {
     key: TAB_KEYS.register,
-    label: 'ワールド情報登録',
+    label: 'ワールド登録',
     icon: BookmarkIcon,
   },
   {
@@ -60,21 +61,23 @@ type TabKey = typeof TAB_KEYS[keyof typeof TAB_KEYS];
 
 export function App(): React.ReactNode {
   const [activeTab, setActiveTab] = useState<TabKey>(TABS[0].key);
+  const [instanceView, setInstanceView] = useState<'instances' | 'groups'>('instances');
 
   return (
     <>
-      <div className={styles.tabHeader}>
+      <nav className={styles.tabHeader} aria-label="メインメニュー">
         {TABS.map(tab => (
           <button
             key={tab.key}
             className={classNames(styles.tabHeaderItem, activeTab === tab.key && styles.activeTab)}
+            aria-current={activeTab === tab.key ? 'page' : undefined}
             onClick={() => setActiveTab(tab.key)}
           >
             <tab.icon data-testid={`icon-${tab.key}`} />
             <span>{tab.label}</span>
           </button>
         ))}
-      </div>
+      </nav>
       <div className={styles.tabContent}>
         <AppDataProvider>
           <ToastProvider>
@@ -84,7 +87,13 @@ export function App(): React.ReactNode {
             <BookmarkListProvider>
               {activeTab === TAB_KEYS.list && <BookmarkList />}
             </BookmarkListProvider>
-            {activeTab === TAB_KEYS.instances && <CreatedInstances />}
+            {activeTab === TAB_KEYS.instances && <>
+              <div className={styles.sectionActions} role="group" aria-label="インスタンスとフレンドの管理">
+                <button type="button" aria-pressed={instanceView === 'instances'} onClick={() => setInstanceView('instances')}>作成済みインスタンス</button>
+                <button type="button" aria-pressed={instanceView === 'groups'} onClick={() => setInstanceView('groups')}>フレンドグループ</button>
+              </div>
+              {instanceView === 'instances' ? <CreatedInstances /> : <FriendGroups />}
+            </>}
             <WorldDataEntryProvider>
               {activeTab === TAB_KEYS.register && <WorldDataEntry />}
             </WorldDataEntryProvider>
