@@ -69,11 +69,10 @@ export function GroupInviteControls({ state, busy, onSend, onCancel }: {
       }}>{candidates.length}人にまとめて招待</button>
     </>}
     {progress && <>
-      <p role="status">{progress.groupName}: {sending ? '招待を送信中' : progress.status === 'stopped' ? '送信を停止しました' : '送信処理が完了しました'}（送信済み {progress.members.filter(member => state.invites?.[member.id]?.status === 'sent').length} / {progress.members.length}人）</p>
-      <ul>{progress.members.map(member => <li key={member.id}>{member.displayName} — {statuses[state.invites?.[member.id]?.status] ?? (sending ? '待機中' : '未送信')}</li>)}</ul>
+      {sending && <p role="status">{progress.groupName}: 招待を送信中（送信済み {progress.members.filter(member => state.invites?.[member.id]?.status === 'sent').length} / {progress.members.length}人）</p>}
+      {progress.status === 'stopped' && !progress.error && <p role="status">{progress.groupName}: 送信を停止しました。</p>}
       {progress.error && <p role="alert">{progress.error.code === 'rateLimited' ? 'アクセスが集中したため停止しました。時間を置いて再試行してください。' : '通信または招待先の状態を確認できないため停止しました。送信結果を確認してください。'}</p>}
       {sending && <button type="button" disabled={busy || progress.cancelRequested} onClick={onCancel}>{progress.cancelRequested ? '送信中の招待が終わり次第停止します' : '残りの招待を停止'}</button>}
-      {!sending && <p>失敗・未送信のメンバーには、グループを選んでもう一度送信できます。結果不明の再送には確認が必要です。</p>}
     </>}
   </section>;
 }

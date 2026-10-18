@@ -46,7 +46,7 @@ it('restores progress from main and offers cancellation while disabling another 
 it('shows failed and unattempted members after a rate limit stop', async () => {
   render(<GroupInviteControls state={{ ...state, groupInvite: { groupName: '仲間', members, status: 'stopped', error: { code: 'rateLimited' } } }} busy={false} onSend={jest.fn()} onCancel={jest.fn()} />);
   expect(screen.getByRole('alert')).toHaveTextContent('アクセスが集中したため停止しました');
-  expect(screen.getByText('Carol — 未送信')).toBeInTheDocument();
+  expect(await screen.findByText('Carol — 未送信')).toBeInTheDocument();
   expect(screen.queryByRole('button', { name: '残りの招待を停止' })).not.toBeInTheDocument();
   await screen.findByLabelText('招待するグループ');
 });
