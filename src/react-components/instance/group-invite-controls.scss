@@ -1,0 +1,33 @@
+@use 'assets/styles/theme.scss';
+@use 'sass:color';
+
+:local(.group-buttons) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+
+  > button[aria-pressed] {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: left;
+    background: theme.$white;
+    border-color: theme.$light-blue;
+    color: theme.$light-blue;
+
+    &:hover:not(:disabled) {
+      background: color.adjust(theme.$light-blue, $lightness: 45%);
+    }
+
+    &[aria-pressed='true'] {
+      background: theme.$light-blue;
+      color: theme.$white;
+
+      &:hover:not(:disabled) {
+        background: color.adjust(theme.$light-blue, $lightness: -10%);
+      }
+    }
+  }
+}

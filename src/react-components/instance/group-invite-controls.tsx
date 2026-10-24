@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
+import styles from './group-invite-controls.scss';
+
 import type { FriendGroup } from 'src/types/vrchat-groups';
 import type { InstanceState } from 'src/types/vrchat-instance';
 
@@ -54,11 +56,16 @@ export function GroupInviteControls({ state, busy, onSend, onCancel }: {
     </>}
     {loaded && !error && groups.length === 0 && <p>「マイインスタンス → フレンドグループ」でグループを作成してください。</p>}
     {groups.length > 0 && <>
-      <label htmlFor={`${id}-group`}>招待するグループ</label>
-      <select id={`${id}-group`} value={selected} disabled={disabled || loading} onChange={event => { setSelected(event.target.value); setRetryUnknown(false); }}>
-        <option value="">選択してください</option>
-        {groups.map(item => <option key={item.id} value={item.id}>{item.name}（{item.members.length}人）</option>)}
-      </select>
+      <span id={`${id}-group`}>招待するグループ</span>
+      <div className={styles.groupButtons} role="group" aria-labelledby={`${id}-group`}>
+        {groups.map(item => <button
+          key={item.id}
+          type="button"
+          aria-pressed={selected === item.id}
+          disabled={disabled || loading}
+          onClick={() => { setSelected(item.id); setRetryUnknown(false); }}
+        >{item.name}（{item.members.length}人）</button>)}
+      </div>
     </>}
     {group && <>
       <ul>{group.members.map(member => <li key={member.id}>{member.displayName} — {statuses[state.invites?.[member.id]?.status] ?? '未送信'}</li>)}</ul>
