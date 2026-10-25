@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import type { BrowserWindow, IpcMainInvokeEvent } from 'electron';
 
 import type { VRChatAuthService } from './auth-service';
+import { getCurrentWorld } from './current-world';
 
 import type { LoginInput, TwoFactorInput } from 'src/types/vrchat-auth';
 
@@ -25,6 +26,7 @@ export function registerAuthIpc(auth: VRChatAuthService, getWindow: () => Browse
     if (!window || !isTrustedAuthSender(event, window, entryUrl)) throw new Error('Unauthorized IPC sender');
   };
   ipcMain.handle('vrchat_auth_state', event => { guard(event); return auth.getState(); });
+  ipcMain.handle('vrchat_current_world', event => { guard(event); return getCurrentWorld(auth); });
   ipcMain.handle('vrchat_auth_restore', event => { guard(event); return auth.restoreSession(); });
   ipcMain.handle('vrchat_auth_login', (event, input: LoginInput) => { guard(event); return auth.login(input); });
   ipcMain.handle('vrchat_auth_verify', (event, input: TwoFactorInput) => { guard(event); return auth.verifyTwoFactor(input); });

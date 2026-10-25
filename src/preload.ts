@@ -41,6 +41,7 @@ contextBridge.exposeInMainWorld('vrchatAuth', vrchatAuth);
 
 contextBridge.exposeInMainWorld('vrchatAPI', {
   fetchWorldInfo: (worldId: string) => ipcRenderer.invoke('fetch_world_info', worldId),
+  getCurrentWorld: () => ipcRenderer.invoke('vrchat_current_world'),
 });
 
 contextBridge.exposeInMainWorld('dbAPI', {

@@ -23,6 +23,23 @@
   gap: 8px;
 }
 
+:local(.current-world) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+  padding-bottom: 16px;
+  border-bottom: theme.$base-border theme.$light-gray;
+
+  p {
+    margin: 0;
+    color: theme.$gray;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+}
+
 :local(.search-input-message) {
   margin-left: 12px;
   font-size: 0.8rem;

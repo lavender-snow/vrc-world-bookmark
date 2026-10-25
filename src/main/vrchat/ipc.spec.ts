@@ -35,10 +35,20 @@ describe('VRChat authentication IPC boundary', () => {
     const auth = { getState: jest.fn(), restoreSession: jest.fn(), login: jest.fn(), verifyTwoFactor: jest.fn(), logout: jest.fn() };
     const { window, event } = sender();
     registerAuthIpc(auth as unknown as VRChatAuthService, () => window, entry);
-    expect(ipcMain.handle).toHaveBeenCalledTimes(5);
+    expect(ipcMain.handle).toHaveBeenCalledTimes(6);
     for (const [, handler] of jest.mocked(ipcMain.handle).mock.calls) {
       expect(() => handler({ ...event, sender: {} } as IpcMainInvokeEvent)).toThrow('Unauthorized IPC sender');
     }
     expect(Object.values(auth).every(method => method.mock.calls.length === 0)).toBe(true);
+  });
+
+  it('routes current-world lookup from the trusted application frame', async () => {
+    jest.mocked(ipcMain.handle).mockClear();
+    const auth = { getState: jest.fn(() => ({ status: 'signedOut' })) };
+    const { window, event } = sender();
+    registerAuthIpc(auth as unknown as VRChatAuthService, () => window, entry);
+    const [, handler] = jest.mocked(ipcMain.handle).mock.calls.find(([channel]) => channel === 'vrchat_current_world');
+    await expect(handler(event)).resolves.toEqual({ ok: false, error: { code: 'unauthorized' } });
+    expect(auth.getState).toHaveBeenCalledTimes(1);
   });
 });

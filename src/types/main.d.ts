@@ -3,6 +3,7 @@ import type { VRChatAuthAPI } from './vrchat-auth';
 import type { VRChatGroupsAPI } from './vrchat-groups';
 import type { VRChatInstanceAPI } from './vrchat-instance';
 import type { VRChatInviteAPI } from './vrchat-invite';
+import type { CurrentWorldResult } from './vrchat-world';
 import { World } from './vrchat.d.ts';
 
 import type { Genre, VisitStatus, UpdateWorldBookmarkResult, BookmarkListOptions } from 'src/consts/const';
@@ -20,6 +21,7 @@ declare global {
     vrchatInvites: VRChatInviteAPI;
     vrchatAPI: {
       fetchWorldInfo: (worldId: string) => Promise<World>;
+      getCurrentWorld: () => Promise<CurrentWorldResult>;
     },
     dbAPI: {
       getGenres: () => Promise<Genre[]>;
