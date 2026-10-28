@@ -102,7 +102,7 @@ function CreationPanel({ worldId, worldName, thumbnailImageUrl }: WorldDetails) 
     {state?.loggedIn && <>
       {state.status === 'created' && <div role="status">
         {state.closeStatus === 'closed' && <p>このインスタンスは閉鎖済みです。</p>}
-        <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}　作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
+        <p>{accessNames[state.options.access]} / {regionNames[state.options.region]}{'\u3000'}作成日時: {new Date(state.createdAt).toLocaleString('ja-JP')}</p>
       </div>}
       {state.status === 'created' && <InviteControls key={state.createdAt} state={state} busy={busy}
         onSend={(receiverId, resend) => { void perform(() => window.vrchatInvites.send({ worldId, receiverId, resend })); }} />}
